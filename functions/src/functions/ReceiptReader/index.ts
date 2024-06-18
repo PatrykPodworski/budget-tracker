@@ -1,5 +1,5 @@
 import { app, output } from "@azure/functions";
-import handler from "./handler";
+import { handler } from "./handler";
 import { config } from "../../config";
 
 const cosmosOutput = output.cosmosDB({

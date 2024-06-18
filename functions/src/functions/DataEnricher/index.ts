@@ -1,8 +1,15 @@
 import { CosmosDBHandler, app } from "@azure/functions";
 import { config } from "../../config";
 
+// TODO: Fix the repo
 const handler: CosmosDBHandler = async (documents, context) => {
-  context.log(`Cosmos DB function processed ${documents.length} documents`);
+  documents.forEach((document) => {
+    context.log(document);
+    // TODO: Typecheck the document
+    // TODO: Get the items
+    // TODO: Send to the OpenAI API
+    // TODO: Store the response
+  });
 };
 
 app.cosmosDB("DataEnricher", {
