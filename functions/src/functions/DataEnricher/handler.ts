@@ -18,3 +18,8 @@ const handle = async (document: unknown, context: InvocationContext) => {
     context.error(error);
   }
 };
+
+// TODO: Function with cosmosDBTrigger that reads refined data
+// TODO: Groups the data by category, creating the excel formula
+// TODO: Validates the total price
+// TODO: Send the message to the Discord bot
