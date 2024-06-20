@@ -13,3 +13,5 @@ export const documentSchema = z.object({
     })
   ),
 });
+
+export type Document = z.infer<typeof documentSchema>;

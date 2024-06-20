@@ -1,18 +1,24 @@
 import { CosmosDBHandler, InvocationContext } from "@azure/functions";
 import { documentSchema } from "./documentSchema";
+import { enrichDocumentWithAssistant } from "./enrichDocumentWithAssistant";
 
 // TODO: Fix the repo
 export const handler: CosmosDBHandler = async (documents, context) => {
+  context.info(`Started handling ${documents.length} documents.`);
+  let promises: Promise<void>[] = [];
   documents.forEach((document) => {
-    handle(document, context);
+    promises.push(handle(document, context));
   });
+  await Promise.all(promises);
+
+  context.info(`Finished handling ${documents.length} documents.`);
 };
 
 const handle = async (document: unknown, context: InvocationContext) => {
   try {
     const parsedDocument = await documentSchema.parseAsync(document);
-    context.log(parsedDocument.items);
-    // TODO: Send to the OpenAI API
+    const response = await enrichDocumentWithAssistant(parsedDocument);
+    context.log(`Response: ${JSON.stringify(response)}`);
     // TODO: Store the response
   } catch (error) {
     context.error(error);
