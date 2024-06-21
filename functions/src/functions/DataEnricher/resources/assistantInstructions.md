@@ -46,7 +46,7 @@ Format the Data: Once you have categorized and refined the product names, format
 {
   "items": [
     {
-     "orginalName": string
+     "originalName": string
       "name": string,
       "category": string,
     },
