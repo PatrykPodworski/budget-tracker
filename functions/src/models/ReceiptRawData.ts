@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const documentSchema = z.object({
+export const receiptRawDataSchema = z.object({
   id: z.string().uuid(),
   userId: z.string().uuid(),
   total: z.number(),
@@ -14,4 +14,5 @@ export const documentSchema = z.object({
   ),
 });
 
-export type Document = z.infer<typeof documentSchema>;
+export type ReceiptRawData = z.infer<typeof receiptRawDataSchema>;
+export type RawItem = ReceiptRawData["items"][number];

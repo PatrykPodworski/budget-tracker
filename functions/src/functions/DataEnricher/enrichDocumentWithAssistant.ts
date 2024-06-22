@@ -1,17 +1,17 @@
 import OpenAI from "openai";
-import { Document } from "./documentSchema";
+import { ReceiptRawData } from "../../models/ReceiptRawData";
 import { config } from "../../config";
 import { z } from "zod";
 
 const openai = new OpenAI();
 
-export const enrichDocumentWithAssistant = async (document: Document) => {
+export const enrichDocumentWithAssistant = async (document: ReceiptRawData) => {
   const response = await getAssistantResponse(document);
   const responseItems = await serializeTheResponse(response);
   return responseItems;
 };
 
-const getAssistantResponse = async (document: Document) => {
+const getAssistantResponse = async (document: ReceiptRawData) => {
   const thread = await openai.beta.threads.create();
   await openai.beta.threads.messages.create(thread.id, {
     role: "user",

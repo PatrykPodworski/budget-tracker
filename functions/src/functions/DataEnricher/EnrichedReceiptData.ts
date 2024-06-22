@@ -1,9 +1,9 @@
-import { Document } from "./documentSchema";
+import { RawItem, ReceiptRawData } from "../../models/ReceiptRawData";
 import { ResponseItem } from "./enrichDocumentWithAssistant";
 
 export const mapToEnrichedReceiptData = (
   response: ResponseItem[],
-  source: Document
+  source: ReceiptRawData
 ): EnrichedReceiptData => {
   const responseMap = response.reduce((acc, item) => {
     acc.set(item.originalName, item);
@@ -38,4 +38,4 @@ export type EnrichedReceiptData = {
   total: number;
 };
 
-type CombinedItem = Document["items"][number] & ResponseItem;
+type CombinedItem = RawItem & ResponseItem;

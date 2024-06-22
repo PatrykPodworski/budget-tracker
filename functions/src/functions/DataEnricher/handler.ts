@@ -1,5 +1,5 @@
 import { CosmosDBHandler, InvocationContext } from "@azure/functions";
-import { documentSchema } from "./documentSchema";
+import { receiptRawDataSchema } from "../../models/ReceiptRawData";
 import { enrichDocumentWithAssistant } from "./enrichDocumentWithAssistant";
 import {
   EnrichedReceiptData,
@@ -23,13 +23,16 @@ export const handler: CosmosDBHandler = async (documents, context) => {
 };
 
 const handle = async (document: unknown, context: InvocationContext) => {
-  // TODO: P1: Bind documentSchema with ReceiptData
-  const parsedDocument = await documentSchema.parseAsync(document);
+  const parsedDocument = await receiptRawDataSchema.parseAsync(document);
   const response = await enrichDocumentWithAssistant(parsedDocument);
   return mapToEnrichedReceiptData(response, parsedDocument);
 };
 
-// TODO: P2 Function with cosmosDBTrigger that reads refined data
-// TODO: P3 Groups the data by category, creating the excel formula
-// TODO: Validates the total price
+// TODO: P1 Function with cosmosDBTrigger that reads refined data
+// TODO: P2 Groups the data by category, creating the excel formula
+// TODO: P3 Validates the total price
 // TODO: Send the message to the Discord bot
+
+// TODO: Store validated data in DB
+// TODO: Get stored items before sending to the assistant
+// TODO: Send to assistant only the items that are not stored yet
