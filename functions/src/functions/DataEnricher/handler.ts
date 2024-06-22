@@ -1,10 +1,10 @@
 import { CosmosDBHandler, InvocationContext } from "@azure/functions";
 import { documentSchema } from "./documentSchema";
+import { enrichDocumentWithAssistant } from "./enrichDocumentWithAssistant";
 import {
-  ResponseItem,
-  enrichDocumentWithAssistant,
-} from "./enrichDocumentWithAssistant";
-import { config } from "../../config";
+  EnrichedReceiptData,
+  mapToEnrichedReceiptData,
+} from "./EnrichedReceiptData";
 
 // TODO: Fix the repo
 export const handler: CosmosDBHandler = async (documents, context) => {
@@ -23,30 +23,13 @@ export const handler: CosmosDBHandler = async (documents, context) => {
 };
 
 const handle = async (document: unknown, context: InvocationContext) => {
-  // TODO: P2: Bind documentSchema with ReceiptData
+  // TODO: P1: Bind documentSchema with ReceiptData
   const parsedDocument = await documentSchema.parseAsync(document);
   const response = await enrichDocumentWithAssistant(parsedDocument);
-  return mapToEnrichedReceiptData(response);
+  return mapToEnrichedReceiptData(response, parsedDocument);
 };
 
-const mapToEnrichedReceiptData = (
-  response: ResponseItem[]
-): EnrichedReceiptData => {
-  // TODO: P1: Combine with the base data
-  return {
-    id: crypto.randomUUID(),
-    userId: config.TEMP_USER_ID,
-    items: response,
-  };
-};
-
-type EnrichedReceiptData = {
-  id: string;
-  userId: string;
-  items: ResponseItem[];
-};
-
-// TODO: Function with cosmosDBTrigger that reads refined data
-// TODO: Groups the data by category, creating the excel formula
+// TODO: P2 Function with cosmosDBTrigger that reads refined data
+// TODO: P3 Groups the data by category, creating the excel formula
 // TODO: Validates the total price
 // TODO: Send the message to the Discord bot
