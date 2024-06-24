@@ -5,17 +5,12 @@ import {
   EnrichedReceiptData,
   mapToEnrichedReceiptData,
 } from "./EnrichedReceiptData";
+import { handleMultipleDocuments } from "../../utils/handleMultipleDocuments";
 
 // TODO: Fix the repo
 export const handler: CosmosDBHandler = async (documents, context) => {
   try {
-    context.info(`Started handling ${documents.length} documents.`);
-    let promises: Promise<EnrichedReceiptData>[] = [];
-    documents.forEach((document) => {
-      promises.push(handle(document, context));
-    });
-    const results = await Promise.all(promises);
-    context.info(`Finished handling ${results.length} documents.`);
+    const results = await handleMultipleDocuments(documents, context, handle);
     return results;
   } catch (error) {
     context.error(error);
@@ -27,12 +22,3 @@ const handle = async (document: unknown, context: InvocationContext) => {
   const response = await enrichDocumentWithAssistant(parsedDocument);
   return mapToEnrichedReceiptData(response, parsedDocument);
 };
-
-// TODO: P1 Function with cosmosDBTrigger that reads refined data
-// TODO: P2 Groups the data by category, creating the excel formula
-// TODO: P3 Validates the total price
-// TODO: Send the message to the Discord bot
-
-// TODO: Store validated data in DB
-// TODO: Get stored items before sending to the assistant
-// TODO: Send to assistant only the items that are not stored yet
