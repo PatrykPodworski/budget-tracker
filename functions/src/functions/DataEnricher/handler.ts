@@ -1,13 +1,9 @@
 import { CosmosDBHandler, InvocationContext } from "@azure/functions";
 import { receiptRawDataSchema } from "../../models/ReceiptRawData";
 import { enrichDocumentWithAssistant } from "./enrichDocumentWithAssistant";
-import {
-  EnrichedReceiptData,
-  mapToEnrichedReceiptData,
-} from "./EnrichedReceiptData";
+import { mapToEnrichedReceiptData } from "../../models/EnrichedReceiptData";
 import { handleMultipleDocuments } from "../../utils/handleMultipleDocuments";
 
-// TODO: Fix the repo
 export const handler: CosmosDBHandler = async (documents, context) => {
   try {
     const results = await handleMultipleDocuments(documents, context, handle);
