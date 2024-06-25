@@ -1,5 +1,9 @@
 import { CosmosDBHandler, InvocationContext } from "@azure/functions";
 import { handleMultipleDocuments } from "../../utils/handleMultipleDocuments";
+import {
+  Item,
+  enrichedReceiptDataSchema,
+} from "../../models/EnrichedReceiptData";
 
 export const handler: CosmosDBHandler = async (documents, context) => {
   try {
@@ -9,14 +13,38 @@ export const handler: CosmosDBHandler = async (documents, context) => {
   }
 };
 const handle = async (document: unknown, context: InvocationContext) => {
-  context.log(JSON.stringify(document));
+  const receiptData = await enrichedReceiptDataSchema.parseAsync(document);
+
+  // group items by category
+  const grouped = receiptData.items.reduce(
+    (acc: Record<string, Item[]>, item) => {
+      if (!acc[item.category]) {
+        acc[item.category] = [];
+      }
+
+      acc[item.category].push(item);
+      return acc;
+    },
+    {}
+  );
+
+  // for each category, create the excel formula
+  const excelFormulas = Object.entries(grouped).reduce(
+    (acc: Record<string, string>, [category, items]) => {
+      acc[category] = `=SUM(${items.map((item) => item.totalPrice).join(",")})`;
+      return acc;
+    },
+    {}
+  );
+
+  // log each formula in a separate log
+  Object.entries(excelFormulas).forEach(([category, formula]) => {
+    context.log(`Category: ${category}, Formula: ${formula}`);
+  });
 };
 
-// TODO: P1 Validate the document type
-// TODO: P2 Groups the data by category
-// TODO: P2 Create the excel formula
-// TODO: P3 Validates the total price
-// TODO: Send the message to the Discord bot
+// TODO: P1 Validates the total price
+// TODO: P2 Send the message to the Discord bot
 
 // TODO: Store validated data in DB
 // TODO: Get stored items before sending to the assistant

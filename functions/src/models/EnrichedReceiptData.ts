@@ -49,3 +49,4 @@ export const mapToEnrichedReceiptData = (
 };
 
 export type EnrichedReceiptData = z.infer<typeof enrichedReceiptDataSchema>;
+export type Item = EnrichedReceiptData["items"][number];
