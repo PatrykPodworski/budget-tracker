@@ -6,6 +6,7 @@ const {
   DI_KEY,
   TEMP_USER_ID,
   OPENAI_ASSISTANT_ID,
+  DISCORD_WEBHOOK_URL,
 } = process.env;
 
 if (
@@ -15,7 +16,8 @@ if (
   !DI_ENDPOINT ||
   !DI_KEY ||
   !TEMP_USER_ID ||
-  !OPENAI_ASSISTANT_ID
+  !OPENAI_ASSISTANT_ID ||
+  !DISCORD_WEBHOOK_URL
 ) {
   throw new Error("Missing environment variables");
 }
@@ -28,4 +30,5 @@ export const config = {
   DI_KEY,
   TEMP_USER_ID,
   OPENAI_ASSISTANT_ID,
+  DISCORD_WEBHOOK_URL,
 } as const;

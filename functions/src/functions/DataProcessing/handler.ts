@@ -4,6 +4,7 @@ import {
   Item,
   enrichedReceiptDataSchema,
 } from "../../models/EnrichedReceiptData";
+import { config } from "../../config";
 
 export const handler: CosmosDBHandler = async (documents, context) => {
   try {
@@ -21,6 +22,7 @@ const handle = async (document: unknown, context: InvocationContext) => {
     receiptData.items,
     receiptData.total
   );
+  await sendToWebhook(excelFormulas);
 };
 
 const groupItemsByCategory = (items: Item[]) => {
@@ -54,7 +56,23 @@ const validateTotalPrice = (items: Item[], total: number) => {
   return totalPrice === total;
 };
 
-// TODO: P2 Send the message to the Discord bot
+const sendToWebhook = async (formulas: Record<string, string>) => {
+  const response = await fetch(config.DISCORD_WEBHOOK_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ content: JSON.stringify(formulas) }),
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to send to webhook");
+  }
+};
+
+// TODO: P1 Format the webhook message
+// TODO: P2 Include the totals in the message
+// TODO: P2 Include items in the message
 
 // TODO: Store validated data in DB
 // TODO: Get stored items before sending to the assistant
