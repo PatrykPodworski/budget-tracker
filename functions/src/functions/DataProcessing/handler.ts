@@ -15,19 +15,28 @@ export const handler: CosmosDBHandler = async (documents, context) => {
 const handle = async (document: unknown, context: InvocationContext) => {
   const receiptData = await enrichedReceiptDataSchema.parseAsync(document);
 
-  // group items by category
-  const grouped = receiptData.items.reduce(
-    (acc: Record<string, Item[]>, item) => {
-      if (!acc[item.category]) {
-        acc[item.category] = [];
-      }
-
-      acc[item.category].push(item);
-      return acc;
-    },
-    {}
+  const grouped = groupItemsByCategory(receiptData.items);
+  const excelFormulas = createExcelFormulas(grouped);
+  const doesTotalPriceMatch = validateTotalPrice(
+    receiptData.items,
+    receiptData.total
   );
+};
 
+const groupItemsByCategory = (items: Item[]) => {
+  const grouped = items.reduce((acc: Record<string, Item[]>, item) => {
+    if (!acc[item.category]) {
+      acc[item.category] = [];
+    }
+
+    acc[item.category].push(item);
+    return acc;
+  }, {});
+
+  return grouped;
+};
+
+const createExcelFormulas = (grouped: Record<string, Item[]>) => {
   // for each category, create the excel formula
   const excelFormulas = Object.entries(grouped).reduce(
     (acc: Record<string, string>, [category, items]) => {
@@ -37,13 +46,14 @@ const handle = async (document: unknown, context: InvocationContext) => {
     {}
   );
 
-  // log each formula in a separate log
-  Object.entries(excelFormulas).forEach(([category, formula]) => {
-    context.log(`Category: ${category}, Formula: ${formula}`);
-  });
+  return excelFormulas;
 };
 
-// TODO: P1 Validates the total price
+const validateTotalPrice = (items: Item[], total: number) => {
+  const totalPrice = items.reduce((acc, item) => acc + item.totalPrice, 0);
+  return totalPrice === total;
+};
+
 // TODO: P2 Send the message to the Discord bot
 
 // TODO: Store validated data in DB
