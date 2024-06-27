@@ -1,4 +1,4 @@
-import { RawItem, ReceiptRawData } from "./ReceiptRawData";
+import { ReceiptRawData } from "./ReceiptRawData";
 import { ResponseItem } from "../functions/DataEnricher/enrichDocumentWithAssistant";
 import { z } from "zod";
 
@@ -29,10 +29,15 @@ export const mapToEnrichedReceiptData = (
   }, new Map<string, ResponseItem>());
 
   const combined = source.items.map((item) => {
-    const responseItem = responseMap.get(item.name);
+    let responseItem = responseMap.get(item.name);
     if (!responseItem) {
-      throw new Error(`Response item not found for ${item.name}`);
+      responseItem = {
+        category: "Unknown",
+        name: "Unknown",
+        originalName: item.name,
+      };
     }
+
     return {
       ...item,
       ...responseItem,
