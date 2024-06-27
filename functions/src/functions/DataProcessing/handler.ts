@@ -23,7 +23,15 @@ const handle = async (document: unknown, context: InvocationContext) => {
     receiptData.items,
     receiptData.total
   );
-  await sendToWebhook(excelFormulas);
+  await sendToWebhook({
+    categories: grouped,
+    formulas: excelFormulas,
+    doesTotalPriceMatch,
+    total: receiptData.total,
+    // TODO: P1 Get the date of transaction and manufacturer from the receipt
+    dateOfTransaction: new Date().toISOString(),
+    manufacturer: "Lidl",
+  });
 };
 
 const groupItemsByCategory = (items: Item[]) => {
@@ -57,21 +65,53 @@ const validateTotalPrice = (items: Item[], total: number) => {
   return totalPrice === total;
 };
 
-const sendToWebhook = async (formulas: Record<string, string>) => {
+const sendToWebhook = async (data: ContentData) => {
   const webhookClient = new WebhookClient({
     id: config.DISCORD_WEBHOOK_ID,
     token: config.DISCORD_WEBHOOK_TOKEN,
   });
 
+  const categoryOutput = Object.entries(data.categories)
+    .map(
+      ([category, items]) =>
+        `  - **${category}**: ${items
+          .map((item) => `${item.name} - ${item.totalPrice}`)
+          .join(", ")}`
+    )
+    .join("\n");
+
+  const formulaOutput = Object.entries(data.formulas)
+    .map(([category, formula]) => `  - **${category}**: ${formula}`)
+    .join("\n");
+
   await webhookClient.send({
     username: "Receipt Assistant",
-    content: JSON.stringify(formulas),
+    content: `# Shopping Receipt
+    - **Manufacturer:** ${data.manufacturer}
+    - **Date of transaction:** ${data.dateOfTransaction}
+    - **Total:** ${data.total}
+    - **Does total price match:** ${data.doesTotalPriceMatch ? "Yes" : "No"}
+    - **Categories:**
+    ${categoryOutput}
+    - **Formulas:**
+    ${formulaOutput}
+    `,
   });
 };
 
-// TODO: P1 Format the webhook message
+type ContentData = {
+  categories: Record<string, Item[]>;
+  formulas: Record<string, string>;
+  total: number;
+  doesTotalPriceMatch: boolean;
+  dateOfTransaction: string;
+  manufacturer: string;
+};
+
 // TODO: P2 Include the totals in the message
 // TODO: P2 Include items in the message
+
+// TODO: P2 Inform about the processing progress via the webhook
 
 // TODO: Store validated data in DB
 // TODO: Get stored items before sending to the assistant
