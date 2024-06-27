@@ -5,6 +5,7 @@ import {
   enrichedReceiptDataSchema,
 } from "../../models/EnrichedReceiptData";
 import { config } from "../../config";
+import { WebhookClient } from "discord.js";
 
 export const handler: CosmosDBHandler = async (documents, context) => {
   try {
@@ -57,17 +58,15 @@ const validateTotalPrice = (items: Item[], total: number) => {
 };
 
 const sendToWebhook = async (formulas: Record<string, string>) => {
-  const response = await fetch(config.DISCORD_WEBHOOK_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ content: JSON.stringify(formulas) }),
+  const webhookClient = new WebhookClient({
+    id: config.DISCORD_WEBHOOK_ID,
+    token: config.DISCORD_WEBHOOK_TOKEN,
   });
 
-  if (!response.ok) {
-    throw new Error("Failed to send to webhook");
-  }
+  await webhookClient.send({
+    username: "Receipt Assistant",
+    content: JSON.stringify(formulas),
+  });
 };
 
 // TODO: P1 Format the webhook message
