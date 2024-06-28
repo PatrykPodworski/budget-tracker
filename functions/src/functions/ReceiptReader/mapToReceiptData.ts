@@ -13,10 +13,7 @@ const mapToReceiptData = (
 ): ReceiptRawData => {
   const items = fields.items?.values.map(mapToRawItem) ?? [];
 
-  const transactionTime =
-    "transactionTime" in fields ? fields.transactionTime?.value : undefined;
-  const transactionDate =
-    "transactionDate" in fields ? fields.transactionDate?.value : undefined;
+  const transactionDate = parseTransactionDate(fields);
 
   const data = {
     id: crypto.randomUUID(),
@@ -25,11 +22,31 @@ const mapToReceiptData = (
     fileName,
     merchantName: fields.merchantName?.value,
     transactionDate: transactionDate,
-    transactionTime: transactionTime,
     items: items,
   };
 
   return data;
+};
+
+const parseTransactionDate = (fields: PrebuiltReceiptDocument["fields"]) => {
+  const transactionTime =
+    "transactionTime" in fields ? fields.transactionTime?.value : undefined;
+  const transactionDate =
+    "transactionDate" in fields ? fields.transactionDate?.value : undefined;
+
+  if (!transactionDate) {
+    return undefined;
+  }
+
+  if (!transactionTime) {
+    return transactionDate;
+  }
+
+  const [hours, minutes] = transactionTime.split(":");
+  transactionDate.setHours(parseInt(hours, 10));
+  transactionDate.setMinutes(parseInt(minutes, 10));
+
+  return transactionDate;
 };
 
 const mapToRawItem = (

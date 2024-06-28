@@ -14,7 +14,11 @@ export const handler: CosmosDBHandler = async (documents, context) => {
 };
 
 const handle = async (document: unknown, context: InvocationContext) => {
-  const parsedDocument = await receiptRawDataSchema.parseAsync(document);
-  const response = await enrichDocumentWithAssistant(parsedDocument);
-  return mapToEnrichedReceiptData(response, parsedDocument);
+  try {
+    const parsedDocument = await receiptRawDataSchema.parseAsync(document);
+    const response = await enrichDocumentWithAssistant(parsedDocument);
+    return mapToEnrichedReceiptData(response, parsedDocument);
+  } catch (error) {
+    context.error(error);
+  }
 };

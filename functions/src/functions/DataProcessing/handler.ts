@@ -28,9 +28,8 @@ const handle = async (document: unknown, context: InvocationContext) => {
     formulas: excelFormulas,
     doesTotalPriceMatch,
     total: receiptData.total,
-    // TODO: P1 Get the date of transaction and manufacturer from the receipt
-    dateOfTransaction: new Date().toISOString(),
-    manufacturer: "Lidl",
+    dateOfTransaction: receiptData.transactionDate?.toLocaleString(),
+    merchantName: receiptData.merchantName,
   });
 };
 
@@ -87,8 +86,8 @@ const sendToWebhook = async (data: ContentData) => {
   await webhookClient.send({
     username: "Receipt Assistant",
     content: `# Shopping Receipt
-    - **Manufacturer:** ${data.manufacturer}
-    - **Date of transaction:** ${data.dateOfTransaction}
+    - **Merchant:** ${data.merchantName ?? "Unknown"}
+    - **Date of transaction:** ${data.dateOfTransaction ?? "Unknown"}
     - **Total:** ${data.total}
     - **Does total price match:** ${data.doesTotalPriceMatch ? "Yes" : "No"}
     - **Categories:**
@@ -104,8 +103,8 @@ type ContentData = {
   formulas: Record<string, string>;
   total: number;
   doesTotalPriceMatch: boolean;
-  dateOfTransaction: string;
-  manufacturer: string;
+  dateOfTransaction?: string;
+  merchantName?: string;
 };
 
 // TODO: P2 Include the totals in the message

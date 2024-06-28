@@ -7,6 +7,8 @@ export const enrichedReceiptDataSchema = z.object({
   userId: z.string().uuid(),
   rawDocumentId: z.string().uuid(),
   total: z.number(),
+  merchantName: z.string().optional(),
+  transactionDate: z.string().pipe(z.coerce.date()).optional(),
   items: z.array(
     z.object({
       name: z.string().min(1),
@@ -50,6 +52,8 @@ export const mapToEnrichedReceiptData = (
     rawDocumentId: source.id,
     total: source.total,
     items: combined,
+    merchantName: source.merchantName,
+    transactionDate: source.transactionDate,
   };
 };
 
