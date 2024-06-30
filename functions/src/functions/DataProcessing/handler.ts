@@ -6,28 +6,38 @@ import {
 } from "../../models/EnrichedReceiptData";
 import { config } from "../../config";
 import { WebhookClient } from "discord.js";
+import { formatGeneralSection } from "./formatters/formatGeneralSection";
+import { formatCategoriesSection } from "./formatters/formatCategoriesSection";
+import { formatFormulasSection } from "./formatters/formatFormulasSection";
+import { ContentData } from "./ContentData";
+
+const WEBHOOK_MESSAGE_MAX_LENGTH = 2000;
+
+let logger: InvocationContext;
 
 export const handler: CosmosDBHandler = async (documents, context) => {
   try {
+    logger = context;
     await handleMultipleDocuments(documents, context, handle);
   } catch (error) {
     context.error(error);
   }
 };
+
 const handle = async (document: unknown, context: InvocationContext) => {
   const receiptData = await enrichedReceiptDataSchema.parseAsync(document);
 
   const grouped = groupItemsByCategory(receiptData.items);
   const excelFormulas = createExcelFormulas(grouped);
-  const doesTotalPriceMatch = validateTotalPrice(
-    receiptData.items,
-    receiptData.total
-  );
+  const countedTotal = getCountedTotal(receiptData.items);
+  const totalDifference = getTotalDifference(receiptData.total, countedTotal);
+
   await sendToWebhook({
     categories: grouped,
     formulas: excelFormulas,
-    doesTotalPriceMatch,
+    countedTotal: countedTotal,
     total: receiptData.total,
+    totalDifference: totalDifference,
     dateOfTransaction: receiptData.transactionDate?.toLocaleString(),
     merchantName: receiptData.merchantName,
   });
@@ -59,59 +69,94 @@ const createExcelFormulas = (grouped: Record<string, Item[]>) => {
   return excelFormulas;
 };
 
-const validateTotalPrice = (items: Item[], total: number) => {
-  const totalPrice = items.reduce((acc, item) => acc + item.totalPrice, 0);
-  return totalPrice === total;
-};
+const getCountedTotal = (items: Item[]) =>
+  items.reduce((acc, item) => acc + item.totalPrice * 100, 0) / 100;
+
+const getTotalDifference = (total: number, countedTotal: number) =>
+  Math.abs((total * 100 - countedTotal * 100) / 100);
 
 const sendToWebhook = async (data: ContentData) => {
-  const webhookClient = new WebhookClient({
+  const generalSection = formatGeneralSection(data);
+  const categoriesSection = formatCategoriesSection(data.categories);
+  const formulasSection = formatFormulasSection(data.formulas);
+
+  // Validate if the message is too large
+  const totalLength =
+    generalSection.length + categoriesSection.length + formulasSection.length;
+  const isMessageTooLarge = totalLength > WEBHOOK_MESSAGE_MAX_LENGTH;
+  logger.info(`Total length: ${totalLength}`);
+  logger.info(`Is message too large: ${isMessageTooLarge}`);
+
+  if (isMessageTooLarge) {
+    await sendSplitMessage(generalSection, categoriesSection, formulasSection);
+    return;
+  }
+
+  await sendSingleMessage(generalSection, categoriesSection, formulasSection);
+};
+
+const getClient = () => {
+  return new WebhookClient({
     id: config.DISCORD_WEBHOOK_ID,
     token: config.DISCORD_WEBHOOK_TOKEN,
   });
+};
 
-  const categoryOutput = Object.entries(data.categories)
-    .map(
-      ([category, items]) =>
-        `  - **${category}**: ${items
-          .map((item) => `${item.name} - ${item.totalPrice}`)
-          .join(", ")}`
-    )
-    .join("\n");
+const sendSingleMessage = async (
+  generalSection: string,
+  categoriesSection: string,
+  formulasSection: string
+) => {
+  const client = getClient();
 
-  const formulaOutput = Object.entries(data.formulas)
-    .map(([category, formula]) => `  - **${category}**: ${formula}`)
-    .join("\n");
-
-  await webhookClient.send({
+  await client.send({
     username: "Receipt Assistant",
     content: `# Shopping Receipt
-    - **Merchant:** ${data.merchantName ?? "Unknown"}
-    - **Date of transaction:** ${data.dateOfTransaction ?? "Unknown"}
-    - **Total:** ${data.total}
-    - **Does total price match:** ${data.doesTotalPriceMatch ? "Yes" : "No"}
-    - **Categories:**
-    ${categoryOutput}
-    - **Formulas:**
-    ${formulaOutput}
-    `,
+      ${generalSection}
+      ${categoriesSection}
+      ${formulasSection}
+      `,
   });
 };
 
-type ContentData = {
-  categories: Record<string, Item[]>;
-  formulas: Record<string, string>;
-  total: number;
-  doesTotalPriceMatch: boolean;
-  dateOfTransaction?: string;
-  merchantName?: string;
+const sendSplitMessage = async (
+  generalSection: string,
+  categoriesSection: string,
+  formulasSection: string
+) => {
+  const client = getClient();
+
+  await Promise.all([
+    client.send({
+      username: "Receipt Assistant",
+      content: `# Shopping Receipt 1/3
+        ${generalSection}
+        `,
+    }),
+    client.send({
+      username: "Receipt Assistant",
+      content: `# Shopping Receipt 2/3
+        ${categoriesSection}
+        `,
+    }),
+    client.send({
+      username: "Receipt Assistant",
+      content: `# Shopping Receipt 3/3
+        ${formulasSection}
+        `,
+    }),
+  ]);
 };
 
-// TODO: P2 Include the totals in the message
-// TODO: P2 Include items in the message
+// TODO: P1 Improve total price section formatting
+// TODO: P1 Fix the first list item issue in formatting
+// TODO: P1 Fix the formulas new line formatting
 
 // TODO: P2 Inform about the processing progress via the webhook
+// TODO: P3 Absolute import paths
 
+// Feature: Data storage
 // TODO: Store validated data in DB
 // TODO: Get stored items before sending to the assistant
 // TODO: Send to assistant only the items that are not stored yet
+// TODO: Deploy the function and the bot
