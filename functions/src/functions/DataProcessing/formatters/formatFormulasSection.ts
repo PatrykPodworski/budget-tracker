@@ -1,8 +1,7 @@
 export const formatFormulasSection = (formulas: Record<string, string>) => {
   const formulasOutput = formatFormulas(formulas);
-
   return `## Formulas:
-  ${formulasOutput}`;
+${formulasOutput}`;
 };
 
 const formatFormulas = (formulas: Record<string, string>) => {

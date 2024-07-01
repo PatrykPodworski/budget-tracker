@@ -109,13 +109,14 @@ const sendSingleMessage = async (
 ) => {
   const client = getClient();
 
+  const content = `# Shopping Receipt
+${generalSection}
+${categoriesSection}
+${formulasSection}`;
+
   await client.send({
     username: "Receipt Assistant",
-    content: `# Shopping Receipt
-      ${generalSection}
-      ${categoriesSection}
-      ${formulasSection}
-      `,
+    content: content,
   });
 };
 
@@ -149,8 +150,6 @@ const sendSplitMessage = async (
 };
 
 // TODO: P1 Improve total price section formatting
-// TODO: P1 Fix the first list item issue in formatting
-// TODO: P1 Fix the formulas new line formatting
 
 // TODO: P2 Inform about the processing progress via the webhook
 // TODO: P3 Absolute import paths

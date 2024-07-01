@@ -4,14 +4,14 @@ export const formatCategoriesSection = (categories: Record<string, Item[]>) => {
   const categoriesOutput = formatCategories(categories);
 
   return `## Categories:
-  ${categoriesOutput}`;
+${categoriesOutput}`;
 };
 
 const formatCategories = (categories: Record<string, Item[]>) => {
   const formatted = Object.entries(categories).map(([category, items]) => {
     const itemsOutput = formatCategoryItems(items);
     return `- **${category}**:
-    ${itemsOutput}`;
+${itemsOutput}`;
   });
 
   return formatted.join("\n");
@@ -20,7 +20,7 @@ const formatCategories = (categories: Record<string, Item[]>) => {
 const formatCategoryItems = (items: Item[]) => {
   const formatted = items.map(
     (item) =>
-      `  - **${item.name}**: ${item.quantity} * ${item.unitPrice} = ${item.totalPrice}`
+      `  - **${item.name}**: ${item.quantity} * ${item.unitPrice} zł = ${item.totalPrice} zł`
   );
 
   return formatted.join("\n");
