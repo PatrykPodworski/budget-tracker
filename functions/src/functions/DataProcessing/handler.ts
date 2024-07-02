@@ -149,8 +149,6 @@ const sendSplitMessage = async (
   ]);
 };
 
-// TODO: P1 Improve total price section formatting
-
 // TODO: P2 Inform about the processing progress via the webhook
 // TODO: P3 Absolute import paths
 
