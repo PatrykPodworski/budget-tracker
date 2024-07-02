@@ -3,7 +3,7 @@ import { config } from "./config";
 import getReceiptImages from "./getReceiptImages";
 import uploadImages from "./uploadImages";
 
-// TODO: Update eslint
+// TODO: P3 Update eslint
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,

@@ -1,11 +1,11 @@
 import { app, output } from "@azure/functions";
-import handler from "./handler";
+import { handler } from "./handler";
 import { config } from "../../config";
 
 const cosmosOutput = output.cosmosDB({
   connection: "CosmosDbConnection",
   databaseName: config.COSMOS_DATABASE,
-  containerName: config.COSMOS_CONTAINER,
+  containerName: config.COSMOS_RAW_CONTAINER,
 });
 
 app.storageBlob("ReceiptReader", {
