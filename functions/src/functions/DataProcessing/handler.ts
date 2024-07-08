@@ -1,11 +1,12 @@
-import { CosmosDBHandler, InvocationContext } from "@azure/functions";
+import { CosmosDBHandler } from "@azure/functions";
 import { handleMultipleDocuments } from "../../utils/handleMultipleDocuments";
+import { getWebhookClient } from "../../utils/getWebhookClient";
+import { registerLogger } from "../../utils/logger/registerLogger";
+import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
 import {
   Item,
   enrichedReceiptDataSchema,
 } from "../../models/EnrichedReceiptData";
-import { config } from "../../config";
-import { WebhookClient } from "discord.js";
 import { formatGeneralSection } from "./formatters/formatGeneralSection";
 import { formatCategoriesSection } from "./formatters/formatCategoriesSection";
 import { formatFormulasSection } from "./formatters/formatFormulasSection";
@@ -13,18 +14,18 @@ import { ContentData } from "./ContentData";
 
 const WEBHOOK_MESSAGE_MAX_LENGTH = 2000;
 
-let logger: InvocationContext;
+const { addChannels, info } = registerLogger();
 
 export const handler: CosmosDBHandler = async (documents, context) => {
+  addChannels(getDefaultChannels(context, "Data Processor"));
   try {
-    logger = context;
-    await handleMultipleDocuments(documents, context, handle);
+    await handleMultipleDocuments(documents, info, handle);
   } catch (error) {
     context.error(error);
   }
 };
 
-const handle = async (document: unknown, context: InvocationContext) => {
+const handle = async (document: unknown) => {
   const receiptData = await enrichedReceiptDataSchema.parseAsync(document);
 
   const grouped = groupItemsByCategory(receiptData.items);
@@ -84,8 +85,6 @@ const sendToWebhook = async (data: ContentData) => {
   const totalLength =
     generalSection.length + categoriesSection.length + formulasSection.length;
   const isMessageTooLarge = totalLength > WEBHOOK_MESSAGE_MAX_LENGTH;
-  logger.info(`Total length: ${totalLength}`);
-  logger.info(`Is message too large: ${isMessageTooLarge}`);
 
   if (isMessageTooLarge) {
     await sendSplitMessage(generalSection, categoriesSection, formulasSection);
@@ -95,19 +94,12 @@ const sendToWebhook = async (data: ContentData) => {
   await sendSingleMessage(generalSection, categoriesSection, formulasSection);
 };
 
-const getClient = () => {
-  return new WebhookClient({
-    id: config.DISCORD_WEBHOOK_ID,
-    token: config.DISCORD_WEBHOOK_TOKEN,
-  });
-};
-
 const sendSingleMessage = async (
   generalSection: string,
   categoriesSection: string,
   formulasSection: string
 ) => {
-  const client = getClient();
+  const client = getWebhookClient();
 
   const content = `# Shopping Receipt
 ${generalSection}
@@ -125,7 +117,7 @@ const sendSplitMessage = async (
   categoriesSection: string,
   formulasSection: string
 ) => {
-  const client = getClient();
+  const client = getWebhookClient();
 
   await Promise.all([
     client.send({
@@ -149,6 +141,8 @@ const sendSplitMessage = async (
   ]);
 };
 
+// TODO: P1: Deploy the function and the bot
+
 // TODO: P2 Inform about the processing progress via the webhook
 // TODO: P3 Absolute import paths
 
@@ -156,4 +150,3 @@ const sendSplitMessage = async (
 // TODO: Store validated data in DB
 // TODO: Get stored items before sending to the assistant
 // TODO: Send to assistant only the items that are not stored yet
-// TODO: Deploy the function and the bot

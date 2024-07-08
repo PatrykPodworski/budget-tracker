@@ -6,46 +6,51 @@ import { InvocationContext, StorageBlobHandler } from "@azure/functions";
 import { PrebuiltReceiptModel } from "../../prebuilt/prebuilt-receipt";
 import { config } from "../../config";
 import { mapToReceiptData } from "./mapToReceiptData";
+import { registerLogger } from "../../utils/logger/registerLogger";
+import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
 
-let invocationContext: InvocationContext;
+const { addChannels, log } = registerLogger();
 
 const handler: StorageBlobHandler = async (blob, context) => {
-  invocationContext = context;
+  addChannels(getDefaultChannels(context, "Receipt Reader"));
+
   const client = new DocumentAnalysisClient(
     config.DI_ENDPOINT,
     new AzureKeyCredential(config.DI_KEY)
   );
 
   if (!Buffer.isBuffer(blob)) {
-    invocationContext.log("Blob is not a buffer");
+    log("Blob is not a buffer");
     return;
   }
 
+  await log("Started reading the document", context);
   const poller = await client.beginAnalyzeDocument(PrebuiltReceiptModel, blob);
   const {
     documents: [document],
   } = await poller.pollUntilDone();
+  await log("Document analyzed", context);
 
   if (!document) {
-    invocationContext.log("No document found");
+    await log("No document found");
     return;
   }
-  const blobName = getBlobName();
+  const blobName = getBlobName(context.triggerMetadata);
   const data = mapToReceiptData(document, blobName);
 
   return data;
 };
 
-const getBlobName = () => {
-  if (!invocationContext.triggerMetadata) {
+const getBlobName = (triggerMetadata: InvocationContext["triggerMetadata"]) => {
+  if (!triggerMetadata) {
     throw new Error("No trigger metadata found");
   }
 
-  if (typeof invocationContext.triggerMetadata.blobTrigger !== "string") {
+  if (typeof triggerMetadata.blobTrigger !== "string") {
     throw new Error("Blob trigger metadata is not a string");
   }
 
-  return invocationContext.triggerMetadata.blobTrigger;
+  return triggerMetadata.blobTrigger;
 };
 
 export { handler };
