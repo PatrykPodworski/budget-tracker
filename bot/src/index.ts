@@ -1,7 +1,9 @@
 import { Client, Events, GatewayIntentBits } from "discord.js";
+import express from "express";
 import { config } from "./config";
 import getReceiptImages from "./getReceiptImages";
 import uploadImages from "./uploadImages";
+import { initializeServer } from "./initializeServer";
 
 const client = new Client({
   intents: [
@@ -22,5 +24,8 @@ client.on(Events.MessageCreate, async (message) => {
 
 client.login(config.DISCORD_TOKEN);
 
+initializeServer();
+
 // TODO: P1: Add health check endpoint
+// TODO: P2: Fix the exports
 // TODO: P3 Update eslint
