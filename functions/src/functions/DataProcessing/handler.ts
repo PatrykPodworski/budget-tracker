@@ -141,7 +141,7 @@ const sendSplitMessage = async (
   ]);
 };
 
-// TODO: P1: Deploy the function and the bot
+// TODO: P1: Deploy the functions
 
 // TODO: P2 Inform about the processing progress via the webhook
 // TODO: P3 Absolute import paths

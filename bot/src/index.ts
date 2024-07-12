@@ -3,7 +3,6 @@ import { config } from "./config";
 import getReceiptImages from "./getReceiptImages";
 import uploadImages from "./uploadImages";
 
-// TODO: P3 Update eslint
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -22,3 +21,6 @@ client.on(Events.MessageCreate, async (message) => {
 });
 
 client.login(config.DISCORD_TOKEN);
+
+// TODO: P1: Add health check endpoint
+// TODO: P3 Update eslint

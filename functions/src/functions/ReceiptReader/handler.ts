@@ -24,12 +24,12 @@ const handler: StorageBlobHandler = async (blob, context) => {
     return;
   }
 
-  await log("Started reading the document", context);
+  await log("Started reading the document");
   const poller = await client.beginAnalyzeDocument(PrebuiltReceiptModel, blob);
   const {
     documents: [document],
   } = await poller.pollUntilDone();
-  await log("Document analyzed", context);
+  await log("Document analyzed");
 
   if (!document) {
     await log("No document found");
