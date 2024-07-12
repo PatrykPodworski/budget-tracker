@@ -8,6 +8,7 @@ const {
   GUILD_ID,
   AZURE_STORAGE_CONNECTION_STRING,
   AZURE_STORAGE_CONTAINER_NAME,
+  BOT_APP_PORT,
 } = process.env;
 
 if (
@@ -15,7 +16,8 @@ if (
   !DISCORD_CLIENT_ID ||
   !GUILD_ID ||
   !AZURE_STORAGE_CONNECTION_STRING ||
-  !AZURE_STORAGE_CONTAINER_NAME
+  !AZURE_STORAGE_CONTAINER_NAME ||
+  !BOT_APP_PORT
 ) {
   throw new Error("Missing environment variables");
 }
@@ -26,4 +28,5 @@ export const config = {
   GUILD_ID,
   AZURE_STORAGE_CONNECTION_STRING,
   AZURE_STORAGE_CONTAINER_NAME,
+  BOT_APP_PORT,
 } as const;
