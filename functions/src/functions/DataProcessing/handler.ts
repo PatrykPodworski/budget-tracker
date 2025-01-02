@@ -14,12 +14,22 @@ import { ContentData } from "./ContentData";
 
 const WEBHOOK_MESSAGE_MAX_LENGTH = 2000;
 
-const { addChannels, info } = registerLogger();
+// TODO: P1: Keep the raw data raw
+// TODO: P1: Deploy the functions
+
+// TODO: P2 Inform about the processing progress via the webhook
+// TODO: P3 Absolute import paths
+
+// Feature: Data storage
+// TODO: Store validated data in DB
+// TODO: Get stored items before sending to the assistant
+// TODO: Send to assistant only the items that are not stored yet
 
 export const handler: CosmosDBHandler = async (documents, context) => {
+  const { addChannels, info, log } = registerLogger();
   addChannels(getDefaultChannels(context, "Data Processor"));
   try {
-    await handleMultipleDocuments(documents, info, handle);
+    await handleMultipleDocuments(documents, info, log, handle);
   } catch (error) {
     context.error(error);
   }
@@ -140,13 +150,3 @@ const sendSplitMessage = async (
     }),
   ]);
 };
-
-// TODO: P1: Deploy the functions
-
-// TODO: P2 Inform about the processing progress via the webhook
-// TODO: P3 Absolute import paths
-
-// Feature: Data storage
-// TODO: Store validated data in DB
-// TODO: Get stored items before sending to the assistant
-// TODO: Send to assistant only the items that are not stored yet

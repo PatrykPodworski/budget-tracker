@@ -9,9 +9,9 @@ import { mapToReceiptData } from "./mapToReceiptData";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
 
-const { addChannels, log } = registerLogger();
-
 const handler: StorageBlobHandler = async (blob, context) => {
+  const { addChannels, log } = registerLogger();
+
   addChannels(getDefaultChannels(context, "Receipt Reader"));
 
   const client = new DocumentAnalysisClient(
