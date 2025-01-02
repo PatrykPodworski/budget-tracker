@@ -4,6 +4,10 @@ import getReceiptImages from "./getReceiptImages";
 import uploadImages from "./uploadImages";
 import { initializeServer } from "./initializeServer";
 
+// TODO: P1: Add health check endpoint
+// TODO: P2: Fix the exports
+// TODO: P3 Update eslint
+
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
@@ -24,7 +28,3 @@ client.on(Events.MessageCreate, async (message) => {
 client.login(config.DISCORD_TOKEN);
 
 initializeServer();
-
-// TODO: P1: Add health check endpoint
-// TODO: P2: Fix the exports
-// TODO: P3 Update eslint

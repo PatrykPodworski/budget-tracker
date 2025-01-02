@@ -3,6 +3,9 @@ import { ReceiptRawData } from "../../models/ReceiptRawData";
 import { config } from "../../config";
 import { z } from "zod";
 
+// TODO: P3 Check the warning
+// Set "WEBSITE_RUN_FROM_PACKAGE" to "1" to significantly improve load times. Learn more here: https://aka.ms/AAjon54
+
 const openai = new OpenAI();
 
 export const enrichDocumentWithAssistant = async (document: ReceiptRawData) => {
@@ -53,6 +56,3 @@ const assistantResponseSchema = z.object({
 
 type AssistantResponse = z.infer<typeof assistantResponseSchema>;
 export type ResponseItem = AssistantResponse["items"][number];
-
-// TODO: P3 Check the warning
-// Set "WEBSITE_RUN_FROM_PACKAGE" to "1" to significantly improve load times. Learn more here: https://aka.ms/AAjon54
