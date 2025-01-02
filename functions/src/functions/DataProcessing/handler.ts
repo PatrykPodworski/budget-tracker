@@ -14,12 +14,11 @@ import { ContentData } from "./ContentData";
 
 const WEBHOOK_MESSAGE_MAX_LENGTH = 2000;
 
-const { addChannels, info } = registerLogger();
-
 export const handler: CosmosDBHandler = async (documents, context) => {
+  const { addChannels, info, log } = registerLogger();
   addChannels(getDefaultChannels(context, "Data Processor"));
   try {
-    await handleMultipleDocuments(documents, info, handle);
+    await handleMultipleDocuments(documents, info, log, handle);
   } catch (error) {
     context.error(error);
   }

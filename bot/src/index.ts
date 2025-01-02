@@ -1,5 +1,4 @@
 import { Client, Events, GatewayIntentBits } from "discord.js";
-import express from "express";
 import { config } from "./config";
 import getReceiptImages from "./getReceiptImages";
 import uploadImages from "./uploadImages";
