@@ -78,7 +78,8 @@ const createExcelFormulas = (grouped: Record<string, EnrichedItem[]>) => {
 };
 
 const getCountedTotal = (items: EnrichedItem[]) =>
-  items.reduce((acc, item) => acc + item.totalPrice * 100, 0) / 100;
+  items.reduce((acc, item) => acc + item.totalPrice * 100 - item.discount, 0) /
+  100;
 
 const getTotalDifference = (total: number, countedTotal: number) =>
   Math.abs((total * 100 - countedTotal * 100) / 100);
