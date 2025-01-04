@@ -1,0 +1,70 @@
+{
+  "name": "Receipt",
+  "schema": {
+    "type": "object",
+    "properties": {
+      "total": {
+        "type": "number",
+        "description": "Total amount for the receipt."
+      },
+      "items": {
+        "type": "array",
+        "description": "A list of items included in the receipt.",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "The improved name of the item."
+            },
+            "originalName": {
+              "type": "string",
+              "description": "The original name of the item."
+            },
+            "category": {
+              "type": "string",
+              "description": "The category to which the item belongs."
+            },
+            "totalPrice": {
+              "type": "number",
+              "description": "Total price for the item."
+            },
+            "unitPrice": {
+              "type": "number",
+              "description": "Price per unit of the item."
+            },
+            "quantity": {
+              "type": "number",
+              "description": "Quantity of the item."
+            },
+            "discount": {
+              "type": "number",
+              "description": "Discount applied to the item."
+            }
+          },
+          "required": [
+            "name",
+            "originalName",
+            "category",
+            "totalPrice",
+            "unitPrice",
+            "quantity",
+            "discount"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "merchantName": {
+        "type": "string",
+        "description": "The name of the merchant."
+      },
+      "transactionDate": {
+        "type": "string",
+        "description": "The date and time of the transaction."
+      }
+    },
+    "required": ["total", "items", "merchantName", "transactionDate"],
+    "additionalProperties": false
+  },
+  "strict": true
+}

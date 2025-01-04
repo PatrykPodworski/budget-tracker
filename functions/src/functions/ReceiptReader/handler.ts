@@ -5,9 +5,9 @@ import {
 import { InvocationContext, StorageBlobHandler } from "@azure/functions";
 import { PrebuiltReceiptModel } from "../../prebuilt/prebuilt-receipt";
 import { config } from "../../config";
-import { mapToReceiptData } from "./mapToReceiptData";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
+import { ReceiptRawData } from "../../models/ReceiptRawData";
 
 const handler: StorageBlobHandler = async (blob, context) => {
   const { addChannels, log } = registerLogger();
@@ -28,6 +28,7 @@ const handler: StorageBlobHandler = async (blob, context) => {
   const poller = await client.beginAnalyzeDocument(PrebuiltReceiptModel, blob);
   const {
     documents: [document],
+    content,
   } = await poller.pollUntilDone();
   await log("Document analyzed");
 
@@ -35,8 +36,8 @@ const handler: StorageBlobHandler = async (blob, context) => {
     await log("No document found");
     return;
   }
-  const blobName = getBlobName(context.triggerMetadata);
-  const data = mapToReceiptData(document, blobName);
+  const imageFileName = getBlobName(context.triggerMetadata);
+  const data = mapToReceiptData(content, imageFileName);
 
   return data;
 };
@@ -51,6 +52,17 @@ const getBlobName = (triggerMetadata: InvocationContext["triggerMetadata"]) => {
   }
 
   return triggerMetadata.blobTrigger;
+};
+
+const mapToReceiptData = (content: string, imageFileName: string) => {
+  const data: ReceiptRawData = {
+    id: crypto.randomUUID(),
+    userId: config.TEMP_USER_ID,
+    imageFileName,
+    content,
+  };
+
+  return data;
 };
 
 export { handler };

@@ -4,7 +4,7 @@ import { getWebhookClient } from "../../utils/getWebhookClient";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
 import {
-  Item,
+  EnrichedItem,
   enrichedReceiptDataSchema,
 } from "../../models/EnrichedReceiptData";
 import { formatGeneralSection } from "./formatters/formatGeneralSection";
@@ -14,16 +14,13 @@ import { ContentData } from "./ContentData";
 
 const WEBHOOK_MESSAGE_MAX_LENGTH = 2000;
 
-// TODO: P1: Keep the raw data raw
 // TODO: P1: Deploy the functions
+// TODO: P1: Improve discount handling
 
 // TODO: P2 Inform about the processing progress via the webhook
-// TODO: P3 Absolute import paths
+// TODO: P2 Improve the logging
 
-// Feature: Data storage
-// TODO: Store validated data in DB
-// TODO: Get stored items before sending to the assistant
-// TODO: Send to assistant only the items that are not stored yet
+// TODO: P3 Absolute import paths
 
 export const handler: CosmosDBHandler = async (documents, context) => {
   const { addChannels, info, log } = registerLogger();
@@ -54,8 +51,8 @@ const handle = async (document: unknown) => {
   });
 };
 
-const groupItemsByCategory = (items: Item[]) => {
-  const grouped = items.reduce((acc: Record<string, Item[]>, item) => {
+const groupItemsByCategory = (items: EnrichedItem[]) => {
+  const grouped = items.reduce((acc: Record<string, EnrichedItem[]>, item) => {
     if (!acc[item.category]) {
       acc[item.category] = [];
     }
@@ -67,7 +64,7 @@ const groupItemsByCategory = (items: Item[]) => {
   return grouped;
 };
 
-const createExcelFormulas = (grouped: Record<string, Item[]>) => {
+const createExcelFormulas = (grouped: Record<string, EnrichedItem[]>) => {
   // for each category, create the excel formula
   const excelFormulas = Object.entries(grouped).reduce(
     (acc: Record<string, string>, [category, items]) => {
@@ -80,7 +77,7 @@ const createExcelFormulas = (grouped: Record<string, Item[]>) => {
   return excelFormulas;
 };
 
-const getCountedTotal = (items: Item[]) =>
+const getCountedTotal = (items: EnrichedItem[]) =>
   items.reduce((acc, item) => acc + item.totalPrice * 100, 0) / 100;
 
 const getTotalDifference = (total: number, countedTotal: number) =>

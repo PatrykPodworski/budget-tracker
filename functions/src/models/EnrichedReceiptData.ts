@@ -1,6 +1,9 @@
 import { ReceiptRawData } from "./ReceiptRawData";
-import { ResponseItem } from "../functions/DataEnricher/enrichDocumentWithAssistant";
 import { z } from "zod";
+import { AssistantResponse } from "../functions/DataEnricher/AssistantResponse";
+
+// TODO: P1 Unify ids (image, raw, enriched)
+// TODO: P1 Unify item schema
 
 export const enrichedReceiptDataSchema = z.object({
   id: z.string().uuid(),
@@ -22,40 +25,21 @@ export const enrichedReceiptDataSchema = z.object({
 });
 
 export const mapToEnrichedReceiptData = (
-  response: ResponseItem[],
+  response: AssistantResponse,
   source: ReceiptRawData
-): EnrichedReceiptData => {
-  const responseMap = response.reduce((acc, item) => {
-    acc.set(item.originalName, item);
-    return acc;
-  }, new Map<string, ResponseItem>());
-
-  const combined = source.items.map((item) => {
-    let responseItem = responseMap.get(item.name);
-    if (!responseItem) {
-      responseItem = {
-        category: "Unknown",
-        name: "Unknown",
-        originalName: item.name,
-      };
-    }
-
-    return {
-      ...item,
-      ...responseItem,
-    };
-  });
-
-  return {
-    id: crypto.randomUUID(),
+) => {
+  const enriched: EnrichedReceiptData = {
+    id: source.id,
     userId: source.userId,
     rawDocumentId: source.id,
-    total: source.total,
-    items: combined,
-    merchantName: source.merchantName,
-    transactionDate: source.transactionDate,
+    total: response.total,
+    merchantName: response.merchantName,
+    transactionDate: response.transactionDate,
+    items: response.items,
   };
+
+  return enriched;
 };
 
 export type EnrichedReceiptData = z.infer<typeof enrichedReceiptDataSchema>;
-export type Item = EnrichedReceiptData["items"][number];
+export type EnrichedItem = EnrichedReceiptData["items"][number];

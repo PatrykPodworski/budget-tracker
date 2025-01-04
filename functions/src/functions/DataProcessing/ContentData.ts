@@ -1,7 +1,7 @@
-import { Item } from "../../models/EnrichedReceiptData";
+import { EnrichedItem } from "../../models/EnrichedReceiptData";
 
 export type ContentData = {
-  categories: Record<string, Item[]>;
+  categories: Record<string, EnrichedItem[]>;
   formulas: Record<string, string>;
   total: number;
   countedTotal: number;
