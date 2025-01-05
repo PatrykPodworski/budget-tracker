@@ -1,12 +1,10 @@
 import OpenAI from "openai";
 import { ReceiptRawData } from "../../models/ReceiptRawData";
 import { config } from "../../config";
-import { z } from "zod";
+import { assistantResponseSchema } from "./AssistantResponse";
 
 // TODO: P3 Check the warning
 // Set "WEBSITE_RUN_FROM_PACKAGE" to "1" to significantly improve load times. Learn more here: https://aka.ms/AAjon54
-
-const openai = new OpenAI();
 
 export const enrichDocumentWithAssistant = async (document: ReceiptRawData) => {
   const response = await getAssistantResponse(document);
@@ -15,10 +13,11 @@ export const enrichDocumentWithAssistant = async (document: ReceiptRawData) => {
 };
 
 const getAssistantResponse = async (document: ReceiptRawData) => {
+  const openai = new OpenAI();
   const thread = await openai.beta.threads.create();
   await openai.beta.threads.messages.create(thread.id, {
     role: "user",
-    content: JSON.stringify(document.items),
+    content: JSON.stringify(document.content),
   });
 
   const run = await openai.beta.threads.runs.createAndPoll(thread.id, {
@@ -41,18 +40,5 @@ const getAssistantResponse = async (document: ReceiptRawData) => {
 const serializeTheResponse = async (response: string) => {
   const serialized = JSON.parse(response);
   const parsed = await assistantResponseSchema.parseAsync(serialized);
-  return parsed.items;
+  return parsed;
 };
-
-const assistantResponseSchema = z.object({
-  items: z.array(
-    z.object({
-      name: z.string().min(1),
-      originalName: z.string().min(1),
-      category: z.string().min(1),
-    })
-  ),
-});
-
-type AssistantResponse = z.infer<typeof assistantResponseSchema>;
-export type ResponseItem = AssistantResponse["items"][number];

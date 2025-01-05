@@ -6,7 +6,7 @@ import { initializeServer } from "./initializeServer";
 
 // TODO: P1: Add health check endpoint
 // TODO: P2: Fix the exports
-// TODO: P3 Update eslint
+// TODO: P3: Update eslint
 
 const client = new Client({
   intents: [

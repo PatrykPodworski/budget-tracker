@@ -1,6 +1,19 @@
 import { ReceiptRawData } from "./ReceiptRawData";
-import { ResponseItem } from "../functions/DataEnricher/enrichDocumentWithAssistant";
 import { z } from "zod";
+import { AssistantResponse } from "../functions/DataEnricher/AssistantResponse";
+
+// TODO: P1 Unify ids (image, raw, enriched)
+// TODO: P1 Move the files
+
+export const enrichedItemSchema = z.object({
+  originalName: z.string().min(1),
+  name: z.string().min(1),
+  category: z.string().min(1),
+  unitPrice: z.number().nonnegative(),
+  quantity: z.number().nonnegative(),
+  totalPrice: z.number().nonnegative(),
+  discount: z.number().nonnegative(),
+});
 
 export const enrichedReceiptDataSchema = z.object({
   id: z.string().uuid(),
@@ -9,53 +22,25 @@ export const enrichedReceiptDataSchema = z.object({
   total: z.number(),
   merchantName: z.string().optional(),
   transactionDate: z.string().pipe(z.coerce.date()).optional(),
-  items: z.array(
-    z.object({
-      name: z.string().min(1),
-      originalName: z.string().min(1),
-      category: z.string().min(1),
-      totalPrice: z.number(),
-      unitPrice: z.number(),
-      quantity: z.number().positive(),
-    })
-  ),
+  items: z.array(enrichedItemSchema),
 });
 
 export const mapToEnrichedReceiptData = (
-  response: ResponseItem[],
+  response: AssistantResponse,
   source: ReceiptRawData
-): EnrichedReceiptData => {
-  const responseMap = response.reduce((acc, item) => {
-    acc.set(item.originalName, item);
-    return acc;
-  }, new Map<string, ResponseItem>());
-
-  const combined = source.items.map((item) => {
-    let responseItem = responseMap.get(item.name);
-    if (!responseItem) {
-      responseItem = {
-        category: "Unknown",
-        name: "Unknown",
-        originalName: item.name,
-      };
-    }
-
-    return {
-      ...item,
-      ...responseItem,
-    };
-  });
-
-  return {
-    id: crypto.randomUUID(),
+) => {
+  const enriched: EnrichedReceiptData = {
+    id: source.id,
     userId: source.userId,
     rawDocumentId: source.id,
-    total: source.total,
-    items: combined,
-    merchantName: source.merchantName,
-    transactionDate: source.transactionDate,
+    total: response.total,
+    merchantName: response.merchantName,
+    transactionDate: response.transactionDate,
+    items: response.items,
   };
+
+  return enriched;
 };
 
 export type EnrichedReceiptData = z.infer<typeof enrichedReceiptDataSchema>;
-export type Item = EnrichedReceiptData["items"][number];
+export type EnrichedItem = z.infer<typeof enrichedItemSchema>;
