@@ -14,9 +14,10 @@ import { ContentData } from "./ContentData";
 
 const WEBHOOK_MESSAGE_MAX_LENGTH = 2000;
 
-// TODO: P1: Deploy the functions
-// TODO: P1: Improve discount handling
+// TODO: P1 Deploy the functions
+// TODO: P1 Clean up the code
 
+// TODO: P2 Show the same data for formulas and text output
 // TODO: P2 Inform about the processing progress via the webhook
 // TODO: P2 Improve the logging
 
@@ -68,7 +69,11 @@ const createExcelFormulas = (grouped: Record<string, EnrichedItem[]>) => {
   // for each category, create the excel formula
   const excelFormulas = Object.entries(grouped).reduce(
     (acc: Record<string, string>, [category, items]) => {
-      acc[category] = `=SUM(${items.map((item) => item.totalPrice).join(",")})`;
+      acc[category] = `=SUM(${items
+        .map((item) =>
+          [item.totalPrice, item.discount].filter((x) => x !== 0).join("-")
+        )
+        .join(",")})`;
       return acc;
     },
     {}
@@ -78,8 +83,10 @@ const createExcelFormulas = (grouped: Record<string, EnrichedItem[]>) => {
 };
 
 const getCountedTotal = (items: EnrichedItem[]) =>
-  items.reduce((acc, item) => acc + item.totalPrice * 100 - item.discount, 0) /
-  100;
+  items.reduce(
+    (acc, item) => acc + item.totalPrice * 100 - item.discount * 100,
+    0
+  ) / 100;
 
 const getTotalDifference = (total: number, countedTotal: number) =>
   Math.abs((total * 100 - countedTotal * 100) / 100);
