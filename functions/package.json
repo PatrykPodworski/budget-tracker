@@ -10,7 +10,8 @@
     "prestart": "yarn clean && yarn build",
     "restart": "yarn prestart && yarn start",
     "start": "func start",
-    "test": "echo \"No tests yet...\""
+    "test": "echo \"No tests yet...\"",
+    "deploy": "func azure functionapp publish"
   },
   "dependencies": {
     "@azure/ai-form-recognizer": "5.0.0",
@@ -21,9 +22,9 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^18.x",
+    "@types/node": "^20.x",
     "rimraf": "^5.0.0",
     "typescript": "^5.7.2"
   },
-  "main": "dist/src/functions/**/*.js"
+  "main": "dist/src/{index.js,functions/*.js}"
 }
