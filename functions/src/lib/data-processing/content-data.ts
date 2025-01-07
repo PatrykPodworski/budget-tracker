@@ -1,4 +1,4 @@
-import { EnrichedItem } from "../../models/EnrichedReceiptData";
+import { EnrichedItem } from "../../models/enriched-item-schema";
 
 export type ContentData = {
   categories: Record<string, EnrichedItem[]>;

@@ -1,19 +1,7 @@
-import { ReceiptRawData } from "./ReceiptRawData";
 import { z } from "zod";
-import { AssistantResponse } from "../functions/DataEnricher/AssistantResponse";
-
-// TODO: P1 Unify ids (image, raw, enriched)
-// TODO: P1 Move the files
-
-export const enrichedItemSchema = z.object({
-  originalName: z.string().min(1),
-  name: z.string().min(1),
-  category: z.string().min(1),
-  unitPrice: z.number().nonnegative(),
-  quantity: z.number().nonnegative(),
-  totalPrice: z.number().nonnegative(),
-  discount: z.number().nonnegative(),
-});
+import { AssistantResponse } from "../lib/data-enricher/assistant-response";
+import { enrichedItemSchema } from "./enriched-item-schema";
+import { ReceiptRawData } from "./receipt-raw-data";
 
 export const enrichedReceiptDataSchema = z.object({
   id: z.string().uuid(),
@@ -43,4 +31,3 @@ export const mapToEnrichedReceiptData = (
 };
 
 export type EnrichedReceiptData = z.infer<typeof enrichedReceiptDataSchema>;
-export type EnrichedItem = z.infer<typeof enrichedItemSchema>;

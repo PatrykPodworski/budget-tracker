@@ -1,7 +1,7 @@
 import { app } from "@azure/functions";
 import { healthCheck } from "../lib/health-check";
 
-app.http("healthCheck", {
+app.http("health-check", {
   methods: ["GET", "POST"],
   authLevel: "anonymous",
   handler: healthCheck,

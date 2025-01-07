@@ -10,9 +10,9 @@ import {
 import { config } from "../../config";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
-import { ReceiptRawData } from "../../models/ReceiptRawData";
+import { ReceiptRawData } from "../../models/receipt-raw-data";
 
-export const handler: StorageBlobHandler = async (blob, context) => {
+export const receiptReader: StorageBlobHandler = async (blob, context) => {
   const { addChannels, log } = registerLogger();
 
   addChannels(getDefaultChannels(context, "Receipt Reader"));

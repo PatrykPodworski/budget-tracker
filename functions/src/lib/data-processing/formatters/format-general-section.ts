@@ -1,4 +1,4 @@
-import { ContentData } from "../ContentData";
+import { ContentData } from "../content-data";
 
 export const formatGeneralSection = (data: ContentData) => `## General:
 -  **Merchant:** ${data.merchantName ?? "Unknown"}

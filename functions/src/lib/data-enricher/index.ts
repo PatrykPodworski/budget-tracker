@@ -1,12 +1,12 @@
 import { CosmosDBHandler } from "@azure/functions";
-import { receiptRawDataSchema } from "../../models/ReceiptRawData";
-import { enrichDocumentWithAssistant } from "./enrichDocumentWithAssistant";
-import { mapToEnrichedReceiptData } from "../../models/EnrichedReceiptData";
+import { receiptRawDataSchema } from "../../models/receipt-raw-data";
+import { enrichDocumentWithAssistant } from "./enrich-document-with-assistant";
+import { mapToEnrichedReceiptData } from "../../models/enriched-receipt-data-schema";
 import { handleMultipleDocuments } from "../../utils/handleMultipleDocuments";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
 
-export const handler: CosmosDBHandler = async (documents, context) => {
+export const dataEnricher: CosmosDBHandler = async (documents, context) => {
   const { addChannels, info, error, log } = registerLogger();
   try {
     addChannels(getDefaultChannels(context, "Data Enricher"));

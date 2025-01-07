@@ -1,7 +1,7 @@
 import OpenAI from "openai";
-import { ReceiptRawData } from "../../models/ReceiptRawData";
+import { ReceiptRawData } from "../../models/receipt-raw-data";
 import { config } from "../../config";
-import { assistantResponseSchema } from "./AssistantResponse";
+import { assistantResponseSchema } from "./assistant-response";
 
 // TODO: P3 Check the warning
 // Set "WEBSITE_RUN_FROM_PACKAGE" to "1" to significantly improve load times. Learn more here: https://aka.ms/AAjon54
