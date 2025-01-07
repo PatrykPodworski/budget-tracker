@@ -1,6 +1,6 @@
 import { app, output } from "@azure/functions";
-import { handler } from "./handler";
-import { config } from "../../config";
+import { receiptReader } from "../lib/receipt-reader";
+import { config } from "../config";
 
 const cosmosOutput = output.cosmosDB({
   connection: "CosmosDbConnection",
@@ -8,9 +8,9 @@ const cosmosOutput = output.cosmosDB({
   containerName: config.COSMOS_RAW_CONTAINER,
 });
 
-app.storageBlob("ReceiptReader", {
+app.storageBlob("receipt-reader", {
   path: "receipts/{name}",
   connection: "AzureWebJobsStorage",
-  handler: handler,
+  handler: receiptReader,
   return: cosmosOutput,
 });

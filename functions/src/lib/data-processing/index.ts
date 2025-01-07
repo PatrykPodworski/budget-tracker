@@ -3,27 +3,26 @@ import { handleMultipleDocuments } from "../../utils/handleMultipleDocuments";
 import { getWebhookClient } from "../../utils/getWebhookClient";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
-import {
-  EnrichedItem,
-  enrichedReceiptDataSchema,
-} from "../../models/EnrichedReceiptData";
-import { formatGeneralSection } from "./formatters/formatGeneralSection";
-import { formatCategoriesSection } from "./formatters/formatCategoriesSection";
-import { formatFormulasSection } from "./formatters/formatFormulasSection";
-import { ContentData } from "./ContentData";
+import { enrichedReceiptDataSchema } from "../../models/enriched-receipt-data-schema";
+import { ContentData } from "./content-data";
+import { formatCategoriesSection } from "./formatters/format-categories-section";
+import { formatFormulasSection } from "./formatters/format-formulas-section";
+import { formatGeneralSection } from "./formatters/format-general-section";
+import { EnrichedItem } from "../../models/enriched-item-schema";
 
 const WEBHOOK_MESSAGE_MAX_LENGTH = 2000;
 
-// TODO: P1 Deploy the functions
 // TODO: P1 Clean up the code
 
+// TODO: P2 Automate the deployment process
+// TODO: P2 Unify the config
 // TODO: P2 Show the same data for formulas and text output
 // TODO: P2 Inform about the processing progress via the webhook
 // TODO: P2 Improve the logging
 
 // TODO: P3 Absolute import paths
 
-export const handler: CosmosDBHandler = async (documents, context) => {
+export const dataProcessing: CosmosDBHandler = async (documents, context) => {
   const { addChannels, info, log } = registerLogger();
   addChannels(getDefaultChannels(context, "Data Processor"));
   try {

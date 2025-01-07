@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { enrichedItemSchema } from "../../models/EnrichedReceiptData";
+import { enrichedItemSchema } from "../../models/enriched-item-schema";
 
 export const assistantResponseSchema = z.object({
   merchantName: z.string().optional(),
