@@ -1,7 +1,24 @@
 import { CosmosClient } from "@azure/cosmos";
 import { env } from "@/env";
+import { enrichedReceiptDataSchema } from "@/models/enriched-receipt-data-schema";
+import { ReceiptsList } from "./receipts-list";
 
+// TODO: P1 Move the queryCosmosDb function to lib
+// TODO: P1 Show data like the discord bot
+// TODO: P2 Allow to update categories
 const Home = async () => {
+  const receipts = await queryCosmosDb();
+
+  return (
+    <main className="m-auto">
+      <div className="flex flex-col gap-4 max-w-prose">
+        <ReceiptsList receipts={receipts} />
+      </div>
+    </main>
+  );
+};
+
+const queryCosmosDb = async () => {
   const client = new CosmosClient({
     endpoint: env.COSMOS_ENDPOINT,
     key: env.COSMOS_KEY,
@@ -10,25 +27,15 @@ const Home = async () => {
     .database(env.COSMOS_DATABASE)
     .container(env.COSMOS_CONTAINER);
 
-  // TODO: P1 Add queried item type and validate with zod
   const data = await container.items
-    .query("SELECT * FROM c ORDER BY c._ts DESC OFFSET 0 LIMIT 10")
+    .query<unknown>("SELECT * FROM c ORDER BY c._ts DESC OFFSET 0 LIMIT 10")
     .fetchAll();
 
-  console.log(data.resources.length);
-
-  return (
-    <main className="m-auto">
-      <h1>Budget Tracker</h1>
-      <div className="flex flex-col gap-4">
-        {data.resources.map((item) => (
-          <pre key={item.id} className="max-w-prose text-wrap break-words">
-            {JSON.stringify(item)}
-          </pre>
-        ))}
-      </div>
-    </main>
+  const parsed = data.resources.map((item) =>
+    enrichedReceiptDataSchema.parse(item)
   );
+
+  return parsed;
 };
 
 export default Home;
