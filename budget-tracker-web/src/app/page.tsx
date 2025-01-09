@@ -1,19 +1,14 @@
 import { CosmosClient } from "@azure/cosmos";
-import {
-  COSMOS_CONTAINER,
-  COSMOS_DATABASE,
-  COSMOS_ENDPOINT,
-  COSMOS_KEY,
-} from "./env";
+import { env } from "@/env";
 
 const Home = async () => {
   const client = new CosmosClient({
-    endpoint: COSMOS_ENDPOINT,
-    key: COSMOS_KEY,
+    endpoint: env.COSMOS_ENDPOINT,
+    key: env.COSMOS_KEY,
   });
   const container = client
-    .database(COSMOS_DATABASE)
-    .container(COSMOS_CONTAINER);
+    .database(env.COSMOS_DATABASE)
+    .container(env.COSMOS_CONTAINER);
 
   // TODO: P1 Add queried item type and validate with zod
   const data = await container.items
