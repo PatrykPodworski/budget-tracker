@@ -1,3 +1,5 @@
+"use server";
+
 import { enrichedReceiptDataSchema } from "@/models/enriched-receipt-data-schema";
 import { getReceiptContainer } from "./common/get-receipt-container";
 
@@ -15,5 +17,5 @@ export const getReceiptData = async (id: string) => {
     enrichedReceiptDataSchema.parse(item)
   );
 
-  return parsed;
+  return parsed[0];
 };

@@ -1,3 +1,4 @@
+import { Receipt } from "@/app/receipt";
 import { getReceiptData } from "@/lib/receipt-data/get-receipt-data";
 
 const ReceiptPage = async ({ params }: ReceiptPageProps) => {
@@ -6,8 +7,7 @@ const ReceiptPage = async ({ params }: ReceiptPageProps) => {
 
   return (
     <div>
-      <h1>Receipt {id}</h1>
-      <pre>{JSON.stringify(receiptData, null, 2)}</pre>
+      <Receipt receipt={receiptData} />
     </div>
   );
 };
