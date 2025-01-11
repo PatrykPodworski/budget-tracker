@@ -1,4 +1,5 @@
-import { Receipt } from "@/app/receipt";
+import { Receipt } from "@/components/receipt/receipt";
+import { ExcelOutput } from "@/components/excel-output";
 import { getReceiptData } from "@/lib/receipt-data/get-receipt-data";
 
 const ReceiptPage = async ({ params }: ReceiptPageProps) => {
@@ -8,6 +9,7 @@ const ReceiptPage = async ({ params }: ReceiptPageProps) => {
   return (
     <div>
       <Receipt receipt={receiptData} />
+      <ExcelOutput items={receiptData.items} />
     </div>
   );
 };

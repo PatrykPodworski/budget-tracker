@@ -1,5 +1,5 @@
 import { getLatestReceipts } from "@/lib/receipt-data/get-latest-receipts";
-import { ReceiptsList } from "./receipts-list";
+import { ReceiptsList } from "@/components/receipt/receipts-list";
 
 // TODO: P1 Show data like the discord bot
 // TODO: P2 Allow to update categories

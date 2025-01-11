@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/shadcn/select";
-import { categories } from "../app/categories";
+import { categories } from "@/data/categories";
 
 export const CategorySelect = ({
   onValueChange,
