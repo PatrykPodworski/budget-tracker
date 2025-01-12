@@ -13,8 +13,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body>
-        <main className="container p-4">{children}</main>
+      <body className="min-h-dvh text-zinc-900 bg-zinc-50 bg-dots">
+        <main className="p-4 my-auto">{children}</main>
       </body>
     </html>
   );

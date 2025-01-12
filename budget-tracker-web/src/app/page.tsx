@@ -10,11 +10,9 @@ const Home = async () => {
   const receipts = await getLatestReceipts();
 
   return (
-    <main className="m-auto">
-      <div className="flex flex-col gap-4 max-w-prose">
-        <ReceiptsList receipts={receipts} />
-      </div>
-    </main>
+    <div className="flex flex-col gap-4 max-w-prose mx-auto">
+      <ReceiptsList receipts={receipts} />
+    </div>
   );
 };
 
