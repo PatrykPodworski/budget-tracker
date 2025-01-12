@@ -1,6 +1,6 @@
 "use client";
 import { ExcelOutput } from "@/components/receipt/receipt-details/excel-output";
-import { Receipt } from "@/components/receipt/receipt";
+import { Receipt } from "@/components/receipt/receipt-details/receipt";
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
 import { useState } from "react";
 

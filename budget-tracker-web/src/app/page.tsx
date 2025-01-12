@@ -1,5 +1,5 @@
 import { getLatestReceipts } from "@/lib/receipt-data/get-latest-receipts";
-import { ReceiptsList } from "@/components/receipt/receipts-list";
+import { ReceiptsList } from "@/components/receipt/receipt-list";
 
 // TODO: P0 Link to details page and back
 // TODO: P1 Show only basic info

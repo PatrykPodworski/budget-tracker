@@ -1,6 +1,7 @@
 "use client";
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
 import { ReceiptItem } from "./receipt-item";
+import { formatDate } from "@/lib/utils";
 
 export const Receipt = ({ receipt, onReceiptChange }: ReceiptProps) => {
   const handleItemChange = (
@@ -21,8 +22,7 @@ export const Receipt = ({ receipt, onReceiptChange }: ReceiptProps) => {
         </div>
         <div>
           <strong>Date:&nbsp;</strong>
-          {receipt.transactionDate?.toLocaleDateString("pl-pl")}&nbsp;
-          {receipt.transactionDate?.toLocaleTimeString("pl-pl")}
+          {formatDate(receipt.transactionDate)}
         </div>
         <div>
           <strong>Amount:</strong>&nbsp;{receipt.total} zł
