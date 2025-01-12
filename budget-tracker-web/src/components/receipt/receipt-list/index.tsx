@@ -1,12 +1,11 @@
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
-import { Receipt } from "./receipt";
+import { ReceiptListItem } from "./receipt-list.item";
 
-// TODO: P1 Move to components
 export const ReceiptsList = ({ receipts }: ReceiptsListProps) => {
   return (
     <div className="flex flex-col gap-4">
       {receipts.map((x) => (
-        <Receipt key={x.id} receipt={x} />
+        <ReceiptListItem key={x.id} receipt={x} />
       ))}
     </div>
   );
