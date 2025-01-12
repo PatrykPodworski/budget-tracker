@@ -64,3 +64,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer components {
+  .bg-dots {
+    /* zinc-50, zinc-200 */
+    background-image: radial-gradient(transparent 75%, #f8fafc),
+      linear-gradient(transparent 80%, #e4e4e7), 
+      radial-gradient(#e4e4e7 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 2rem 2rem;
+  }
+}
