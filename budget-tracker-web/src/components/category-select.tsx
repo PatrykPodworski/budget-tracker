@@ -11,9 +11,9 @@ import { categories } from "@/data/categories";
 
 export const CategorySelect = ({
   onValueChange,
-  defaultValue,
+  value,
 }: CategorySelectProps) => (
-  <Select onValueChange={onValueChange} defaultValue={defaultValue}>
+  <Select onValueChange={onValueChange} value={value}>
     <SelectTrigger className="w-fit">
       <SelectValue />
     </SelectTrigger>
@@ -29,5 +29,5 @@ export const CategorySelect = ({
 
 type CategorySelectProps = {
   onValueChange: (value: string) => void;
-  defaultValue: string;
+  value: string;
 };

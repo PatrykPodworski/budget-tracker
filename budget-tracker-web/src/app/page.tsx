@@ -1,8 +1,11 @@
 import { getLatestReceipts } from "@/lib/receipt-data/get-latest-receipts";
 import { ReceiptsList } from "@/components/receipt/receipts-list";
 
-// TODO: P1 Show data like the discord bot
-// TODO: P2 Allow to update categories
+// TODO: P0 Link to details page and back
+// TODO: P1 Show only basic info
+// TODO: P1 Style receipt like a receipt
+// TODO: P2 Image upload
+// TODO: P3 Replace the bot
 const Home = async () => {
   const receipts = await getLatestReceipts();
 
