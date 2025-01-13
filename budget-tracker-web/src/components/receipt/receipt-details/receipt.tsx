@@ -2,18 +2,9 @@
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
 import { ReceiptItem } from "./receipt-item";
 import { formatDate } from "@/lib/utils";
+import { EnrichedItem } from "@/models/enriched-item-schema";
 
-export const Receipt = ({ receipt, onReceiptChange }: ReceiptProps) => {
-  const handleItemChange = (
-    index: number,
-    item: EnrichedReceiptData["items"][number]
-  ) => {
-    const newItems = [...receipt.items];
-    newItems[index] = item;
-    const newReceipt = { ...receipt, items: newItems };
-    onReceiptChange(newReceipt);
-  };
-
+export const Receipt = ({ receipt, onReceiptItemChange }: ReceiptProps) => {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex flex-col gap-2">
@@ -33,7 +24,7 @@ export const Receipt = ({ receipt, onReceiptChange }: ReceiptProps) => {
           <ReceiptItem
             key={index}
             item={item}
-            onItemChange={(newItem) => handleItemChange(index, newItem)}
+            onItemChange={(newItem) => onReceiptItemChange(newItem, index)}
           />
         ))}
       </div>
@@ -43,5 +34,5 @@ export const Receipt = ({ receipt, onReceiptChange }: ReceiptProps) => {
 
 type ReceiptProps = {
   receipt: EnrichedReceiptData;
-  onReceiptChange: (receipt: EnrichedReceiptData) => void;
+  onReceiptItemChange: (newItem: EnrichedItem, index: number) => Promise<void>;
 };
