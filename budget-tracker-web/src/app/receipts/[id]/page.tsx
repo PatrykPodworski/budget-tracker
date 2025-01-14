@@ -12,12 +12,12 @@ const ReceiptPage = async ({ params }: ReceiptPageProps) => {
   const receiptData = await getReceiptData(id);
 
   return (
-    <>
+    <div className="flex flex-col gap-4 items-center">
       <ReceiptDetails receipt={receiptData} />
       <Button asChild variant="outline">
         <Link href="/">Back</Link>
       </Button>
-    </>
+    </div>
   );
 };
 

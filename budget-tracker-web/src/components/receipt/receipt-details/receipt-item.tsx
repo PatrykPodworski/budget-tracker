@@ -10,7 +10,7 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
 
   return (
     <div className="flex gap-2 items-baseline">
-      <Input type="text" defaultValue={item.name} className="w-[320px]" />
+      <Input type="text" defaultValue={item.name} className="max-w-80" />
       <CategorySelect
         onValueChange={handleCategoryChange}
         value={item.category}

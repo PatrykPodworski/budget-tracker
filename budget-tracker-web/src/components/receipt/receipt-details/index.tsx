@@ -4,9 +4,14 @@ import { ExcelOutput } from "@/components/receipt/receipt-details/excel-output";
 import { Receipt } from "@/components/receipt/receipt-details/receipt";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
-import { updateReceiptItem } from "@/lib/receipt-data/update-receipt-item";
+import {
+  updateReceiptItem,
+  updateReceiptMerchantName,
+} from "@/lib/receipt-data/update";
 
+// TODO: P0 Debounce input changes
 // TODO: P1 Add loading state
+// TODO: P1 Update transaction time
 // TODO: P1 Update item name
 // TODO: P2 Error handling on update
 export const ReceiptDetails = ({
@@ -28,14 +33,25 @@ export const ReceiptDetails = ({
     setReceipt(updatedReceipt);
   };
 
+  const handleMerchantChange = async (newMerchantName: string) => {
+    const updatedReceipt = await updateReceiptMerchantName(
+      receipt.id,
+      receipt.userId,
+      newMerchantName
+    );
+
+    setReceipt(updatedReceipt);
+  };
+
   return (
-    <div>
+    <>
       <Receipt
         receipt={receipt}
         onReceiptItemChange={handleReceiptItemChange}
+        onMerchantChange={handleMerchantChange}
       />
       <ExcelOutput items={receipt.items} />
-    </div>
+    </>
   );
 };
 

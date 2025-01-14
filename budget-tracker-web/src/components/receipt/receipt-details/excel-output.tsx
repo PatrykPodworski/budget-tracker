@@ -1,4 +1,10 @@
 "use client";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/shadcn/card";
 import { generateExcelFormulas } from "@/lib/excel-formula/generate-excel-formulas";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 
@@ -6,10 +12,16 @@ export const ExcelOutput = ({ items }: ExcelOutputProps) => {
   const formulas = generateExcelFormulas(items);
 
   return (
-    <div>
-      <h2>Excel Output</h2>
-      <pre>{JSON.stringify(formulas, null, 2)}</pre>
-    </div>
+    <Card className="w-full max-w-3xl">
+      <CardHeader>
+        <CardTitle>Excel Output</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <pre className="whitespace-break-spaces">
+          {JSON.stringify(formulas, null, 2)}
+        </pre>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -9,11 +9,24 @@ export const updateReceiptItem = async (
   partitionKey: string,
   newItem: EnrichedItem,
   order: number
+) => updateReceiptField(id, partitionKey, `items/${order}`, newItem);
+
+export const updateReceiptMerchantName = async (
+  id: string,
+  partitionKey: string,
+  newMerchantName: string
+) => updateReceiptField(id, partitionKey, "merchantName", newMerchantName);
+
+const updateReceiptField = async (
+  id: string,
+  partitionKey: string,
+  field: string,
+  value: unknown
 ) => {
   const container = getReceiptContainer();
 
   const operations: PatchOperation[] = [
-    { op: "replace", path: `/items/${order}`, value: newItem },
+    { op: "replace", path: `/${field}`, value },
   ];
 
   const { resource } = await container
