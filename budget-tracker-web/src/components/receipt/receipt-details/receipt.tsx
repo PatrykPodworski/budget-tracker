@@ -6,12 +6,16 @@ import { EnrichedItem } from "@/models/enriched-item-schema";
 import { Label } from "@/components/ui/shadcn/label";
 import { Input } from "@/components/ui/shadcn/input";
 import { Card, CardContent, CardHeader } from "@/components/ui/shadcn/card";
+import { useDebounce } from "@/lib/utils/use-debounce";
 
+// TODO: P2 Keep focus after disabling input
 export const Receipt = ({
   receipt,
   onReceiptItemChange,
   onMerchantChange,
 }: ReceiptProps) => {
+  const { isLoading, debounced } = useDebounce(onMerchantChange);
+
   return (
     <Card className="w-full max-w-3xl">
       <CardHeader>
@@ -19,8 +23,9 @@ export const Receipt = ({
           <Label htmlFor="merchant">Merchant</Label>
           <Input
             id="merchant"
-            value={receipt.merchantName}
-            onChange={(event) => onMerchantChange(event.target.value)}
+            defaultValue={receipt.merchantName}
+            disabled={isLoading}
+            onChange={(event) => debounced(event.target.value)}
           />
         </div>
         <div>
@@ -49,5 +54,5 @@ export const Receipt = ({
 type ReceiptProps = {
   receipt: EnrichedReceiptData;
   onReceiptItemChange: (newItem: EnrichedItem, index: number) => Promise<void>;
-  onMerchantChange: (newMerchant: string) => void;
+  onMerchantChange: (newMerchant: string) => Promise<void>;
 };

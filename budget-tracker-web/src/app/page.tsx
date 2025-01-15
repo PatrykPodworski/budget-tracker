@@ -4,6 +4,7 @@ import { ReceiptsList } from "@/components/receipt/receipt-list";
 export const revalidate = 60;
 
 // TODO: P1 Style receipt like a receipt
+// TODO: P1 Order by date
 // TODO: P2 Image upload
 // TODO: P3 Replace the bot
 const Home = async () => {
