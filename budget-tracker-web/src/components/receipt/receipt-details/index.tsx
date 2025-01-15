@@ -9,11 +9,11 @@ import {
   updateReceiptMerchantName,
 } from "@/lib/receipt-data/update";
 
-// TODO: P0 Debounce input changes
 // TODO: P1 Add loading state
 // TODO: P1 Update transaction time
 // TODO: P1 Update item name
 // TODO: P2 Error handling on update
+// TODO: P3 Input with end icon
 export const ReceiptDetails = ({
   receipt: initialReceiptData,
 }: ReceiptDetailsProps) => {
