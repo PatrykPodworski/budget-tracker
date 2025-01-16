@@ -17,6 +17,13 @@ export const updateReceiptMerchantName = async (
   newMerchantName: string
 ) => updateReceiptField(id, partitionKey, "merchantName", newMerchantName);
 
+export const updateReceiptTransactionDate = async (
+  id: string,
+  partitionKey: string,
+  newTransactionDate: Date | undefined
+) =>
+  updateReceiptField(id, partitionKey, "transactionDate", newTransactionDate);
+
 const updateReceiptField = async (
   id: string,
   partitionKey: string,

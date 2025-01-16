@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
-import { formatCurrency, formatDate } from "@/lib/utils";
+import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
 import { Button } from "@/components/ui/shadcn/button";
 
@@ -12,7 +12,7 @@ export const ReceiptListItem = ({ receipt }: ReceiptListItemProps) => (
         <div>
           <h3 className="text-lg font-semibold">{receipt.merchantName}</h3>
           <p className="text-sm text-muted-foreground">
-            {formatDate(receipt.transactionDate)}
+            {formatDateTime(receipt.transactionDate)}
           </p>
         </div>
         <div className="flex flex-row items-center gap-2">
