@@ -1,7 +1,6 @@
 import { enrichedReceiptDataSchema } from "@/models/enriched-receipt-data-schema";
 import { getReceiptContainer } from "./common/get-receipt-container";
 
-// TODO: P2 Add pagination
 export const getLatestReceipts = async () => {
   const container = getReceiptContainer();
 
