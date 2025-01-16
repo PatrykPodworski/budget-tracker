@@ -7,11 +7,12 @@ import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
 import {
   updateReceiptItem,
   updateReceiptMerchantName,
+  updateReceiptTransactionDate,
 } from "@/lib/receipt-data/update";
 
+// TODO: P0 Update item name
+// TODO: P0 Prettier product quantity and price
 // TODO: P1 Add loading state
-// TODO: P1 Update transaction time
-// TODO: P1 Update item name
 // TODO: P2 Error handling on update
 // TODO: P3 Input with end icon
 export const ReceiptDetails = ({
@@ -43,12 +44,23 @@ export const ReceiptDetails = ({
     setReceipt(updatedReceipt);
   };
 
+  const handleDateChange = async (newDate: Date | undefined) => {
+    const updatedReceipt = await updateReceiptTransactionDate(
+      receipt.id,
+      receipt.userId,
+      newDate
+    );
+
+    setReceipt(updatedReceipt);
+  };
+
   return (
     <>
       <Receipt
         receipt={receipt}
         onReceiptItemChange={handleReceiptItemChange}
         onMerchantChange={handleMerchantChange}
+        onDateChange={handleDateChange}
       />
       <ExcelOutput items={receipt.items} />
     </>

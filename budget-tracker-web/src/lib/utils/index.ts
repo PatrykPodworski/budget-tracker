@@ -5,6 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// TODO: P1 Always show two decimal places
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("pl-PL", {
     style: "currency",
@@ -12,17 +13,29 @@ export const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-export const formatDate = (date?: Date) => {
+export const formatDateTime = (date?: Date) => {
   if (!date) {
     return "N/A";
   }
 
   // If the time is UTC midnight, only show the date
   if (date.getTime() % 86400000 === 0) {
-    return date.toLocaleDateString("pl-pl");
+    return formatDate(date);
   }
 
-  return `${date.toLocaleDateString("pl-pl")} ${date.toLocaleTimeString(
-    "pl-pl"
-  )}`;
+  return `${formatDate(date)} ${formatTime(date)}`;
 };
+
+// TODO: P1 Handle issue with SSR and timezone
+const formatDate = (date: Date) =>
+  date.toLocaleDateString("pl-pl", {
+    year: "numeric",
+    month: "numeric",
+    day: "2-digit",
+  });
+
+const formatTime = (date: Date) =>
+  date.toLocaleTimeString("pl-pl", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
