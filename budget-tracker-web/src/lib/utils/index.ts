@@ -5,6 +5,7 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
+// TODO: P1 Always show two decimal places
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("pl-PL", {
     style: "currency",
@@ -25,6 +26,7 @@ export const formatDateTime = (date?: Date) => {
   return `${formatDate(date)} ${formatTime(date)}`;
 };
 
+// TODO: P1 Handle issue with SSR and timezone
 const formatDate = (date: Date) =>
   date.toLocaleDateString("pl-pl", {
     year: "numeric",
