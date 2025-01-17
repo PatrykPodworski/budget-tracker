@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/shadcn/select";
 import { categories } from "@/data/categories";
 
-// TODO: P2 Fix jumping
+// TODO: P1 Fix jumping
 export const CategorySelect = ({
   onValueChange,
   value,
