@@ -1,9 +1,11 @@
-import { EnrichedItem } from "@/models/enriched-item-schema";
+import {
+  EnrichedItem,
+  enrichedItemSchema,
+} from "@/models/enriched-item-schema";
 import { CategorySelect } from "@/components/category-select";
 import { Input } from "@/components/ui/shadcn/input";
 import { useDebounce } from "@/lib/utils/use-debounce";
 
-// TODO: P1 validate item after change
 export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
   const { isLoading, debounced } = useDebounce(onItemChange);
 
@@ -16,12 +18,24 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newName = event.target.value;
     const newItem = { ...item, name: newName };
+
+    const isValidItem = enrichedItemSchema.safeParse(newItem);
+    if (!isValidItem.success) {
+      return;
+    }
+
     debounced(newItem);
   };
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newQuantity = parseFloat(event.target.value);
     const newItem = { ...item, quantity: newQuantity };
+
+    const isValidItem = enrichedItemSchema.safeParse(newItem);
+    if (!isValidItem.success) {
+      return;
+    }
+
     debounced(newItem);
   };
 
@@ -30,6 +44,12 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
   ) => {
     const newUnitPrice = parseFloat(event.target.value);
     const newItem = { ...item, unitPrice: newUnitPrice };
+
+    const isValidItem = enrichedItemSchema.safeParse(newItem);
+    if (!isValidItem.success) {
+      return;
+    }
+
     debounced(newItem);
   };
 
@@ -37,8 +57,18 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
     const newDiscount = parseFloat(event.target.value);
     console.log(newDiscount);
     const newItem = { ...item, discount: newDiscount };
+
+    const isValidItem = enrichedItemSchema.safeParse(newItem);
+    if (!isValidItem.success) {
+      return;
+    }
+
     debounced(newItem);
   };
+
+  const calculatedTotalPrice =
+    Math.round(item.quantity * item.unitPrice * 100 - item.discount * 100) /
+    100;
 
   return (
     <div className="flex gap-2 items-baseline">
@@ -61,7 +91,7 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
         className="max-w-16 no-input-arrows"
         disabled={isLoading}
       />
-      <span>*</span>
+      <span>x</span>
       <Input
         type="number"
         defaultValue={item.unitPrice}
@@ -77,7 +107,7 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
         className="max-w-16 no-input-arrows"
         disabled={isLoading}
       />
-      <span>zł = {item.totalPrice} zł</span>
+      <span>zł = {calculatedTotalPrice} zł</span>
     </div>
   );
 };

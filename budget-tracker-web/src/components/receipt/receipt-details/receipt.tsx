@@ -9,6 +9,7 @@ import { useDebounce } from "@/lib/utils/use-debounce";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 
 // TODO: P1 Total price sum and compare to receipt total
+// TODO: P2 Column headers
 // TODO: P2 Keep focus after disabling input
 export const Receipt = ({
   receipt,
