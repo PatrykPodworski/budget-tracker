@@ -2,7 +2,10 @@
 import { useState } from "react";
 import { ExcelOutput } from "@/components/receipt/receipt-details/excel-output";
 import { Receipt } from "@/components/receipt/receipt-details/receipt";
-import { EnrichedItem } from "@/models/enriched-item-schema";
+import {
+  EnrichedItem,
+  enrichedItemSchema,
+} from "@/models/enriched-item-schema";
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
 import {
   updateReceiptItem,
@@ -10,7 +13,6 @@ import {
   updateReceiptTransactionDate,
 } from "@/lib/receipt-data/update";
 
-// TODO: P0 Update item name
 // TODO: P0 Prettier product quantity and price
 // TODO: P1 Add loading state
 // TODO: P2 Error handling on update
@@ -24,6 +26,11 @@ export const ReceiptDetails = ({
     newItem: EnrichedItem,
     index: number
   ) => {
+    const isValidItem = enrichedItemSchema.safeParse(newItem);
+    if (!isValidItem.success) {
+      return;
+    }
+
     const updatedReceipt = await updateReceiptItem(
       receipt.id,
       receipt.userId,
