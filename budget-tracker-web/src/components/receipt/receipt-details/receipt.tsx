@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/shadcn/card";
 import { useDebounce } from "@/lib/utils/use-debounce";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 
+// TODO: P1 Total price sum and compare to receipt total
 // TODO: P2 Keep focus after disabling input
 export const Receipt = ({
   receipt,
@@ -20,7 +21,7 @@ export const Receipt = ({
     useDebounce(onDateChange);
 
   return (
-    <Card className="w-full max-w-3xl">
+    <Card className="w-full max-w-4xl">
       <CardHeader>
         <div className="flex gap-4">
           <div className="max-w-60 w-full">
