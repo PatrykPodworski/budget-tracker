@@ -12,7 +12,7 @@ export const ExcelOutput = ({ items }: ExcelOutputProps) => {
   const formulas = generateExcelFormulas(items);
 
   return (
-    <Card className="w-full max-w-3xl">
+    <Card className="w-full max-w-4xl">
       <CardHeader>
         <CardTitle>Excel Output</CardTitle>
       </CardHeader>

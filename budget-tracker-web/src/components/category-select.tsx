@@ -9,12 +9,14 @@ import {
 } from "@/components/ui/shadcn/select";
 import { categories } from "@/data/categories";
 
+// TODO: P2 Fix jumping
 export const CategorySelect = ({
   onValueChange,
   value,
+  disabled,
 }: CategorySelectProps) => (
-  <Select onValueChange={onValueChange} value={value}>
-    <SelectTrigger className="w-fit">
+  <Select onValueChange={onValueChange} value={value} disabled={disabled}>
+    <SelectTrigger className="max-w-32">
       <SelectValue />
     </SelectTrigger>
     <SelectContent>
@@ -30,4 +32,5 @@ export const CategorySelect = ({
 type CategorySelectProps = {
   onValueChange: (value: string) => void;
   value: string;
+  disabled?: boolean;
 };
