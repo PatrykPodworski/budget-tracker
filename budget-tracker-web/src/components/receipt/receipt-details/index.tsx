@@ -14,9 +14,8 @@ import {
 } from "@/lib/receipt-data/update";
 
 // TODO: P0 Prettier product quantity and price
-// TODO: P1 Add loading state
-// TODO: P2 Error handling on update
-// TODO: P3 Input with end icon
+// TODO: P2 Input with end icon
+// TODO: P3 Error handling on update
 export const ReceiptDetails = ({
   receipt: initialReceiptData,
 }: ReceiptDetailsProps) => {

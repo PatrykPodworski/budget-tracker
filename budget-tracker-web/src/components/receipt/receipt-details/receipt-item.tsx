@@ -5,9 +5,23 @@ import {
 import { CategorySelect } from "@/components/category-select";
 import { Input } from "@/components/ui/shadcn/input";
 import { useDebounce } from "@/lib/utils/use-debounce";
+import { useEffect, useRef } from "react";
 
+// TODO: P2 Implement generic handler
+// TODO: P3 Delete item option
+// TODO: P3 Add item option
 export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
   const { isLoading, debounced } = useDebounce(onItemChange);
+  const ref = useRef<HTMLInputElement>(undefined);
+
+  useEffect(() => {
+    if (isLoading || !ref.current) {
+      return;
+    }
+
+    ref.current.focus();
+    ref.current = undefined;
+  }, [isLoading]);
 
   const handleCategoryChange = (value: string) => {
     const newItem = { ...item, category: value };
@@ -16,6 +30,7 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
   };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    ref.current = event.target;
     const newName = event.target.value;
     const newItem = { ...item, name: newName };
 
@@ -28,6 +43,7 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
   };
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    ref.current = event.target;
     const newQuantity = parseFloat(event.target.value);
     const newItem = { ...item, quantity: newQuantity };
 
@@ -42,6 +58,7 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
   const handleUnitPriceChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
+    ref.current = event.target;
     const newUnitPrice = parseFloat(event.target.value);
     const newItem = { ...item, unitPrice: newUnitPrice };
 
@@ -54,8 +71,8 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
   };
 
   const handleDiscountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    ref.current = event.target;
     const newDiscount = parseFloat(event.target.value);
-    console.log(newDiscount);
     const newItem = { ...item, discount: newDiscount };
 
     const isValidItem = enrichedItemSchema.safeParse(newItem);
