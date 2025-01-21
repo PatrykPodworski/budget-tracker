@@ -1,16 +1,14 @@
+import { useDebounce } from "@/lib/utils/use-debounce";
 import {
   EnrichedItem,
   enrichedItemSchema,
 } from "@/models/enriched-item-schema";
-import { CategorySelect } from "@/components/category-select";
-import { Input } from "@/components/ui/shadcn/input";
-import { useDebounce } from "@/lib/utils/use-debounce";
-import { useEffect, useRef } from "react";
+import { useRef, useEffect } from "react";
 
-// TODO: P2 Implement generic handler
-// TODO: P3 Delete item option
-// TODO: P3 Add item option
-export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
+export const useEditReceiptItem = (
+  item: EnrichedItem,
+  onItemChange: (item: EnrichedItem) => void
+) => {
   const { isLoading, debounced } = useDebounce(onItemChange);
   const ref = useRef<HTMLInputElement>(undefined);
 
@@ -83,53 +81,12 @@ export const ReceiptItem = ({ item, onItemChange }: ReceiptItemProps) => {
     debounced(newItem);
   };
 
-  const calculatedTotalPrice =
-    Math.round(item.quantity * item.unitPrice * 100 - item.discount * 100) /
-    100;
-
-  return (
-    <div className="flex gap-2 items-baseline">
-      <Input
-        type="text"
-        defaultValue={item.name}
-        onChange={handleNameChange}
-        className="max-w-80"
-        disabled={isLoading}
-      />
-      <CategorySelect
-        onValueChange={handleCategoryChange}
-        value={item.category}
-        disabled={isLoading}
-      />
-      <Input
-        type="number"
-        defaultValue={item.quantity}
-        onChange={handleQuantityChange}
-        className="max-w-16 no-input-arrows"
-        disabled={isLoading}
-      />
-      <span>x</span>
-      <Input
-        type="number"
-        defaultValue={item.unitPrice}
-        onChange={handleUnitPriceChange}
-        className="max-w-20 no-input-arrows"
-        disabled={isLoading}
-      />
-      <span>zł - </span>
-      <Input
-        type="number"
-        defaultValue={item.discount}
-        onChange={handleDiscountChange}
-        className="max-w-16 no-input-arrows"
-        disabled={isLoading}
-      />
-      <span>zł = {calculatedTotalPrice} zł</span>
-    </div>
-  );
-};
-
-type ReceiptItemProps = {
-  item: EnrichedItem;
-  onItemChange: (item: EnrichedItem) => void;
+  return {
+    handleCategoryChange,
+    handleNameChange,
+    handleQuantityChange,
+    handleUnitPriceChange,
+    handleDiscountChange,
+    isLoading,
+  };
 };

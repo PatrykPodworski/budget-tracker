@@ -14,9 +14,11 @@ export const CategorySelect = ({
   onValueChange,
   value,
   disabled,
+  className,
+  id,
 }: CategorySelectProps) => (
   <Select onValueChange={onValueChange} value={value} disabled={disabled}>
-    <SelectTrigger className="max-w-32">
+    <SelectTrigger className={className} id={id}>
       <SelectValue />
     </SelectTrigger>
     <SelectContent>
@@ -33,4 +35,6 @@ type CategorySelectProps = {
   onValueChange: (value: string) => void;
   value: string;
   disabled?: boolean;
+  className?: string;
+  id?: string;
 };
