@@ -46,7 +46,7 @@ export const DateTimePicker = ({
           disabled={disabled}
           variant="outline"
           className={cn(
-            "w-full justify-start text-left font-normal",
+            "w-full justify-start text-left font-normal text-base md:text-sm",
             !selectedDate && "text-muted-foreground"
           )}
         >

@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/shadcn/card";
 import { generateExcelFormulas } from "@/lib/excel-formula/generate-excel-formulas";
 import { EnrichedItem } from "@/models/enriched-item-schema";
+import { ExcelFormula } from "./excel-formula";
 
 export const ExcelOutput = ({ items }: ExcelOutputProps) => {
   const formulas = generateExcelFormulas(items);
@@ -16,10 +17,10 @@ export const ExcelOutput = ({ items }: ExcelOutputProps) => {
       <CardHeader>
         <CardTitle>Excel Output</CardTitle>
       </CardHeader>
-      <CardContent>
-        <pre className="whitespace-break-spaces">
-          {JSON.stringify(formulas, null, 2)}
-        </pre>
+      <CardContent className="flex flex-col gap-4">
+        {Object.entries(formulas).map(([category, formula], index) => (
+          <ExcelFormula category={category} key={index} formula={formula} />
+        ))}
       </CardContent>
     </Card>
   );

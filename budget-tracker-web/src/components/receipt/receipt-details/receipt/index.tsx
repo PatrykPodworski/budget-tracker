@@ -4,7 +4,12 @@ import { ReceiptItem } from "./receipt-item";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 import { Label } from "@/components/ui/shadcn/label";
 import { Input } from "@/components/ui/shadcn/input";
-import { Card, CardContent, CardHeader } from "@/components/ui/shadcn/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/shadcn/card";
 import { useDebounce } from "@/lib/utils/use-debounce";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 
@@ -23,8 +28,8 @@ export const Receipt = ({
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <div className="flex gap-4">
-          <div className="max-w-60 w-full">
+        <div className="flex gap-2 flex-wrap mb-2">
+          <div className="w-full sm:max-w-60">
             <Label htmlFor="merchant">Merchant</Label>
             <Input
               id="merchant"
@@ -33,7 +38,7 @@ export const Receipt = ({
               onChange={(event) => debounced(event.target.value)}
             />
           </div>
-          <div className="max-w-60 w-full">
+          <div className="w-full sm:max-w-60">
             <Label htmlFor="transactionDate">Date</Label>
             <DateTimePicker
               disabled={isDateChangeLoading}
@@ -42,15 +47,20 @@ export const Receipt = ({
             />
           </div>
         </div>
-        <div>
-          <b>Amount:</b>&nbsp;{receipt.total} zł
+        <div className="flex gap-2 items-baseline">
+          <Label htmlFor="total">Total</Label>
+          <span id="total" className="text-base">
+            {receipt.total} zł
+          </span>
         </div>
       </CardHeader>
       <CardContent>
-        <div className="flex flex-col gap-2">
+        <CardTitle className="mb-2">Items</CardTitle>
+        <div className="flex flex-col gap-8 sm:gap-4">
           {receipt.items.map((item, index) => (
             <ReceiptItem
               key={index}
+              index={index}
               item={item}
               onItemChange={(newItem) => onReceiptItemChange(newItem, index)}
             />
