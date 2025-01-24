@@ -1,5 +1,6 @@
 import { ReceiptDetails } from "@/components/receipt/receipt-details";
 import { Button } from "@/components/ui/shadcn/button";
+import { basicWrite } from "@/lib/google-spreadsheet/basic-write";
 import { getReceiptData } from "@/lib/receipt-data/get-receipt-data";
 import Link from "next/link";
 
@@ -8,6 +9,7 @@ import Link from "next/link";
 const ReceiptPage = async ({ params }: ReceiptPageProps) => {
   const { id } = await params;
   const receiptData = await getReceiptData(id);
+  await basicWrite();
 
   return (
     <div className="flex flex-col gap-4 items-center mb-4">
