@@ -12,6 +12,7 @@ export const PriceCollapse = ({
   handleQuantityChange,
   handleUnitPriceChange,
   handleDiscountChange,
+  className,
 }: PriceCollapseProps) => {
   const total = getItemTotalPrice(item);
 
@@ -21,6 +22,7 @@ export const PriceCollapse = ({
         item.unitPrice
       )} - ${formatCurrency(item.discount)} = ${formatCurrency(total)}`}
       id={`${id}`}
+      className={className}
     >
       <PriceInputs
         className="bg-accent"

@@ -12,7 +12,11 @@ const ReceiptPage = async ({ params }: ReceiptPageProps) => {
   return (
     <div className="flex flex-col gap-4 items-center mb-4">
       <ReceiptDetails receipt={receiptData} />
-      <Button asChild variant="outline" className="self-stretch mx-2">
+      <Button
+        asChild
+        variant="outline"
+        className="self-stretch mx-2 sm:self-center"
+      >
         <Link href="/">Back</Link>
       </Button>
     </div>
