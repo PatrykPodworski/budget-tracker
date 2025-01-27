@@ -6,11 +6,41 @@ import {
   CardTitle,
 } from "@/components/ui/shadcn/card";
 import { generateExcelFormulas } from "@/lib/excel-formula/generate-excel-formulas";
-import { EnrichedItem } from "@/models/enriched-item-schema";
 import { ExcelFormula } from "./excel-formula";
+import { Button } from "@/components/ui/shadcn/button";
+import { basicWrite } from "@/lib/google-spreadsheet/basic-write";
+import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
+import { isCategory } from "@/data/categories";
 
-export const ExcelOutput = ({ items }: ExcelOutputProps) => {
-  const formulas = generateExcelFormulas(items);
+export const ExcelOutput = ({ receipt }: ExcelOutputProps) => {
+  const formulas = generateExcelFormulas(receipt.items);
+
+  // TODO: P0 Refactor
+  const handleClick = async () => {
+    if (!receipt.transactionDate) {
+      return;
+    }
+
+    await basicWrite({
+      transactionDate: receipt.transactionDate,
+      formula: receipt.total.toFixed(2),
+      category: undefined,
+    });
+
+    const promises = Object.entries(formulas)
+      .map(([category, formula]) => {
+        if (isCategory(category) && receipt.transactionDate) {
+          return basicWrite({
+            transactionDate: receipt.transactionDate,
+            category,
+            formula,
+          });
+        }
+      })
+      .filter((x) => x !== undefined);
+
+    await Promise.all(promises);
+  };
 
   return (
     <Card className="w-full max-w-4xl">
@@ -21,11 +51,14 @@ export const ExcelOutput = ({ items }: ExcelOutputProps) => {
         {Object.entries(formulas).map(([category, formula], index) => (
           <ExcelFormula category={category} key={index} formula={formula} />
         ))}
+        <Button className="self-center" onClick={handleClick}>
+          Send to budget
+        </Button>
       </CardContent>
     </Card>
   );
 };
 
 type ExcelOutputProps = {
-  items: EnrichedItem[];
+  receipt: EnrichedReceiptData;
 };

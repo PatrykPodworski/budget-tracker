@@ -25,7 +25,7 @@ const createExcelFormulas = (grouped: Record<string, EnrichedItem[]>) => {
   // for each category, create the excel formula
   const excelFormulas = Object.entries(grouped).reduce(
     (acc: Record<string, string>, [category, items]) => {
-      acc[category] = `=SUM(${items.map(formatItemPriceFormula).join(",")})`;
+      acc[category] = `SUM(${items.map(formatItemPriceFormula).join(",")})`;
       return acc;
     },
     {}

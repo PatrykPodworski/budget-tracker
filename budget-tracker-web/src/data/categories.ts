@@ -13,7 +13,6 @@ export const categories = [
   "Wyposażenie stałe",
   "Eksploatacja",
   "Podatki",
-  "Inne",
   "Sprzątanie",
   "Pranie",
   "Kuchnia i łazienka",
@@ -22,12 +21,11 @@ export const categories = [
   "Kosmetyki wspólne",
   "Wakacje",
   "Wyjścia",
+  "VoD",
   "Lekarstwa",
   "Suplementy",
-  "Opieka zdrowotna - Pozostałe",
   "Paliwo",
   "Parking",
-  "Myjnia",
   "Płatne drogi",
   "Samochód - Ubezpieczenia",
   "Samochód - Naprawy",
@@ -37,5 +35,12 @@ export const categories = [
   "Pociągi",
   "Prezenty",
   "Subskrybcje",
-  "Odzież",
-];
+] as const;
+
+const categorySet = new Set<string>(categories);
+
+export type ReceiptCategory = (typeof categories)[number];
+
+export const isCategory = (category: string): category is ReceiptCategory => {
+  return categorySet.has(category);
+};
