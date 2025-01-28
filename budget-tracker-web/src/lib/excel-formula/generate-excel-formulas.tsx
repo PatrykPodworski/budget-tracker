@@ -1,6 +1,7 @@
-"use client";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 
+// TODO: P1 Validate categories and update the return type
+// TODO: P1 Consider returning a collection
 export const generateExcelFormulas = (items: EnrichedItem[]) => {
   const groupedItems = groupItemsByCategory(items);
   const formulas = createExcelFormulas(groupedItems);

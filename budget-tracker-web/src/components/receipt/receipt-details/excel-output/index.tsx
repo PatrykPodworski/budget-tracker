@@ -8,38 +8,14 @@ import {
 import { generateExcelFormulas } from "@/lib/excel-formula/generate-excel-formulas";
 import { ExcelFormula } from "./excel-formula";
 import { Button } from "@/components/ui/shadcn/button";
-import { basicWrite } from "@/lib/google-spreadsheet/basic-write";
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
-import { isCategory } from "@/data/categories";
+import { writeReceipt } from "@/lib/google-spreadsheet/write-receipt";
 
 export const ExcelOutput = ({ receipt }: ExcelOutputProps) => {
   const formulas = generateExcelFormulas(receipt.items);
 
-  // TODO: P0 Refactor
   const handleClick = async () => {
-    if (!receipt.transactionDate) {
-      return;
-    }
-
-    await basicWrite({
-      transactionDate: receipt.transactionDate,
-      formula: receipt.total.toFixed(2),
-      category: undefined,
-    });
-
-    const promises = Object.entries(formulas)
-      .map(([category, formula]) => {
-        if (isCategory(category) && receipt.transactionDate) {
-          return basicWrite({
-            transactionDate: receipt.transactionDate,
-            category,
-            formula,
-          });
-        }
-      })
-      .filter((x) => x !== undefined);
-
-    await Promise.all(promises);
+    await writeReceipt(receipt);
   };
 
   return (
