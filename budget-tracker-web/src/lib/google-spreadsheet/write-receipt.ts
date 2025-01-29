@@ -12,22 +12,34 @@ import { getColumnToWrite, getRowToWrite, getSheetTitleToWrite } from "./utils";
 // TODO: P2 Add comments for each write (comment, id, etc.)
 // TODO: P3 Dynamic sheet month mapping
 // TODO: P3 Dynamic sheet day mapping
-
+// TODO: P0 Fix rounding
 export const writeReceipt = async (receipt: EnrichedReceiptData) => {
   if (!receipt.transactionDate) {
     return;
   }
 
-  const date = receipt.transactionDate;
+  const { total, transactionDate } = receipt;
   const formulas = generateExcelFormulas(receipt.items);
 
-  const sheetTitle = getSheetTitleToWrite(date);
-  // TODO: P0 Add expense
-  const writeParams = Object.entries(formulas)
-    .map(([category, formula]) => getWriteParams(category, formula, date))
+  const sheetTitle = getSheetTitleToWrite(transactionDate);
+
+  const categoryParams = Object.entries(formulas)
+    .map(([category, formula]) =>
+      getWriteParams(category, formula, transactionDate)
+    )
     .filter((x) => x !== undefined);
 
+  const expenseParam = getExpenseParam(transactionDate, total);
+  const writeParams = [...categoryParams, expenseParam];
+
   await bulkWrite(sheetTitle, writeParams);
+};
+
+const getExpenseParam = (transactionDate: Date, total: number) => {
+  const column = getColumnToWrite(transactionDate);
+  const row = getRowToWrite();
+
+  return { column, row, formula: total.toFixed(2) };
 };
 
 const getCellInfo = (transactionDate: Date, category: ReceiptCategory) => {

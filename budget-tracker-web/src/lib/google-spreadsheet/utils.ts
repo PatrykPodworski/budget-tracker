@@ -5,7 +5,7 @@ export const getColumnToWrite = (transactionDate: Date) => {
   return column;
 };
 
-export const getRowToWrite = (category: ReceiptCategory | undefined) => {
+export const getRowToWrite = (category?: ReceiptCategory) => {
   if (!category) {
     return EXPENSES_ROW;
   }
