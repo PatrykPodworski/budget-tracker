@@ -5,6 +5,9 @@ const envSchema = z.object({
   COSMOS_KEY: z.string(),
   COSMOS_DATABASE: z.string(),
   COSMOS_CONTAINER: z.string(),
+
+  GOOGLE_DOCUMENT_ID: z.string(),
+  GOOGLE_SERVICE_ACCOUNT_BASE64: z.string(),
 });
 
 export const env = envSchema.parse(process.env);

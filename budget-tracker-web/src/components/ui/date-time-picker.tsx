@@ -19,11 +19,20 @@ export const DateTimePicker = ({
 }: DateTimePickerProps) => {
   const [selectedDate, setSelectedDate] = useState(defaultValue);
 
-  const handleDateSelect = (selectedDate: Date | undefined) => {
-    if (selectedDate) {
-      setSelectedDate(selectedDate);
-      onChange(selectedDate);
+  const handleDateSelect = (newSelectedDate: Date | undefined) => {
+    if (!newSelectedDate) {
+      return;
     }
+
+    if (selectedDate) {
+      newSelectedDate.setHours(
+        selectedDate.getHours(),
+        selectedDate.getMinutes()
+      );
+    }
+
+    setSelectedDate(newSelectedDate);
+    onChange(newSelectedDate);
   };
 
   const handleTimeChange = (type: "hour" | "minute", newValue: string) => {

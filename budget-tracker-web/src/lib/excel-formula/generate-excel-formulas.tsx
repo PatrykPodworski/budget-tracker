@@ -1,6 +1,7 @@
-"use client";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 
+// TODO: P1 Validate categories and update the return type
+// TODO: P1 Consider returning a collection
 export const generateExcelFormulas = (items: EnrichedItem[]) => {
   const groupedItems = groupItemsByCategory(items);
   const formulas = createExcelFormulas(groupedItems);
@@ -25,7 +26,7 @@ const createExcelFormulas = (grouped: Record<string, EnrichedItem[]>) => {
   // for each category, create the excel formula
   const excelFormulas = Object.entries(grouped).reduce(
     (acc: Record<string, string>, [category, items]) => {
-      acc[category] = `=SUM(${items.map(formatItemPriceFormula).join(",")})`;
+      acc[category] = `SUM(${items.map(formatItemPriceFormula).join(",")})`;
       return acc;
     },
     {}
@@ -35,9 +36,10 @@ const createExcelFormulas = (grouped: Record<string, EnrichedItem[]>) => {
 };
 
 const formatItemPriceFormula = (item: EnrichedItem) => {
-  if (item.discount > 0) {
-    return `${item.unitPrice}*${item.quantity}-${item.discount}`;
-  }
+  const notRoundedPrice = `${item.unitPrice}*${item.quantity}`;
+  const fullPrice = Number.isInteger(item.quantity)
+    ? notRoundedPrice
+    : `ROUND(${notRoundedPrice}, 2)`;
 
-  return `${item.unitPrice}*${item.quantity}`;
+  return item.discount > 0 ? `${fullPrice}-${item.discount}` : fullPrice;
 };

@@ -14,7 +14,8 @@ import { useDebounce } from "@/lib/utils/use-debounce";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 
 // TODO: P1 Total price sum and compare to receipt total
-// TODO: P2 Column headers
+// TODO: P2 Table view for desktop
+// TODO: P3 Numbers formatting in inputs vs in labels
 export const Receipt = ({
   receipt,
   onReceiptItemChange,
