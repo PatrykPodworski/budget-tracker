@@ -9,7 +9,7 @@ import { useBreakpoint } from "@/lib/utils/use-breakpoint";
 import { PriceInputs } from "./price-collapse/price-inputs";
 
 // TODO: P0 Fix date hydration
-// TODO: P1 Fix transaction date saved by assistant as UTC
+// TODO: P0 Fix transaction date saved by assistant as UTC
 // TODO: P2 Implement generic handler
 // TODO: P3 Delete item option
 // TODO: P3 Add item option

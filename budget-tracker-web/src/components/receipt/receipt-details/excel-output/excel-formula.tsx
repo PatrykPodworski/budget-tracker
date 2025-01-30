@@ -1,4 +1,3 @@
-// TODO: P3: Icon button click to copy
 export const ExcelFormula = ({ category, formula }: ExcelFormulaProps) => {
   return (
     <div className="flex gap-2 flex-wrap">
