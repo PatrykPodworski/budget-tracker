@@ -6,13 +6,6 @@ import { getAuth } from "./get-auth";
 import { categories } from "@/data/categories";
 import { getColumnToWrite, getRowToWrite, getSheetTitleToWrite } from "./utils";
 
-// TODO: P1 Split into multiple functions; write(what, where)
-// TODO: P1 Write multiple cells API
-// TODO: P2 Check for duplicated writes
-// TODO: P2 Add comments for each write (comment, id, etc.)
-// TODO: P3 Dynamic sheet month mapping
-// TODO: P3 Dynamic sheet day mapping
-
 export const bulkWrite = async (sheetTitle: string, writes: CellWrite[]) => {
   const auth = await getAuth();
   const document = new GoogleSpreadsheet(env.GOOGLE_DOCUMENT_ID, auth);

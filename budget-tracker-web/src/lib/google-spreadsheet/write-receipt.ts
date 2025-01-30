@@ -6,13 +6,14 @@ import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
 import { bulkWrite, CellWrite } from "./basic-write";
 import { getColumnToWrite, getRowToWrite, getSheetTitleToWrite } from "./utils";
 
+// TODO: P0 Loading state when connecting to the sheet
+// TODO: P1 Show counted and total mismatch
 // TODO: P1 Split into multiple functions; write(what, where)
 // TODO: P1 Write multiple cells API
 // TODO: P2 Check for duplicated writes
 // TODO: P2 Add comments for each write (comment, id, etc.)
 // TODO: P3 Dynamic sheet month mapping
 // TODO: P3 Dynamic sheet day mapping
-// TODO: P0 Fix rounding
 export const writeReceipt = async (receipt: EnrichedReceiptData) => {
   if (!receipt.transactionDate) {
     return;

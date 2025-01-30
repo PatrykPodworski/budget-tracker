@@ -36,9 +36,10 @@ const createExcelFormulas = (grouped: Record<string, EnrichedItem[]>) => {
 };
 
 const formatItemPriceFormula = (item: EnrichedItem) => {
-  if (item.discount > 0) {
-    return `${item.unitPrice}*${item.quantity}-${item.discount}`;
-  }
+  const notRoundedPrice = `${item.unitPrice}*${item.quantity}`;
+  const fullPrice = Number.isInteger(item.quantity)
+    ? notRoundedPrice
+    : `ROUND(${notRoundedPrice}, 2)`;
 
-  return `${item.unitPrice}*${item.quantity}`;
+  return item.discount > 0 ? `${fullPrice}-${item.discount}` : fullPrice;
 };
