@@ -3,7 +3,6 @@ import { Input } from "@/components/ui/shadcn/input";
 import { Label } from "@/components/ui/shadcn/label";
 import React from "react";
 import clsx from "clsx";
-import { useBreakpoint } from "@/lib/utils/use-breakpoint";
 import { PriceTotal } from "./price-total";
 
 export const PriceInputs = ({
@@ -15,8 +14,6 @@ export const PriceInputs = ({
   isLoading,
   className,
 }: PriceInputsProps) => {
-  const isSm = useBreakpoint("sm");
-
   return (
     <div className={clsx("p-2 pt-1 flex gap-2 rounded-b-md", className)}>
       <div>
@@ -55,14 +52,12 @@ export const PriceInputs = ({
           disabled={isLoading}
         />
       </div>
-      {isSm && (
-        <div>
-          <Label htmlFor={`${id}-total`} className="text-xs">
-            Total
-          </Label>
-          <PriceTotal item={item} />
-        </div>
-      )}
+      <div className="hidden sm:block">
+        <Label htmlFor={`${id}-total`} className="text-xs">
+          Total
+        </Label>
+        <PriceTotal item={item} />
+      </div>
     </div>
   );
 };
@@ -75,4 +70,5 @@ export type PriceInputsProps = {
   handleUnitPriceChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleDiscountChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   className?: string;
+  showTotal?: boolean;
 };
