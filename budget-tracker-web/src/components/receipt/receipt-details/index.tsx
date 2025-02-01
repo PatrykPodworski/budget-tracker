@@ -13,7 +13,6 @@ import {
   updateReceiptTransactionDate,
 } from "@/lib/receipt-data/update";
 
-// TODO: P0 Prettier product quantity and price
 // TODO: P2 Input with end icon
 // TODO: P3 Error handling on update
 export const ReceiptDetails = ({

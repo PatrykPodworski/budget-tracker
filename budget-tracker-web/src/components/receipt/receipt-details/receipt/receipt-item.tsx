@@ -5,11 +5,8 @@ import { useEditReceiptItem } from "./useEditReceiptItem";
 import { Label } from "@/components/ui/shadcn/label";
 import React from "react";
 import { PriceCollapse } from "./price-collapse";
-import { useBreakpoint } from "@/lib/utils/use-breakpoint";
-import { PriceInputs } from "./price-collapse/price-inputs";
 
-// TODO: P0 Fix date hydration
-// TODO: P1 Fix transaction date saved by assistant as UTC
+// TODO: P0 Fix transaction date saved by assistant as UTC
 // TODO: P2 Implement generic handler
 // TODO: P3 Delete item option
 // TODO: P3 Add item option
@@ -27,8 +24,6 @@ export const ReceiptItem = ({
     handleDiscountChange,
     isLoading,
   } = useEditReceiptItem(item, onItemChange);
-  const isSm = useBreakpoint("sm");
-
   const idPrefix = `item-${index}`;
 
   return (
@@ -55,25 +50,14 @@ export const ReceiptItem = ({
       <Label htmlFor={`${idPrefix}-price`} className="mt-[11px]">
         Price
       </Label>
-      {isSm ? (
-        <PriceInputs
-          id={idPrefix}
-          item={item}
-          isLoading={isLoading}
-          handleQuantityChange={handleQuantityChange}
-          handleUnitPriceChange={handleUnitPriceChange}
-          handleDiscountChange={handleDiscountChange}
-        />
-      ) : (
-        <PriceCollapse
-          item={item}
-          id={`${idPrefix}-price`}
-          isLoading={isLoading}
-          handleQuantityChange={handleQuantityChange}
-          handleUnitPriceChange={handleUnitPriceChange}
-          handleDiscountChange={handleDiscountChange}
-        />
-      )}
+      <PriceCollapse
+        item={item}
+        id={`${idPrefix}-price`}
+        isLoading={isLoading}
+        handleQuantityChange={handleQuantityChange}
+        handleUnitPriceChange={handleUnitPriceChange}
+        handleDiscountChange={handleDiscountChange}
+      />
     </div>
   );
 };

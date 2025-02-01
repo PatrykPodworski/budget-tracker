@@ -26,7 +26,6 @@ export const formatDateTime = (date?: Date) => {
   return `${formatDate(date)} ${formatTime(date)}`;
 };
 
-// TODO: P1 Handle issue with SSR and timezone
 const formatDate = (date: Date) =>
   date.toLocaleDateString("pl-pl", {
     year: "numeric",
