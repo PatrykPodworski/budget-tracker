@@ -5,7 +5,6 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-// TODO: P1 Always show two decimal places
 export const formatCurrency = (amount: number) => {
   return new Intl.NumberFormat("pl-PL", {
     style: "currency",
