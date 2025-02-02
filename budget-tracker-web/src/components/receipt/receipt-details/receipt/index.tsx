@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/shadcn/card";
 import { useDebounce } from "@/lib/utils/use-debounce";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
+import { TotalPrice } from "./total-price";
 
-// TODO: P0 Total price sum and compare to receipt total
 // TODO: P2 Table view for desktop
 // TODO: P3 Numbers formatting in inputs vs in labels
 export const Receipt = ({
@@ -48,12 +48,7 @@ export const Receipt = ({
             />
           </div>
         </div>
-        <div className="flex gap-2 items-baseline">
-          <Label htmlFor="total">Total</Label>
-          <span id="total" className="text-base">
-            {receipt.total} zł
-          </span>
-        </div>
+        <TotalPrice total={receipt.total} items={receipt.items} />
       </CardHeader>
       <CardContent>
         <CardTitle className="mb-2">Items</CardTitle>
