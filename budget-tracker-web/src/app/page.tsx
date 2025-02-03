@@ -3,10 +3,11 @@ import { ReceiptsList } from "@/components/receipt/receipt-list";
 
 export const revalidate = 60;
 
+// TODO: P0 Refresh SSG on new receipt
+// TODO: P0 Image upload - replace the bot
 // TODO: P1 Style receipt like a receipt
 // TODO: P1 Separate page for receipt details and receipt edit
 // TODO: P2 Load more receipts on click
-// TODO: P0 Image upload - replace the bot
 const Home = async () => {
   const receipts = await getLatestReceipts();
 

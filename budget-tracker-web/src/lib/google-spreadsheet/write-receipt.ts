@@ -1,13 +1,13 @@
 "use server";
 
-import { isCategory, ReceiptCategory } from "@/data/categories";
-import { generateExcelFormulas } from "../excel-formula/generate-excel-formulas";
+import { isCategory } from "@/data/categories";
+import { getCategoryCellValues } from "../excel-formula/get-category-cell-values";
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
-import { bulkWrite, CellWrite } from "./basic-write";
+import { bulkWrite, CellValues, CellWrite } from "./basic-write";
 import { getColumnToWrite, getRowToWrite, getSheetTitleToWrite } from "./utils";
+import { formatCurrency } from "../utils";
 
 // TODO: P0 Split into multiple functions; write(what, where)
-// TODO: P0 Add comments for each write (comment, id, etc.)
 // TODO: P2 Check for duplicated writes
 // TODO: P3 Dynamic sheet month mapping
 // TODO: P3 Dynamic sheet day mapping
@@ -16,45 +16,64 @@ export const writeReceipt = async (receipt: EnrichedReceiptData) => {
     return;
   }
 
-  const { total, transactionDate } = receipt;
-  const formulas = generateExcelFormulas(receipt.items);
+  const { total, transactionDate, merchantName } = receipt;
+  const categories = getCategoryCellValues(receipt.items);
 
   const sheetTitle = getSheetTitleToWrite(transactionDate);
 
-  const categoryParams = Object.entries(formulas)
-    .map(([category, formula]) =>
-      getWriteParams(category, formula, transactionDate)
-    )
-    .filter((x) => x !== undefined);
-
-  const expenseParam = getExpenseParam(transactionDate, total);
+  const categoryParams = getCategoryParams(categories, transactionDate);
+  const expenseParam = getExpenseParam(transactionDate, total, merchantName);
   const writeParams = [...categoryParams, expenseParam];
 
   await bulkWrite(sheetTitle, writeParams);
 };
 
-const getExpenseParam = (transactionDate: Date, total: number) => {
-  const column = getColumnToWrite(transactionDate);
-  const row = getRowToWrite();
-
-  return { column, row, formula: total.toFixed(2) };
-};
-
-const getCellInfo = (transactionDate: Date, category: ReceiptCategory) => {
-  const column = getColumnToWrite(transactionDate);
-  const row = getRowToWrite(category);
-
-  return { column, row };
-};
-const getWriteParams = (
-  category: string,
-  formula: string,
+const getCategoryParams = (
+  categories: Record<string, CellValues>,
   transactionDate: Date
-): CellWrite | undefined => {
+) =>
+  Object.entries(categories)
+    .map(([category, cellValues]) =>
+      getCategoryParam(category, cellValues, transactionDate)
+    )
+    .filter((x) => x !== undefined);
+
+const getCategoryParam = (
+  category: string,
+  cellValues: CellValues,
+  transactionDate: Date
+) => {
   const isCategoryType = isCategory(category);
   if (!isCategoryType) {
     return undefined;
   }
-  const cellInfo = getCellInfo(transactionDate, category);
-  return { ...cellInfo, formula };
+
+  const column = getColumnToWrite(transactionDate);
+  const row = getRowToWrite(category);
+
+  const writeParam: CellWrite = {
+    column,
+    row,
+    ...cellValues,
+  };
+
+  return writeParam;
+};
+
+const getExpenseParam = (
+  transactionDate: Date,
+  total: number,
+  merchantName: string | undefined
+) => {
+  const column = getColumnToWrite(transactionDate);
+  const row = getRowToWrite();
+
+  const param: CellWrite = {
+    column,
+    row,
+    formula: total.toFixed(2),
+    comment: `${formatCurrency(total)}\t${merchantName}`,
+  };
+
+  return param;
 };
