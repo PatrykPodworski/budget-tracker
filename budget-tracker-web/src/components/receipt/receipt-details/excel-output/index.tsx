@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/shadcn/card";
-import { generateExcelFormulas } from "@/lib/excel-formula/generate-excel-formulas";
+import { getCategoryCellValues } from "@/lib/excel-formula/get-category-cell-values";
 import { ExcelFormula } from "./excel-formula";
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
 import { writeReceipt } from "@/lib/google-spreadsheet/write-receipt";
@@ -14,7 +14,7 @@ import { LoadingButton } from "@/components/ui/loading-button";
 
 export const ExcelOutput = ({ receipt }: ExcelOutputProps) => {
   const [isLoading, startTransition] = useTransition();
-  const formulas = generateExcelFormulas(receipt.items);
+  const categoryCellValues = getCategoryCellValues(receipt.items);
 
   const handleClick = () => startTransition(() => writeReceipt(receipt));
 
@@ -24,9 +24,11 @@ export const ExcelOutput = ({ receipt }: ExcelOutputProps) => {
         <CardTitle>Excel Output</CardTitle>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        {Object.entries(formulas).map(([category, formula], index) => (
-          <ExcelFormula category={category} key={index} formula={formula} />
-        ))}
+        {Object.entries(categoryCellValues).map(
+          ([category, { formula }], index) => (
+            <ExcelFormula category={category} key={index} formula={formula} />
+          )
+        )}
         <LoadingButton
           className="self-center"
           onClick={handleClick}

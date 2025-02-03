@@ -15,16 +15,20 @@ export const bulkWrite = async (sheetTitle: string, writes: CellWrite[]) => {
   const range = getCellRange(writes);
   await sheet.loadCells(range);
 
-  writes.forEach(({ column, row, formula }) => {
+  writes.forEach(({ column, row, formula, comment }) => {
     const cell = sheet.getCell(row, column);
     cell.value = cell.formula ? `${cell.formula}+${formula}` : `=${formula}`;
+    cell.note = cell.note ? `${cell.note}\n${comment}` : comment;
   });
 
   await sheet.saveUpdatedCells();
 };
 
-export type CellWrite = CellInfo & {
+export type CellWrite = CellInfo & CellValues;
+
+export type CellValues = {
   formula: string;
+  comment?: string;
 };
 
 const getCellRange = (cellInfos: CellInfo[]) => {
