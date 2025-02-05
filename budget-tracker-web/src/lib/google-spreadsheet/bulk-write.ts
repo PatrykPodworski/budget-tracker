@@ -3,6 +3,7 @@
 import { env } from "@/env";
 import {
   GoogleSpreadsheet,
+  GoogleSpreadsheetCell,
   GoogleSpreadsheetWorksheet,
 } from "google-spreadsheet";
 import { getAuth } from "./get-auth";
@@ -60,7 +61,22 @@ const writeToCell = (
   { column, row, formula, comment }: CellWrite
 ) => {
   const cell = sheet.getCell(row, column);
+
+  const cellContent = cell.formula || mapValueToFormula(cell.value);
+
   // Append if there is already value or note
-  cell.formula = cell.formula ? `${cell.formula}+${formula}` : `=${formula}`;
+  cell.formula = cellContent ? `${cellContent}+${formula}` : `=${formula}`;
   cell.note = cell.note ? `${cell.note}\n${comment}` : comment;
+};
+
+const mapValueToFormula = (value: GoogleSpreadsheetCell["value"]) => {
+  if (!value) {
+    return undefined;
+  }
+
+  if (typeof value === "number") {
+    return `=${value}`;
+  }
+
+  throw new Error(`Unsupported value type: ${typeof value}`);
 };
