@@ -67,7 +67,12 @@ export const ReceiptDetails = ({
         onMerchantChange={handleMerchantChange}
         onDateChange={handleDateChange}
       />
-      <ExcelOutput receipt={receipt} />
+      <ExcelOutput
+        items={receipt.items}
+        merchantName={receipt.merchantName}
+        total={receipt.total}
+        transactionDate={receipt.transactionDate}
+      />
     </>
   );
 };

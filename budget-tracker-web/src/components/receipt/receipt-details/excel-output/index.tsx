@@ -5,18 +5,37 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/shadcn/card";
-import { getCategoryCellValues } from "@/lib/excel-formula/get-category-cell-values";
+import { getCategoryCellValues } from "@/lib/google-spreadsheet/get-category-cell-values";
 import { ExcelFormula } from "./excel-formula";
-import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
 import { writeReceipt } from "@/lib/google-spreadsheet/write-receipt";
 import { useTransition } from "react";
 import { LoadingButton } from "@/components/ui/loading-button";
+import { EnrichedItem } from "@/models/enriched-item-schema";
 
-export const ExcelOutput = ({ receipt }: ExcelOutputProps) => {
+// TODO P1: Rename
+export const ExcelOutput = ({
+  items,
+  merchantName,
+  total,
+  transactionDate,
+}: ExcelOutputProps) => {
   const [isLoading, startTransition] = useTransition();
-  const categoryCellValues = getCategoryCellValues(receipt.items);
+  const categoryCellValues = getCategoryCellValues(items);
 
-  const handleClick = () => startTransition(() => writeReceipt(receipt));
+  const handleClick = () => {
+    if (!transactionDate) {
+      return;
+    }
+
+    return startTransition(() =>
+      writeReceipt({
+        total,
+        transactionDate,
+        merchantName,
+        items,
+      })
+    );
+  };
 
   return (
     <Card className="w-full max-w-4xl">
@@ -33,6 +52,7 @@ export const ExcelOutput = ({ receipt }: ExcelOutputProps) => {
           className="self-center"
           onClick={handleClick}
           loading={isLoading}
+          disabled={!!transactionDate}
         >
           Send to budget
         </LoadingButton>
@@ -42,5 +62,8 @@ export const ExcelOutput = ({ receipt }: ExcelOutputProps) => {
 };
 
 type ExcelOutputProps = {
-  receipt: EnrichedReceiptData;
+  total: number;
+  transactionDate?: Date;
+  merchantName: string | undefined;
+  items: EnrichedItem[];
 };
