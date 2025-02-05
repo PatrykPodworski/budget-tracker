@@ -1,5 +1,5 @@
 import { EnrichedItem } from "@/models/enriched-item-schema";
-import { CellValues } from "../google-spreadsheet/basic-write";
+import { CellValues } from "./cell-write";
 import { formatCurrency } from "../utils";
 
 // TODO: P1 Validate categories and update the return type

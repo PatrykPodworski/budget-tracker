@@ -1,10 +1,5 @@
 import { ReceiptCategory } from "@/data/categories";
 
-export const getColumnToWrite = (transactionDate: Date) => {
-  const column = dayToColumnMap(transactionDate.getDate());
-  return column;
-};
-
 export const getRowToWrite = (category?: ReceiptCategory) => {
   if (!category) {
     return EXPENSES_ROW;
@@ -14,30 +9,7 @@ export const getRowToWrite = (category?: ReceiptCategory) => {
   return row;
 };
 
-export const getSheetTitleToWrite = (transactionDate: Date) => {
-  const month = transactionDate.getMonth();
-  const sheetTitle = monthToSheetTitleMap[month];
-  return sheetTitle;
-};
-
-const monthToSheetTitleMap: Record<number, string> = {
-  0: "Styczeń",
-  1: "Luty",
-  2: "Marzec",
-  3: "Kwiecień",
-  4: "Maj",
-  5: "Czerwiec",
-  6: "Lipiec",
-  7: "Sierpień",
-  8: "Wrzesień",
-  9: "Październik",
-  10: "Listopad",
-  11: "Grudzień",
-};
-
-const FIRST_DAY_COLUMN = 8; // Letter I
-const dayToColumnMap = (day: number) => FIRST_DAY_COLUMN + day - 1;
-
+// TODO: P3 Dynamic expenses row
 const EXPENSES_ROW = 57;
 
 // TODO: P3 Read categories from the sheet

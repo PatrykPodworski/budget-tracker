@@ -5,7 +5,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/shadcn/card";
-import { getCategoryCellValues } from "@/lib/excel-formula/get-category-cell-values";
+import { getCategoryCellValues } from "@/lib/google-spreadsheet/get-category-cell-values";
 import { ExcelFormula } from "./excel-formula";
 import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
 import { writeReceipt } from "@/lib/google-spreadsheet/write-receipt";

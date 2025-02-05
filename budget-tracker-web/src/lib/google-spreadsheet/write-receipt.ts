@@ -1,23 +1,23 @@
 "use server";
 
 import { isCategory } from "@/data/categories";
-import { getCategoryCellValues } from "../excel-formula/get-category-cell-values";
-import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
-import { bulkWrite, CellValues, CellWrite } from "./basic-write";
-import { getColumnToWrite, getRowToWrite, getSheetTitleToWrite } from "./utils";
+import { getCategoryCellValues } from "./get-category-cell-values";
+import { bulkWrite } from "./bulk-write";
+import { CellValues, CellWrite } from "./cell-write";
+import { getRowToWrite } from "./utils/get-row-to-write";
+import { getColumnToWrite } from "./utils/get-column-to-write";
 import { formatCurrency } from "../utils";
+import { EnrichedItem } from "@/models/enriched-item-schema";
+import { getSheetTitleToWrite } from "./utils/get-sheet-title-to-write";
 
-// TODO: P0 Split into multiple functions; write(what, where)
 // TODO: P2 Check for duplicated writes
-// TODO: P3 Dynamic sheet month mapping
-// TODO: P3 Dynamic sheet day mapping
-export const writeReceipt = async (receipt: EnrichedReceiptData) => {
-  if (!receipt.transactionDate) {
-    return;
-  }
-
-  const { total, transactionDate, merchantName } = receipt;
-  const categories = getCategoryCellValues(receipt.items);
+export const writeReceipt = async ({
+  total,
+  transactionDate,
+  merchantName,
+  items,
+}: WriteReceiptParams) => {
+  const categories = getCategoryCellValues(items);
 
   const sheetTitle = getSheetTitleToWrite(transactionDate);
 
@@ -26,6 +26,13 @@ export const writeReceipt = async (receipt: EnrichedReceiptData) => {
   const writeParams = [...categoryParams, expenseParam];
 
   await bulkWrite(sheetTitle, writeParams);
+};
+
+type WriteReceiptParams = {
+  transactionDate: Date;
+  items: EnrichedItem[]; // TODO: P2 Limit the fields
+  total: number;
+  merchantName: string | undefined;
 };
 
 const getCategoryParams = (
