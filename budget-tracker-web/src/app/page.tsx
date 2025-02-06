@@ -1,9 +1,6 @@
 import { getLatestReceipts } from "@/lib/receipt-data/get-latest-receipts";
 import { ReceiptsList } from "@/components/receipt/receipt-list";
 
-export const revalidate = 60;
-
-// TODO: P0 Refresh SSG on new receipt
 // TODO: P0 Image upload - replace the bot
 // TODO: P1 Style receipt like a receipt
 // TODO: P1 Separate page for receipt details and receipt edit
@@ -14,6 +11,9 @@ const Home = async () => {
   return (
     <div className="flex flex-col mx-auto gap-4 max-w-prose">
       <ReceiptsList receipts={receipts} />
+      <div className="text-center w-full text-zinc-200">
+        {new Date().toISOString()}
+      </div>
     </div>
   );
 };
