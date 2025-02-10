@@ -8,6 +8,8 @@ const {
   OPENAI_ASSISTANT_ID,
   DISCORD_WEBHOOK_ID,
   DISCORD_WEBHOOK_TOKEN,
+  WEB_BASE_URL,
+  REVALIDATE_SECRET,
 } = process.env;
 
 if (
@@ -19,7 +21,9 @@ if (
   !TEMP_USER_ID ||
   !OPENAI_ASSISTANT_ID ||
   !DISCORD_WEBHOOK_ID ||
-  !DISCORD_WEBHOOK_TOKEN
+  !DISCORD_WEBHOOK_TOKEN ||
+  !WEB_BASE_URL ||
+  !REVALIDATE_SECRET
 ) {
   throw new Error("Missing environment variables");
 }
@@ -34,4 +38,6 @@ export const config = {
   OPENAI_ASSISTANT_ID,
   DISCORD_WEBHOOK_ID,
   DISCORD_WEBHOOK_TOKEN,
+  WEB_BASE_URL,
+  REVALIDATE_SECRET,
 } as const;
