@@ -4,19 +4,12 @@ import { getWebhookClient } from "../../utils/getWebhookClient";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
 import { enrichedReceiptDataSchema } from "../../models/enriched-receipt-data-schema";
-import { ContentData } from "./content-data";
-import { formatCategoriesSection } from "./formatters/format-categories-section";
-import { formatFormulasSection } from "./formatters/format-formulas-section";
-import { formatGeneralSection } from "./formatters/format-general-section";
-import { EnrichedItem } from "../../models/enriched-item-schema";
-
-const WEBHOOK_MESSAGE_MAX_LENGTH = 2000;
+import { config } from "../../config";
 
 // TODO: P1 Clean up the code
 
 // TODO: P2 Automate the deployment process
 // TODO: P2 Unify the config
-// TODO: P2 Show the same data for formulas and text output
 // TODO: P2 Inform about the processing progress via the webhook
 // TODO: P2 Improve the logging
 
@@ -35,122 +28,27 @@ export const dataProcessing: CosmosDBHandler = async (documents, context) => {
 const handle = async (document: unknown) => {
   const receiptData = await enrichedReceiptDataSchema.parseAsync(document);
 
-  const grouped = groupItemsByCategory(receiptData.items);
-  const excelFormulas = createExcelFormulas(grouped);
-  const countedTotal = getCountedTotal(receiptData.items);
-  const totalDifference = getTotalDifference(receiptData.total, countedTotal);
+  await revalidateReceiptList();
 
-  await sendToWebhook({
-    categories: grouped,
-    formulas: excelFormulas,
-    countedTotal: countedTotal,
-    total: receiptData.total,
-    totalDifference: totalDifference,
-    dateOfTransaction: receiptData.transactionDate?.toLocaleString(),
-    merchantName: receiptData.merchantName,
-  });
+  await sendLinkToReceipt(receiptData.merchantName, receiptData.id);
 };
 
-const groupItemsByCategory = (items: EnrichedItem[]) => {
-  const grouped = items.reduce((acc: Record<string, EnrichedItem[]>, item) => {
-    if (!acc[item.category]) {
-      acc[item.category] = [];
-    }
-
-    acc[item.category].push(item);
-    return acc;
-  }, {});
-
-  return grouped;
+const revalidateReceiptList = async () => {
+  const revalidateUrl = `${config.WEB_BASE_URL}/revalidate?secret=${config.REVALIDATE_SECRET}`;
+  await fetch(revalidateUrl);
 };
 
-const createExcelFormulas = (grouped: Record<string, EnrichedItem[]>) => {
-  // for each category, create the excel formula
-  const excelFormulas = Object.entries(grouped).reduce(
-    (acc: Record<string, string>, [category, items]) => {
-      acc[category] = `=SUM(${items
-        .map((item) =>
-          [item.totalPrice, item.discount].filter((x) => x !== 0).join("-")
-        )
-        .join(",")})`;
-      return acc;
-    },
-    {}
-  );
-
-  return excelFormulas;
-};
-
-const getCountedTotal = (items: EnrichedItem[]) =>
-  items.reduce(
-    (acc, item) => acc + item.totalPrice * 100 - item.discount * 100,
-    0
-  ) / 100;
-
-const getTotalDifference = (total: number, countedTotal: number) =>
-  Math.abs((total * 100 - countedTotal * 100) / 100);
-
-const sendToWebhook = async (data: ContentData) => {
-  const generalSection = formatGeneralSection(data);
-  const categoriesSection = formatCategoriesSection(data.categories);
-  const formulasSection = formatFormulasSection(data.formulas);
-
-  // Validate if the message is too large
-  const totalLength =
-    generalSection.length + categoriesSection.length + formulasSection.length;
-  const isMessageTooLarge = totalLength > WEBHOOK_MESSAGE_MAX_LENGTH;
-
-  if (isMessageTooLarge) {
-    await sendSplitMessage(generalSection, categoriesSection, formulasSection);
-    return;
-  }
-
-  await sendSingleMessage(generalSection, categoriesSection, formulasSection);
-};
-
-const sendSingleMessage = async (
-  generalSection: string,
-  categoriesSection: string,
-  formulasSection: string
+const sendLinkToReceipt = async (
+  merchantName: string | undefined,
+  id: string
 ) => {
   const client = getWebhookClient();
 
-  const content = `# Shopping Receipt
-${generalSection}
-${categoriesSection}
-${formulasSection}`;
+  const url = `${config.WEB_BASE_URL}/receipts/${id}`;
+  const content = `Receipt from ${merchantName} processed. [View](${url})`;
 
   await client.send({
     username: "Receipt Assistant",
     content: content,
   });
-};
-
-const sendSplitMessage = async (
-  generalSection: string,
-  categoriesSection: string,
-  formulasSection: string
-) => {
-  const client = getWebhookClient();
-
-  await Promise.all([
-    client.send({
-      username: "Receipt Assistant",
-      content: `# Shopping Receipt 1/3
-        ${generalSection}
-        `,
-    }),
-    client.send({
-      username: "Receipt Assistant",
-      content: `# Shopping Receipt 2/3
-        ${categoriesSection}
-        `,
-    }),
-    client.send({
-      username: "Receipt Assistant",
-      content: `# Shopping Receipt 3/3
-        ${formulasSection}
-        `,
-    }),
-  ]);
 };
