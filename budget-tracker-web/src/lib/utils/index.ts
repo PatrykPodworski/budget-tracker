@@ -37,4 +37,5 @@ const formatTime = (date: Date) =>
   date.toLocaleTimeString("pl-pl", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Europe/Warsaw",
   });
