@@ -8,6 +8,7 @@ import { config } from "../../config";
 
 // TODO: P1 Clean up the code
 
+// TODO: P2 Trigger only on new documents (not on updates)
 // TODO: P2 Automate the deployment process
 // TODO: P2 Unify the config
 // TODO: P2 Inform about the processing progress via the webhook

@@ -6,7 +6,6 @@ import { Label } from "@/components/ui/shadcn/label";
 import React from "react";
 import { PriceCollapse } from "./price-collapse";
 
-// TODO: P0 Fix transaction date saved by assistant as UTC
 // TODO: P2 Implement generic handler
 // TODO: P3 Delete item option
 // TODO: P3 Add item option

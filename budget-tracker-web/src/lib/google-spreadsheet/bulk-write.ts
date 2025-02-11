@@ -55,7 +55,6 @@ const getCellRange = (cellInfos: CellInfo[]) => {
   };
 };
 
-// TODO: P0 Check if there is a value if formula is missing
 const writeToCell = (
   sheet: GoogleSpreadsheetWorksheet,
   { column, row, formula, comment }: CellWrite
