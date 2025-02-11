@@ -30,6 +30,7 @@ const formatDate = (date: Date) =>
     year: "numeric",
     month: "numeric",
     day: "2-digit",
+    timeZone: "Europe/Warsaw",
   });
 
 const formatTime = (date: Date) =>
