@@ -4,14 +4,10 @@ import { formatCurrency } from "@/lib/utils";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 
 export const TotalPrice = ({ total, items }: TotalPriceProps) => {
-  const calculatedTotal = items.reduce((acc, item) => {
-    const unitPrice = item.unitPrice * 100;
-    const quantity = item.quantity * 1000;
-    const sum = Math.round((unitPrice * quantity) / 1000) / 100;
-    return acc + sum - item.discount;
-  }, 0);
+  const calculatedTotal = calculateTotal(items);
 
   const totalDifference = total - calculatedTotal;
+  console.log(total, calculatedTotal, totalDifference);
 
   return (
     <>
@@ -37,6 +33,22 @@ export const TotalPrice = ({ total, items }: TotalPriceProps) => {
       </div>
     </>
   );
+};
+
+const calculateTotal = (items: EnrichedItem[]) => {
+  const totalInCents = items.reduce((acc, item) => {
+    const itemTotal = getItemTotal(item);
+    return acc + itemTotal;
+  }, 0);
+
+  return totalInCents / 100;
+};
+
+const getItemTotal = (item: EnrichedItem) => {
+  const unitPrice = item.unitPrice * 100;
+  const quantity = item.quantity * 1000;
+  const discount = item.discount * 100;
+  return Math.round((unitPrice * quantity) / 1000 - discount);
 };
 
 type TotalPriceProps = {
