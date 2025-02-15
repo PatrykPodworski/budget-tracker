@@ -13,7 +13,7 @@ import {
 import { useDebounce } from "@/lib/utils/use-debounce";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { TotalPrice } from "./total-price";
-import { Button } from "@/components/ui/shadcn/button";
+import { DeleteReceiptButton } from "./delete-receipt-button";
 
 // TODO: P2 Table view for desktop
 // TODO: P3 Numbers formatting in inputs vs in labels
@@ -50,9 +50,7 @@ export const Receipt = ({
               />
             </div>
           </div>
-          <Button className="sm:mt-6" variant="destructive">
-            Delete
-          </Button>
+          <DeleteReceiptButton id={receipt.id} />
         </div>
         <TotalPrice total={receipt.total} items={receipt.items} />
       </CardHeader>
