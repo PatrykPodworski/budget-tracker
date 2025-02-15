@@ -13,6 +13,7 @@ import {
 import { useDebounce } from "@/lib/utils/use-debounce";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { TotalPrice } from "./total-price";
+import { DeleteReceiptButton } from "./delete-receipt-button";
 
 // TODO: P2 Table view for desktop
 // TODO: P3 Numbers formatting in inputs vs in labels
@@ -29,24 +30,27 @@ export const Receipt = ({
   return (
     <Card className="w-full max-w-4xl">
       <CardHeader>
-        <div className="flex gap-2 flex-wrap mb-2">
-          <div className="w-full sm:max-w-60">
-            <Label htmlFor="merchant">Merchant</Label>
-            <Input
-              id="merchant"
-              defaultValue={receipt.merchantName}
-              disabled={isLoading}
-              onChange={(event) => debounced(event.target.value)}
-            />
+        <div className="flex flex-wrap mb-2 gap-4 sm:justify-between flex-col sm:flex-row ">
+          <div className="flex gap-2 flex-wrap grow">
+            <div className="w-full sm:w-auto md:w-full sm:max-w-60">
+              <Label htmlFor="merchant">Merchant</Label>
+              <Input
+                id="merchant"
+                defaultValue={receipt.merchantName}
+                disabled={isLoading}
+                onChange={(event) => debounced(event.target.value)}
+              />
+            </div>
+            <div className="w-full sm:w-auto md:w-full sm:max-w-60">
+              <Label htmlFor="transactionDate">Date</Label>
+              <DateTimePicker
+                disabled={isDateChangeLoading}
+                defaultValue={receipt.transactionDate}
+                onChange={debouncedOnDateChange}
+              />
+            </div>
           </div>
-          <div className="w-full sm:max-w-60">
-            <Label htmlFor="transactionDate">Date</Label>
-            <DateTimePicker
-              disabled={isDateChangeLoading}
-              defaultValue={receipt.transactionDate}
-              onChange={debouncedOnDateChange}
-            />
-          </div>
+          <DeleteReceiptButton id={receipt.id} />
         </div>
         <TotalPrice total={receipt.total} items={receipt.items} />
       </CardHeader>

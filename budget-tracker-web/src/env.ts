@@ -2,6 +2,7 @@ import { z } from "zod";
 
 const envSchema = z.object({
   REVALIDATE_SECRET: z.string(),
+  TEMP_USER_ID: z.string(),
 
   COSMOS_ENDPOINT: z.string(),
   COSMOS_KEY: z.string(),
