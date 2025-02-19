@@ -1,6 +1,7 @@
 import { getLatestReceipts } from "@/lib/receipt-data/get-latest-receipts";
 import { ReceiptsList } from "@/components/receipt/receipt-list";
 
+// TODO: P1 Fix handling multiple images at once
 // TODO: P1 Style receipt like a receipt
 // TODO: P1 Separate page for receipt details and receipt edit
 // TODO: P2 Load more receipts on click
