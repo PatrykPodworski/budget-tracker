@@ -11,6 +11,9 @@ const envSchema = z.object({
 
   GOOGLE_DOCUMENT_ID: z.string(),
   GOOGLE_SERVICE_ACCOUNT_BASE64: z.string(),
+
+  AZURE_STORAGE_CONNECTION_STRING: z.string(),
+  AZURE_STORAGE_CONTAINER_NAME: z.string(),
 });
 
 export const env = envSchema.parse(process.env);
