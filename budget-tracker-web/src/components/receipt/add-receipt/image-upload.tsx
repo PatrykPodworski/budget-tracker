@@ -6,6 +6,8 @@ import { uploadFiles } from "@/lib/storage/upload-file";
 import { ImageDropzone } from "./image-dropzone";
 import { ImagePreviews } from "./image-previews";
 
+// TODO: P0 Add loading state
+// TODO: P0 Redirect to status page after upload
 // TODO: P0 Improve UI
 // TODO: P0 Check mobile behavior
 // TODO: P0 Upload from clipboard

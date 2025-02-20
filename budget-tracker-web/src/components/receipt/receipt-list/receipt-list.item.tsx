@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/shadcn/button";
 
 // TODO: P2 Improve the merchant name based on the list of known merchants
 export const ReceiptListItem = ({ receipt }: ReceiptListItemProps) => (
-  <Card key={receipt.id}>
-    <CardContent className="p-4">
+  <Card>
+    <CardContent>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <div>
           <h3 className="text-lg font-semibold">{receipt.merchantName}</h3>
