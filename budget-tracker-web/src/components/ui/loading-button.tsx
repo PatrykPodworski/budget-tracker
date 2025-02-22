@@ -14,5 +14,5 @@ export const LoadingButton = ({
 };
 
 type LoadingButtonProps = {
-  loading?: boolean;
+  loading: boolean;
 } & React.ComponentProps<typeof Button>;

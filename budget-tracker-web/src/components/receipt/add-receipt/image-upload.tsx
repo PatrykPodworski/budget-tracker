@@ -5,15 +5,15 @@ import { Button } from "@/components/ui/shadcn/button";
 import { uploadFiles } from "@/lib/storage/upload-file";
 import { ImageDropzone } from "./image-dropzone";
 import { ImagePreviews } from "./image-previews";
+import { LoadingButton } from "@/components/ui/loading-button";
 
-// TODO: P0 Add loading state
-// TODO: P0 Redirect to status page after upload
 // TODO: P0 Improve UI
 // TODO: P0 Check mobile behavior
 // TODO: P0 Upload from clipboard
 const ImageUpload = () => {
   const [files, setFiles] = useState<FileList>();
   const [previews, setPreviews] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleFileDrop = (files: File[]) => {
     const dataTransfer = new DataTransfer();
@@ -27,6 +27,7 @@ const ImageUpload = () => {
       return;
     }
 
+    setIsLoading(true);
     const filesToUpload = await Promise.all(
       Array.from(files).map(async (file) => ({
         buffer: await file.arrayBuffer(),
@@ -35,6 +36,10 @@ const ImageUpload = () => {
     );
 
     await uploadFiles(filesToUpload);
+    setIsLoading(false);
+
+    // TODO: P0 Redirect to status page
+    handleReset();
   };
 
   const handleReset = () => {
@@ -42,16 +47,20 @@ const ImageUpload = () => {
     setPreviews([]);
   };
 
-  const isUploadDisabled = !files || files.length === 0;
+  const isUploadDisabled = !files || files.length === 0 || isLoading;
 
   return (
     <section className="flex flex-col gap-4 items-start">
-      <ImageDropzone onDrop={handleFileDrop} />
+      <ImageDropzone onDrop={handleFileDrop} disabled={isLoading} />
       <ImagePreviews previews={previews} />
       <div className="flex gap-2 w-full justify-center">
-        <Button onClick={handleUpload} disabled={isUploadDisabled}>
+        <LoadingButton
+          loading={isLoading}
+          onClick={handleUpload}
+          disabled={isUploadDisabled}
+        >
           Upload
-        </Button>
+        </LoadingButton>
         <Button
           variant="outline"
           onClick={handleReset}
