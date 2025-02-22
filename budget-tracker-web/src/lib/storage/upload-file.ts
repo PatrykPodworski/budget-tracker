@@ -34,7 +34,7 @@ const getFileName = (type: string) => {
   return `${crypto.randomUUID()}.${extension}`;
 };
 
-type UploadFile = {
+export type UploadFile = {
   type: string;
   buffer: ArrayBuffer;
 };

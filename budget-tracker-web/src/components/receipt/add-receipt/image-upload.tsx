@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/shadcn/button";
-import { uploadFiles } from "@/lib/storage/upload-file";
 import { ImageDropzone } from "./image-dropzone";
 import { ImagePreviews } from "./image-previews";
 import { LoadingButton } from "@/components/ui/loading-button";
+import { createUploadRequest } from "@/lib/upload/create-upload-request";
+import { redirect } from "next/navigation";
 
 // TODO: P0 Improve UI
 // TODO: P0 Check mobile behavior
@@ -28,18 +29,10 @@ const ImageUpload = () => {
     }
 
     setIsLoading(true);
-    const filesToUpload = await Promise.all(
-      Array.from(files).map(async (file) => ({
-        buffer: await file.arrayBuffer(),
-        type: file.type,
-      }))
-    );
-
-    await uploadFiles(filesToUpload);
-    setIsLoading(false);
-
-    // TODO: P0 Redirect to status page
-    handleReset();
+    const filesToUpload = await mapFilesToUpload(files);
+    const uploadRequestId = await createUploadRequest(filesToUpload);
+    // TODO: P2: Add Centralized Route Management
+    redirect(`/receipts/status/${uploadRequestId}`);
   };
 
   const handleReset = () => {
@@ -72,5 +65,13 @@ const ImageUpload = () => {
     </section>
   );
 };
+
+const mapFilesToUpload = async (files: FileList) =>
+  await Promise.all(
+    Array.from(files).map(async (file) => ({
+      buffer: await file.arrayBuffer(),
+      type: file.type,
+    }))
+  );
 
 export default ImageUpload;
