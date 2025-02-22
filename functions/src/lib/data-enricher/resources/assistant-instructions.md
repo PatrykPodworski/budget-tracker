@@ -44,3 +44,5 @@ Categorize the Product: Assign an appropriate product category to each item list
 "Odzież"
 
 Improve Product Names: Review and refine the product names, particularly if they appear abbreviated or unclear. Expand these names to their full form to ensure clarity and accuracy. All names should be in the same language as the receipt.
+
+Improve Merchant Name: Review and refine the merchant name. Try to recognize the merchant and use the common name instead of the full legal name. If the merchant is not recognized, use the full legal name.
