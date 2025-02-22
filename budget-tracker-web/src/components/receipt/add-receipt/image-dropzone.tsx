@@ -2,12 +2,14 @@
 
 import { useDropzone } from "react-dropzone";
 
-export const ImageDropzone = ({ onDrop }: ImageDropzoneProps) => {
+// TODO: P1 Style disabled state
+export const ImageDropzone = ({ onDrop, disabled }: ImageDropzoneProps) => {
   const { getRootProps, getInputProps } = useDropzone({
     accept: {
       "image/*": [],
     },
     onDrop,
+    disabled,
   });
 
   return (
@@ -23,4 +25,5 @@ export const ImageDropzone = ({ onDrop }: ImageDropzoneProps) => {
 
 type ImageDropzoneProps = {
   onDrop: (files: File[]) => void;
+  disabled?: boolean;
 };
