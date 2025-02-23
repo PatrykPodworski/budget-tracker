@@ -1,15 +1,15 @@
-import { getUploadStatus } from "@/lib/upload/get-upload-status";
+import { getProcessingBundle } from "@/lib/upload/get-processing-bundle";
 import { notFound } from "next/navigation";
 
 const UploadStatusPage = async ({ params }: UploadStatusPageProps) => {
   const { id } = await params;
-  const uploadStatus = await getUploadStatus(id);
+  const processingBundle = await getProcessingBundle(id);
 
-  if (!uploadStatus) {
+  if (!processingBundle) {
     notFound();
   }
 
-  return <div>{JSON.stringify(uploadStatus)}</div>;
+  return <div>{JSON.stringify(processingBundle)}</div>;
 };
 
 type UploadStatusPageProps = {

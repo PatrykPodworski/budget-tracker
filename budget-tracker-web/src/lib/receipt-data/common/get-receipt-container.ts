@@ -1,4 +1,3 @@
-"use server";
 import { env } from "@/env";
 import { CosmosClient } from "@azure/cosmos";
 

@@ -1,15 +1,20 @@
-export type ProcessingBundle = {
-  id: string;
-  receipts: ProcessingBundleReceipt[];
-};
+import { z } from "zod";
 
-type ProcessingBundleReceipt =
-  | {
-      id: string;
-      status: "uploading" | "reading" | "processing" | "done";
-    }
-  | {
-      id: string;
-      status: "error";
-      error: string;
-    };
+const processingBundleReceiptSchema = z.union([
+  z.object({
+    id: z.string(),
+    status: z.enum(["uploading", "reading", "processing", "done"]),
+  }),
+  z.object({
+    id: z.string(),
+    status: z.literal("error"),
+    error: z.string(),
+  }),
+]);
+
+export const processingBundleSchema = z.object({
+  id: z.string(),
+  receipts: z.array(processingBundleReceiptSchema),
+});
+
+export type ProcessingBundle = z.infer<typeof processingBundleSchema>;
