@@ -10,7 +10,7 @@ export const uploadFiles = async (files: UploadFile[]) => {
 };
 
 const uploadFile = async (file: UploadFile) => {
-  const fileName = getFileName(file.type);
+  const fileName = getFileName(file.id, file.type);
 
   const blobService = new BlockBlobClient(
     env.AZURE_STORAGE_CONNECTION_STRING,
@@ -25,16 +25,17 @@ const uploadFile = async (file: UploadFile) => {
   });
 };
 
-const getFileName = (type: string) => {
+const getFileName = (id: string, type: string) => {
   const extension = mime.extension(type);
   if (!extension) {
     throw new Error(`Could not determine extension for type: ${type}`);
   }
 
-  return `${crypto.randomUUID()}.${extension}`;
+  return `${id}.${extension}`;
 };
 
 export type UploadFile = {
+  id: string;
   type: string;
   buffer: ArrayBuffer;
 };
