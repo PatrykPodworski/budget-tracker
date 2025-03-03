@@ -5,6 +5,7 @@ import { ReceiptRawData } from "./receipt-raw-data";
 
 export const enrichedReceiptDataSchema = z.object({
   id: z.string().uuid(),
+  processingStatusId: z.string().uuid(),
   userId: z.string().uuid(),
   rawDocumentId: z.string().uuid(),
   total: z.number(),
@@ -13,12 +14,15 @@ export const enrichedReceiptDataSchema = z.object({
   items: z.array(enrichedItemSchema),
 });
 
+export type EnrichedReceiptData = z.infer<typeof enrichedReceiptDataSchema>;
+
 export const mapToEnrichedReceiptData = (
   response: AssistantResponse,
   source: ReceiptRawData
-) => {
-  const enriched: EnrichedReceiptData = {
+): EnrichedReceiptData => {
+  const enriched = {
     id: source.id,
+    processingStatusId: source.processingStatusId,
     userId: source.userId,
     rawDocumentId: source.id,
     total: response.total,
@@ -29,5 +33,3 @@ export const mapToEnrichedReceiptData = (
 
   return enriched;
 };
-
-export type EnrichedReceiptData = z.infer<typeof enrichedReceiptDataSchema>;

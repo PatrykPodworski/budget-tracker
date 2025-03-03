@@ -63,6 +63,7 @@ const mapToReceiptData = (fields: Fields, imageFileName: string) => {
 
   const data: ReceiptRawData = {
     id: crypto.randomUUID(),
+    processingStatusId: crypto.randomUUID(), // TODO: P0: Get processingStatusId from the outside
     userId: config.TEMP_USER_ID,
     imageFileName,
     content,

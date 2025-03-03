@@ -1,14 +1,14 @@
-export const handleMultipleDocuments = async (
+export const handleMultipleDocuments = async <T>(
   documents: unknown[],
   info: (message: string) => Promise<void>,
   log: (message: string) => Promise<void>,
   handler: (
     document: unknown,
     log: (message: string) => Promise<void>
-  ) => Promise<unknown>
+  ) => Promise<T>
 ) => {
   info(`Started handling ${documents.length} documents.`);
-  let promises: Promise<unknown>[] = [];
+  let promises: Promise<T>[] = [];
   documents.forEach((document) => {
     promises.push(handler(document, log));
   });
