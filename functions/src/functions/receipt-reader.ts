@@ -1,4 +1,4 @@
-import { app, output } from "@azure/functions";
+import { app, output, StorageBlobHandler } from "@azure/functions";
 import { receiptReader } from "../lib/receipt-reader";
 import { config } from "../config";
 
@@ -8,9 +8,15 @@ const cosmosOutput = output.cosmosDB({
   containerName: config.COSMOS_RAW_CONTAINER,
 });
 
+const handler: StorageBlobHandler = async (blob, context) => {
+  const receipt = await receiptReader(blob, context);
+  // TODO: P-2: Update processing status
+  return receipt;
+};
+
 app.storageBlob("receipt-reader", {
   path: "receipts/{name}",
   connection: "AzureWebJobsStorage",
-  handler: receiptReader,
+  handler: handler,
   return: cosmosOutput,
 });

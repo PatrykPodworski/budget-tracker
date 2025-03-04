@@ -2,7 +2,7 @@ import {
   AzureKeyCredential,
   DocumentAnalysisClient,
 } from "@azure/ai-form-recognizer";
-import { InvocationContext, StorageBlobHandler } from "@azure/functions";
+import { InvocationContext } from "@azure/functions";
 import {
   PrebuiltReceiptDocument,
   PrebuiltReceiptModel,
@@ -12,7 +12,11 @@ import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
 import { ReceiptRawData } from "../../models/receipt-raw-data";
 
-export const receiptReader: StorageBlobHandler = async (blob, context) => {
+//TODO: P1: Remove @azure/functions dependency
+export const receiptReader = async (
+  blob: unknown,
+  context: InvocationContext
+) => {
   const { addChannels, log } = registerLogger();
 
   addChannels(getDefaultChannels(context, "Receipt Reader"));
@@ -24,6 +28,11 @@ export const receiptReader: StorageBlobHandler = async (blob, context) => {
 
   if (!Buffer.isBuffer(blob)) {
     log("Blob is not a buffer");
+    return;
+  }
+
+  if (blob.length === 0) {
+    log("Skipping empty blob");
     return;
   }
 
@@ -60,13 +69,14 @@ type Fields = PrebuiltReceiptDocument["fields"];
 
 const mapToReceiptData = (fields: Fields, imageFileName: string) => {
   const content = extractContentFromDocument(fields);
+  const { id, processingStatusId } = getIdsFromFileName(imageFileName);
 
   const data: ReceiptRawData = {
-    id: crypto.randomUUID(),
-    processingStatusId: crypto.randomUUID(), // TODO: P0: Get processingStatusId from the outside
-    userId: config.TEMP_USER_ID,
+    id,
+    processingStatusId,
     imageFileName,
     content,
+    userId: config.TEMP_USER_ID,
   };
 
   return data;
@@ -103,4 +113,12 @@ const extractTransactionDateTime = (fields: Fields) => {
     transactionDate: fields.transactionDate?.content,
     transactionTime: fields.transactionTime?.content,
   };
+};
+
+// file name format: receipts/{processingStatusId}/{id}.{extension}
+const getIdsFromFileName = (fileName: string) => {
+  const withoutExtension = fileName.split(".")[0];
+  const [processingStatusId, id] = withoutExtension.split("/").slice(1);
+
+  return { processingStatusId, id };
 };
