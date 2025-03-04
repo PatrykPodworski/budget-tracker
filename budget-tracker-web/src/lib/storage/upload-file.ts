@@ -4,18 +4,19 @@ import { BlockBlobClient } from "@azure/storage-blob";
 import mime from "mime-types";
 import { env } from "@/env";
 
-export const uploadFiles = async (files: UploadFile[]) => {
-  const promises = files.map((file) => uploadFile(file));
+export const uploadFiles = async (files: UploadFile[], folderName?: string) => {
+  const promises = files.map((file) => uploadFile(file, folderName));
   await Promise.all(promises);
 };
 
-const uploadFile = async (file: UploadFile) => {
+const uploadFile = async (file: UploadFile, folderName?: string) => {
   const fileName = getFileName(file.id, file.type);
+  const blobPath = folderName ? `${folderName}/${fileName}` : fileName;
 
   const blobService = new BlockBlobClient(
     env.AZURE_STORAGE_CONNECTION_STRING,
     env.AZURE_STORAGE_CONTAINER_NAME,
-    fileName
+    blobPath
   );
 
   await blobService.uploadData(file.buffer, {

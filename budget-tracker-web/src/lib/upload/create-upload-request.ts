@@ -20,7 +20,7 @@ export const createUploadRequest = async (files: RequestUploadFile[]) => {
   const processingBundle = getProcessingBundle(filesToUpload);
 
   await container.items.create(processingBundle);
-  await uploadFiles(filesToUpload);
+  await uploadFiles(filesToUpload, processingBundle.id);
 
   return processingBundle.id;
 };
