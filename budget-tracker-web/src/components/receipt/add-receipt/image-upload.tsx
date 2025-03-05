@@ -8,9 +8,9 @@ import { LoadingButton } from "@/components/ui/loading-button";
 import { createUploadRequest } from "@/lib/upload/create-upload-request";
 import { redirect } from "next/navigation";
 
-// TODO: P0 Improve UI
-// TODO: P0 Check mobile behavior
-// TODO: P0 Upload from clipboard
+// TODO: P1 Improve UI
+// TODO: P1 Check mobile behavior
+// TODO: P1 Upload from clipboard
 const ImageUpload = () => {
   const [files, setFiles] = useState<FileList>();
   const [previews, setPreviews] = useState<string[]>([]);
@@ -31,7 +31,7 @@ const ImageUpload = () => {
     setIsLoading(true);
     const filesToUpload = await mapFilesToUpload(files);
     const uploadRequestId = await createUploadRequest(filesToUpload);
-    // TODO: P2: Add Centralized Route Management
+    // TODO: P2 Add Centralized Route Management
     redirect(`/receipts/status/${uploadRequestId}`);
   };
 

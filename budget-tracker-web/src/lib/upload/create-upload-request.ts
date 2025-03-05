@@ -5,11 +5,8 @@ import { getContainer } from "./common/get-container";
 import { ProcessingBundle } from "./common/processing-bundle";
 
 export const createUploadRequest = async (files: RequestUploadFile[]) => {
+  // TODO: P-2 Add SSE Azure function that will notify the client of the status
   // TODO: P-1 Rename to ReceiptProcessingBundle
-  // TODO: P-1 Update status in functions
-  // TODO: P-1 Add SSE Azure function that will notify the client of the status
-  // TODO: P-1 Upload all files from one request in a single folder with requestId
-  // TODO: P-1 After reading the files from OCR, include requestId in the raw data
   const container = getContainer();
 
   const filesToUpload: UploadFile[] = files.map((file) => ({

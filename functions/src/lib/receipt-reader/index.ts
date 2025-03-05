@@ -12,7 +12,7 @@ import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
 import { ReceiptRawData } from "../../models/receipt-raw-data";
 
-//TODO: P1: Remove @azure/functions dependency
+//TODO: P1 Remove @azure/functions dependency
 export const receiptReader = async (
   blob: unknown,
   context: InvocationContext

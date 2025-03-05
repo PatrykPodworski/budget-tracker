@@ -1,4 +1,4 @@
-// TODO: P2: Fix redundant envs
+// TODO: P2 Fix redundant envs
 const {
   COSMOS_DATABASE,
   COSMOS_RAW_CONTAINER,

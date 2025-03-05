@@ -9,8 +9,7 @@ import { handleMultipleDocuments } from "../../utils/handleMultipleDocuments";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
 
-// TODO: P2: Remove Azure dependencies
-// TODO: P0: Save processing status id in raw data
+// TODO: P2 Remove Azure dependencies
 export const dataEnricher = async (
   documents: unknown[],
   context: InvocationContext
