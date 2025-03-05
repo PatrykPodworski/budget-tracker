@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-// TODO: P2 Use monorepo and share this schema with other projects
+// TODO: P1 Use monorepo and share this schema with other projects
 export const enrichedItemSchema = z.object({
   originalName: z.string().min(1),
   name: z.string().min(1),

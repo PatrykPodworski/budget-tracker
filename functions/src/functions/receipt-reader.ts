@@ -1,6 +1,7 @@
 import { app, output, StorageBlobHandler } from "@azure/functions";
 import { receiptReader } from "../lib/receipt-reader";
 import { config } from "../config";
+import { updateProcessingStatus } from "../lib/update-processing-status";
 
 const cosmosOutput = output.cosmosDB({
   connection: "CosmosDbConnection",
@@ -10,7 +11,11 @@ const cosmosOutput = output.cosmosDB({
 
 const handler: StorageBlobHandler = async (blob, context) => {
   const receipt = await receiptReader(blob, context);
-  // TODO: P-2: Update processing status
+  if (!receipt) {
+    return;
+  }
+
+  await updateProcessingStatus([receipt], { status: "read" });
   return receipt;
 };
 

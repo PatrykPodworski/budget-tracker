@@ -1,4 +1,5 @@
 "use server";
+import { env } from "@/env";
 import { UploadFile, uploadFiles } from "../storage/upload-file";
 import { getContainer } from "./common/get-container";
 import { ProcessingBundle } from "./common/processing-bundle";
@@ -19,18 +20,24 @@ export const createUploadRequest = async (files: RequestUploadFile[]) => {
 
   const processingBundle = getProcessingBundle(filesToUpload);
 
-  await container.items.create(processingBundle);
   await uploadFiles(filesToUpload, processingBundle.id);
+  await container.items.create(processingBundle);
 
   return processingBundle.id;
 };
 
 const getProcessingBundle = (files: UploadFile[]) => {
   const id = crypto.randomUUID();
+  const userId = env.TEMP_USER_ID;
+  const receipts = files.reduce<ProcessingBundle["receipts"]>((acc, file) => {
+    acc[file.id] = { status: "uploaded" };
+    return acc;
+  }, {});
 
   const processingBundle: ProcessingBundle = {
     id,
-    receipts: files.map((x) => ({ id: x.id, status: "uploading" })),
+    userId,
+    receipts,
   };
 
   return processingBundle;
