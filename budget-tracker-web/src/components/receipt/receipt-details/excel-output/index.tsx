@@ -52,7 +52,7 @@ export const ExcelOutput = ({
           className="self-center"
           onClick={handleClick}
           loading={isLoading}
-          disabled={!!transactionDate}
+          disabled={!transactionDate}
         >
           Send to budget
         </LoadingButton>
