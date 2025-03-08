@@ -5,7 +5,6 @@ import { getContainer } from "./common/get-container";
 import { ProcessingBundle } from "./common/processing-bundle";
 
 export const createUploadRequest = async (files: RequestUploadFile[]) => {
-  // TODO: P-2 Add SSE Azure function that will notify the client of the status
   // TODO: P-1 Rename to ReceiptProcessingBundle
   const container = getContainer();
 

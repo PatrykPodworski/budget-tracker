@@ -25,6 +25,7 @@ export const dataEnricher = async (
   }
 };
 
+// TODO: P0 Fix processing multiple documents at once
 const handle = async (
   document: unknown,
   log: (message: string) => Promise<void>

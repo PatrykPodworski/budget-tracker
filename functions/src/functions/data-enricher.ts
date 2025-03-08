@@ -1,10 +1,8 @@
 import { app, output } from "@azure/functions";
 import { config } from "../config";
 import { dataEnricher } from "../lib/data-enricher";
-import { CosmosClient, PatchOperation } from "@azure/cosmos";
 import { updateProcessingStatus } from "../lib/update-processing-status";
 
-//TODO: P0 Cleanup
 //TODO: P1 Rename functions
 //TODO: P1 Add intermediate processing statuses
 const receiptOutput = output.cosmosDB({

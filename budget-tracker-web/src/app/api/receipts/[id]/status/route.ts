@@ -1,10 +1,8 @@
-import {
-  PROCESSING_FINISHED_STATUS,
-  ProcessingBundle,
-} from "@/lib/upload/common/processing-bundle";
+import { ProcessingBundle } from "@/lib/upload/common/processing-bundle";
 import { getProcessingBundle } from "@/lib/upload/get-processing-bundle";
 import { NextRequest } from "next/server";
 import equal from "fast-deep-equal";
+import { PROCESSING_FINISHED_STATUS } from "@/lib/upload/common/processing-steps";
 
 // TODO: P-1 Clean up the code
 export const GET = async (request: NextRequest, { params }: Params) => {

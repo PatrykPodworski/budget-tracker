@@ -1,14 +1,13 @@
 import { z } from "zod";
-
-export const PROCESSING_FINISHED_STATUS = "enriched";
+import { PROCESSING_STATUS_ERROR, PROCESSING_STEPS } from "./processing-steps";
 
 // TODO: P1 Unify the types in web and function projects
 const processingBundleReceiptSchema = z.union([
   z.object({
-    status: z.enum(["uploaded", "read", PROCESSING_FINISHED_STATUS]),
+    status: z.enum(PROCESSING_STEPS),
   }),
   z.object({
-    status: z.literal("error"),
+    status: z.literal(PROCESSING_STATUS_ERROR),
     error: z.string(),
   }),
 ]);
