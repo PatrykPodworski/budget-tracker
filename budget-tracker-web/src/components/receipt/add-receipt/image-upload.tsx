@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/shadcn/button";
 import { ImageDropzone } from "./image-dropzone";
 import { ImagePreviews } from "./image-previews";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { createUploadRequest } from "@/lib/upload/create-upload-request";
+import { createProcessingBundle } from "@/lib/upload/create-processing-bundle";
 import { redirect } from "next/navigation";
 
 // TODO: P1 Improve UI
@@ -30,9 +30,10 @@ const ImageUpload = () => {
 
     setIsLoading(true);
     const filesToUpload = await mapFilesToUpload(files);
-    const uploadRequestId = await createUploadRequest(filesToUpload);
+    const processingBundleId = await createProcessingBundle(filesToUpload);
     // TODO: P2 Add Centralized Route Management
-    redirect(`/receipts/status/${uploadRequestId}`);
+    // TODO: P0 Move the processing status page
+    redirect(`/receipts/status/${processingBundleId}`);
   };
 
   const handleReset = () => {

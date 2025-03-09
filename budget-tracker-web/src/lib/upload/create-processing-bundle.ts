@@ -4,7 +4,7 @@ import { UploadFile, uploadFiles } from "../storage/upload-file";
 import { getContainer } from "./common/get-container";
 import { ProcessingBundle } from "./common/processing-bundle";
 
-export const createUploadRequest = async (files: RequestUploadFile[]) => {
+export const createProcessingBundle = async (files: ProcessingBundleFile[]) => {
   // TODO: P-1 Rename to ReceiptProcessingBundle
   const container = getContainer();
 
@@ -39,4 +39,4 @@ const getProcessingBundle = (files: UploadFile[]) => {
   return processingBundle;
 };
 
-type RequestUploadFile = Omit<UploadFile, "id">;
+type ProcessingBundleFile = Omit<UploadFile, "id">;

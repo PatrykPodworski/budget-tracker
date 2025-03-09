@@ -1,8 +1,8 @@
-import { ProcessingBundle } from "@/lib/upload/common/processing-bundle";
-import { getProcessingBundle } from "@/lib/upload/get-processing-bundle";
 import { NextRequest } from "next/server";
 import equal from "fast-deep-equal";
-import { PROCESSING_FINISHED_STATUS } from "@/lib/upload/common/processing-steps";
+import { ProcessingBundle } from "@/lib/upload/common/processing-bundle";
+import { getProcessingBundle } from "@/lib/upload/get-processing-bundle";
+import { isFinishedStatus } from "@/lib/upload/common/processing-steps";
 import { ProcessingBundleEvent } from "./processing-bundle-event";
 
 export const GET = async (_request: NextRequest, { params }: Params) => {
@@ -66,8 +66,8 @@ const getEncode = () => {
 };
 
 const isProcessingFinished = (processingBundle: ProcessingBundle) =>
-  Object.values(processingBundle.receipts).every(
-    (receipt) => receipt.status === PROCESSING_FINISHED_STATUS
+  Object.values(processingBundle.receipts).every((receipt) =>
+    isFinishedStatus(receipt.status)
   );
 
 const headers = {

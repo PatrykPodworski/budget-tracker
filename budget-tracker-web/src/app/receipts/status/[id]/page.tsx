@@ -1,15 +1,17 @@
-import { ProcessingBundleStatusIndicator } from "./processing-bundle-status-indicator";
+import { ProcessingBundleStatus } from "./processing-bundle-status";
 
-const UploadStatusPage = async ({ params }: UploadStatusPageProps) => {
+const ProcessingBundleStatusPage = async ({
+  params,
+}: ProcessingBundleStatusPageProps) => {
   const { id } = await params;
 
-  return <ProcessingBundleStatusIndicator id={id} />;
+  return <ProcessingBundleStatus id={id} />;
 };
 
-type UploadStatusPageProps = {
+type ProcessingBundleStatusPageProps = {
   params: Promise<{
     id: string;
   }>;
 };
 
-export default UploadStatusPage;
+export default ProcessingBundleStatusPage;
