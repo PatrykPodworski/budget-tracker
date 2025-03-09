@@ -1,20 +1,13 @@
 "use client";
 
-import { ProcessingBundleEvent } from "@/app/api/receipts/[id]/status/route";
+import { ProcessingBundleEvent } from "@/app/api/receipts/[id]/status/processing-bundle-event";
 import { ProcessingBundle } from "@/lib/upload/common/processing-bundle";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/shadcn/button";
 import { useRouter } from "next/navigation";
-import {
-  CheckCircle,
-  Clock,
-  AlertCircle,
-  ArrowRight,
-  Loader2,
-} from "lucide-react";
+import { CheckCircle, ArrowRight, Loader2 } from "lucide-react";
 import {
   PROCESSING_FINISHED_STATUS,
-  PROCESSING_STATUS_ERROR,
   PROCESSING_STEPS,
   PROCESSING_STATUS_UPLOADED,
   PROCESSING_STATUS_READ,
@@ -45,7 +38,7 @@ export const ProcessingBundleStatusIndicator = ({
 
   // TODO: P-1 Clean up this code
   if (!processingBundle) {
-    // TODO: P-2 Add skeleton loader
+    // TODO: P2 Add skeleton loader
     return (
       <div className="flex items-center justify-center min-h-40">
         <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
