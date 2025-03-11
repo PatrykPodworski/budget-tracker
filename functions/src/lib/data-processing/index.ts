@@ -35,7 +35,7 @@ const handle = async (document: unknown) => {
 };
 
 const revalidateReceiptList = async () => {
-  const revalidateUrl = `${config.WEB_BASE_URL}/revalidate?secret=${config.REVALIDATE_SECRET}`;
+  const revalidateUrl = `${config.WEB_BASE_URL}/api/revalidate?secret=${config.REVALIDATE_SECRET}`;
   await fetch(revalidateUrl);
 };
 
