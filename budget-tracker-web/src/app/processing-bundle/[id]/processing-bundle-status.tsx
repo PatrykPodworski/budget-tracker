@@ -1,6 +1,6 @@
 "use client";
 
-import { ProcessingBundleEvent } from "@/app/api/receipts/[id]/status/processing-bundle-event";
+import { ProcessingBundleEvent } from "@/app/api/processing/[id]/processing-bundle-event";
 import { ProcessingBundle } from "@/lib/processing-bundle/common/processing-bundle";
 import { useEffect, useState } from "react";
 import { ReceiptListSkeleton } from "./receipt-list-skeleton";
@@ -10,7 +10,7 @@ export const ProcessingBundleStatus = ({ id }: ProcessingBundleStatusProps) => {
   const [processingBundle, setProcessingBundle] = useState<ProcessingBundle>();
 
   useEffect(() => {
-    const eventSource = new EventSource(`/api/receipts/${id}/status`);
+    const eventSource = new EventSource(`/api/processing/${id}`);
 
     eventSource.onmessage = async (event) => {
       const eventData = JSON.parse(event.data) as ProcessingBundleEvent;
