@@ -1,8 +1,8 @@
 import { NextRequest } from "next/server";
 import equal from "fast-deep-equal";
-import { ProcessingBundle } from "@/lib/upload/common/processing-bundle";
-import { getProcessingBundle } from "@/lib/upload/get-processing-bundle";
-import { isFinishedStatus } from "@/lib/upload/common/processing-steps";
+import { ProcessingBundle } from "@/lib/processing-bundle/common/processing-bundle";
+import { getProcessingBundle } from "@/lib/processing-bundle/get-processing-bundle";
+import { isFinishedStatus } from "@/lib/processing-bundle/common/processing-steps";
 import { ProcessingBundleEvent } from "./processing-bundle-event";
 
 export const GET = async (_request: NextRequest, { params }: Params) => {

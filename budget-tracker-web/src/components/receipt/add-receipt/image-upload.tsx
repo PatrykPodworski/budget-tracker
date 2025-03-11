@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/shadcn/button";
 import { ImageDropzone } from "./image-dropzone";
 import { ImagePreviews } from "./image-previews";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { createProcessingBundle } from "@/lib/upload/create-processing-bundle";
+import { createProcessingBundle } from "@/lib/processing-bundle/create-processing-bundle";
 import { redirect } from "next/navigation";
 
 // TODO: P1 Improve UI

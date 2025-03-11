@@ -1,7 +1,7 @@
 "use client";
 
 import { ProcessingBundleEvent } from "@/app/api/receipts/[id]/status/processing-bundle-event";
-import { ProcessingBundle } from "@/lib/upload/common/processing-bundle";
+import { ProcessingBundle } from "@/lib/processing-bundle/common/processing-bundle";
 import { useEffect, useState } from "react";
 import { ReceiptListSkeleton } from "./receipt-list-skeleton";
 import { BundleReceiptList } from "./receipt-list";

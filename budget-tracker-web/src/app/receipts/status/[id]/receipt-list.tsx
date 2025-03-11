@@ -8,7 +8,7 @@ import {
   getStepIndex,
   ProcessingStatus,
   isFinishedStatus,
-} from "@/lib/upload/common/processing-steps";
+} from "@/lib/processing-bundle/common/processing-steps";
 
 // TODO: P0 Improve UI
 export const BundleReceiptList = ({ receipts }: BundleReceiptListProps) => {

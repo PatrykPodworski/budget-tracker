@@ -1,4 +1,4 @@
-import { ProcessingBundle } from "@/lib/upload/common/processing-bundle";
+import { ProcessingBundle } from "@/lib/processing-bundle/common/processing-bundle";
 
 export type ProcessingBundleEvent = {
   data: ProcessingBundle;
