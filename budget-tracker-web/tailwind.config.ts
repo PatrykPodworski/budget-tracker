@@ -74,8 +74,15 @@ export default {
           from: { height: "var(--radix-collapsible-content-height)" },
           to: { height: "0" },
         },
+        fillHorizontal: {
+          "0%": { transform: "scaleX(0)", transformOrigin: "left" },
+          "50%": { transform: "scaleX(1)", transformOrigin: "left" },
+          "50.001%": { transform: "scaleX(1)", transformOrigin: "right" },
+          "100%": { transform: "scaleX(0)", transformOrigin: "right" },
+        },
       },
       animation: {
+        "fill-horizontal": "fillHorizontal 1s ease-in-out infinite",
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "collapsible-down": "collapsible-down 0.2s ease-out",

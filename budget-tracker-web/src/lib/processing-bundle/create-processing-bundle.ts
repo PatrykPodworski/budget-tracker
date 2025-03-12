@@ -5,7 +5,6 @@ import { getContainer } from "./common/get-container";
 import { ProcessingBundle } from "./common/processing-bundle";
 
 export const createProcessingBundle = async (files: ProcessingBundleFile[]) => {
-  // TODO: P-1 Rename to ReceiptProcessingBundle
   const container = getContainer();
 
   const filesToUpload: UploadFile[] = files.map((file) => ({
