@@ -1,9 +1,8 @@
 import {
   ProgressBundleReceipt,
   ProgressBundleReceiptProps,
-} from "./progress-bundle-receipt";
+} from "./processing-bundle-receipt";
 
-// TODO: P0 Improve UI
 export const BundleReceiptList = ({ receipts }: BundleReceiptListProps) => {
   // TODO: P1: Add back button
   return (

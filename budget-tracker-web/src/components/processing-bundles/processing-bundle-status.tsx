@@ -1,10 +1,10 @@
 "use client";
 
-import { ProcessingBundleEvent } from "@/app/api/processing/[id]/processing-bundle-event";
-import { ProcessingBundle } from "@/lib/processing-bundle/common/processing-bundle";
 import { useEffect, useState } from "react";
-import { ReceiptListSkeleton } from "./receipt-list-skeleton";
-import { BundleReceiptList } from "./receipt-list";
+import { BundleReceiptList } from "@/components/processing-bundles/receipt-list";
+import { ReceiptListSkeleton } from "@/components/processing-bundles/receipt-list/receipt-list-skeleton";
+import { ProcessingBundleEvent } from "@/lib/processing-bundle/common/processing-bundle-event";
+import { ProcessingBundle } from "@/lib/processing-bundle/common/processing-bundle";
 
 export const ProcessingBundleStatus = ({ id }: ProcessingBundleStatusProps) => {
   const [processingBundle, setProcessingBundle] = useState<ProcessingBundle>();

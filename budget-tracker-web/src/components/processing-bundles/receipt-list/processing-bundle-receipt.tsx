@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/shadcn/card";
-import { ProgressStepper } from "./progress-stepper";
+import { ProgressStepper } from "../progress-stepper";
 
 // TODO: P2: Add merchant name and total when available
 // TODO: P2: Handle error state

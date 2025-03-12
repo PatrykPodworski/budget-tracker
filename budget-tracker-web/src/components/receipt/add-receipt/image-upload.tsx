@@ -32,7 +32,7 @@ const ImageUpload = () => {
     const filesToUpload = await mapFilesToUpload(files);
     const processingBundleId = await createProcessingBundle(filesToUpload);
     // TODO: P2 Add Centralized Route Management
-    redirect(`/processing-bundle/${processingBundleId}`);
+    redirect(`/processing-bundles/${processingBundleId}`);
   };
 
   const handleReset = () => {

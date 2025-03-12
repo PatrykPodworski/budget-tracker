@@ -3,7 +3,7 @@ import equal from "fast-deep-equal";
 import { ProcessingBundle } from "@/lib/processing-bundle/common/processing-bundle";
 import { getProcessingBundle } from "@/lib/processing-bundle/get-processing-bundle";
 import { isFinishedStatus } from "@/lib/processing-bundle/common/processing-steps";
-import { ProcessingBundleEvent } from "./processing-bundle-event";
+import { ProcessingBundleEvent } from "@/lib/processing-bundle/common/processing-bundle-event";
 
 export const GET = async (_request: NextRequest, { params }: Params) => {
   const { id } = await params;

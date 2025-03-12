@@ -1,4 +1,4 @@
-import { ProcessingBundleStatus } from "./processing-bundle-status";
+import { ProcessingBundleStatus } from "@/components/processing-bundles/processing-bundle-status";
 
 const ProcessingBundleStatusPage = async ({
   params,
