@@ -6,12 +6,9 @@ import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
 import { enrichedReceiptDataSchema } from "../../models/enriched-receipt-data-schema";
 import { config } from "../../config";
 
-// TODO: P1 Clean up the code
-
-// TODO: P2 Trigger only on new documents (not on updates)
+// TODO: P0 Remove after removing the bot
 // TODO: P2 Automate the deployment process
 // TODO: P2 Unify the config
-// TODO: P2 Inform about the processing progress via the webhook
 // TODO: P2 Improve the logging
 
 // TODO: P3 Absolute import paths
@@ -35,7 +32,7 @@ const handle = async (document: unknown) => {
 };
 
 const revalidateReceiptList = async () => {
-  const revalidateUrl = `${config.WEB_BASE_URL}/revalidate?secret=${config.REVALIDATE_SECRET}`;
+  const revalidateUrl = `${config.WEB_BASE_URL}/api/revalidate?secret=${config.REVALIDATE_SECRET}`;
   await fetch(revalidateUrl);
 };
 

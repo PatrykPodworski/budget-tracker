@@ -7,7 +7,8 @@ const envSchema = z.object({
   COSMOS_ENDPOINT: z.string(),
   COSMOS_KEY: z.string(),
   COSMOS_DATABASE: z.string(),
-  COSMOS_CONTAINER: z.string(),
+  COSMOS_RECEIPT_CONTAINER: z.string(),
+  COSMOS_PROCESSING_BUNDLE_CONTAINER: z.string(),
 
   GOOGLE_DOCUMENT_ID: z.string(),
   GOOGLE_SERVICE_ACCOUNT_BASE64: z.string(),

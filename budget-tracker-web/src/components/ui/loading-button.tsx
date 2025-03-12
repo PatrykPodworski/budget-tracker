@@ -4,10 +4,11 @@ import { Button } from "./shadcn/button";
 export const LoadingButton = ({
   loading,
   children,
+  disabled,
   ...props
 }: LoadingButtonProps) => {
   return (
-    <Button {...props} disabled={loading}>
+    <Button {...props} disabled={loading || disabled}>
       {loading ? "Loading..." : children}
     </Button>
   );

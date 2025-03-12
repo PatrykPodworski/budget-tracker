@@ -1,10 +1,11 @@
 import { app, output } from "@azure/functions";
 import { config } from "../config";
 import { dataEnricher } from "../lib/data-enricher";
+import { updateProcessingStatus } from "../lib/update-processing-status";
 
-//TODO: P1: Rename functions
-
-const cosmosOutput = output.cosmosDB({
+//TODO: P1 Rename functions
+//TODO: P1 Add intermediate processing statuses
+const receiptOutput = output.cosmosDB({
   connection: "CosmosDbConnection",
   databaseName: config.COSMOS_DATABASE,
   containerName: config.COSMOS_ENRICHED_CONTAINER,
@@ -15,6 +16,11 @@ app.cosmosDB("data-enricher", {
   databaseName: config.COSMOS_DATABASE,
   containerName: config.COSMOS_RAW_CONTAINER,
   createLeaseContainerIfNotExists: true,
-  handler: dataEnricher,
-  return: cosmosOutput,
+  return: receiptOutput,
+  handler: async (documents, context) => {
+    const receipts = await dataEnricher(documents, context);
+
+    await updateProcessingStatus(receipts, { status: "enriched" });
+    return receipts;
+  },
 });

@@ -2,14 +2,15 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/shadcn/button";
-import { uploadFiles } from "@/lib/storage/upload-file";
 import { ImageDropzone } from "./image-dropzone";
 import { ImagePreviews } from "./image-previews";
 import { LoadingButton } from "@/components/ui/loading-button";
+import { createProcessingBundle } from "@/lib/processing-bundle/create-processing-bundle";
+import { redirect } from "next/navigation";
 
-// TODO: P0 Improve UI
-// TODO: P0 Check mobile behavior
-// TODO: P0 Upload from clipboard
+// TODO: P1 Improve UI
+// TODO: P1 Check mobile behavior
+// TODO: P1 Upload from clipboard
 const ImageUpload = () => {
   const [files, setFiles] = useState<FileList>();
   const [previews, setPreviews] = useState<string[]>([]);
@@ -28,18 +29,10 @@ const ImageUpload = () => {
     }
 
     setIsLoading(true);
-    const filesToUpload = await Promise.all(
-      Array.from(files).map(async (file) => ({
-        buffer: await file.arrayBuffer(),
-        type: file.type,
-      }))
-    );
-
-    await uploadFiles(filesToUpload);
-    setIsLoading(false);
-
-    // TODO: P0 Redirect to status page
-    handleReset();
+    const filesToUpload = await mapFilesToUpload(files);
+    const processingBundleId = await createProcessingBundle(filesToUpload);
+    // TODO: P2 Add Centralized Route Management
+    redirect(`/processing-bundles/${processingBundleId}`);
   };
 
   const handleReset = () => {
@@ -72,5 +65,13 @@ const ImageUpload = () => {
     </section>
   );
 };
+
+const mapFilesToUpload = async (files: FileList) =>
+  await Promise.all(
+    Array.from(files).map(async (file) => ({
+      buffer: await file.arrayBuffer(),
+      type: file.type,
+    }))
+  );
 
 export default ImageUpload;

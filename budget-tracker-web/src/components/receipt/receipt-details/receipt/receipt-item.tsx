@@ -6,9 +6,9 @@ import { Label } from "@/components/ui/shadcn/label";
 import React from "react";
 import { PriceCollapse } from "./price-collapse";
 
+// TODO: P1 Delete item option
+// TODO: P1 Add item option
 // TODO: P2 Implement generic handler
-// TODO: P3 Delete item option
-// TODO: P3 Add item option
 
 export const ReceiptItem = ({
   item,

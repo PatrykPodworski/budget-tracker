@@ -4,9 +4,9 @@ import getReceiptImages from "./getReceiptImages";
 import uploadImages from "./uploadImages";
 import { initializeServer } from "./initializeServer";
 
-// TODO: P1: Add health check endpoint
-// TODO: P2: Fix the exports
-// TODO: P3: Update eslint
+// TODO: P1 Add health check endpoint
+// TODO: P2 Fix the exports
+// TODO: P3 Update eslint
 
 const client = new Client({
   intents: [

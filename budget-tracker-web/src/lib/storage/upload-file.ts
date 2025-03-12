@@ -4,18 +4,19 @@ import { BlockBlobClient } from "@azure/storage-blob";
 import mime from "mime-types";
 import { env } from "@/env";
 
-export const uploadFiles = async (files: UploadFile[]) => {
-  const promises = files.map((file) => uploadFile(file));
+export const uploadFiles = async (files: UploadFile[], folderName?: string) => {
+  const promises = files.map((file) => uploadFile(file, folderName));
   await Promise.all(promises);
 };
 
-const uploadFile = async (file: UploadFile) => {
-  const fileName = getFileName(file.type);
+const uploadFile = async (file: UploadFile, folderName?: string) => {
+  const fileName = getFileName(file.id, file.type);
+  const blobPath = folderName ? `${folderName}/${fileName}` : fileName;
 
   const blobService = new BlockBlobClient(
     env.AZURE_STORAGE_CONNECTION_STRING,
     env.AZURE_STORAGE_CONTAINER_NAME,
-    fileName
+    blobPath
   );
 
   await blobService.uploadData(file.buffer, {
@@ -25,16 +26,17 @@ const uploadFile = async (file: UploadFile) => {
   });
 };
 
-const getFileName = (type: string) => {
+const getFileName = (id: string, type: string) => {
   const extension = mime.extension(type);
   if (!extension) {
     throw new Error(`Could not determine extension for type: ${type}`);
   }
 
-  return `${crypto.randomUUID()}.${extension}`;
+  return `${id}.${extension}`;
 };
 
-type UploadFile = {
+export type UploadFile = {
+  id: string;
   type: string;
   buffer: ArrayBuffer;
 };
