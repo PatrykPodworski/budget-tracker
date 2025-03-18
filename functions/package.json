@@ -15,16 +15,15 @@
   },
   "dependencies": {
     "@azure/ai-form-recognizer": "5.0.0",
-    "@azure/cosmos": "^4.2.0",
-    "@azure/functions": "^4.0.0",
-    "@azure/identity": "^4.0.1",
-    "discord.js": "^14.7.1",
-    "openai": "^4.52.0",
-    "zod": "^3.23.8"
+    "@azure/cosmos": "^4.3.0",
+    "@azure/functions": "^4.7.0",
+    "@azure/identity": "^4.8.0",
+    "openai": "^4.87.4",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/node": "^20.x",
-    "rimraf": "^5.0.0",
+    "@types/node": "^22.13.10",
+    "rimraf": "^6.0.1",
     "typescript": "^5.7.2"
   },
   "main": "dist/src/{index.js,functions/*.js}"
