@@ -25,7 +25,10 @@ const getAssistantResponse = async (document: ReceiptRawData) => {
   });
 
   if (run.status !== "completed") {
-    throw new Error(`Run failed with status: ${run.status}`);
+    // TODO: P2 Handle retry if 4o-mini is too dumb
+    throw new Error(
+      `Run failed with status: ${run.status}, reason: ${run.last_error}`
+    );
   }
 
   const messages = await openai.beta.threads.messages.list(run.thread_id);
