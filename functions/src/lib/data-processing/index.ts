@@ -1,12 +1,8 @@
 import { CosmosDBHandler } from "@azure/functions";
-import { handleMultipleDocuments } from "../../utils/handleMultipleDocuments";
-import { getWebhookClient } from "../../utils/getWebhookClient";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
-import { enrichedReceiptDataSchema } from "../../models/enriched-receipt-data-schema";
 import { config } from "../../config";
 
-// TODO: P0 Remove after removing the bot
 // TODO: P2 Automate the deployment process
 // TODO: P2 Unify the config
 // TODO: P2 Improve the logging
@@ -14,39 +10,18 @@ import { config } from "../../config";
 // TODO: P3 Absolute import paths
 
 export const dataProcessing: CosmosDBHandler = async (documents, context) => {
-  const { addChannels, info, log } = registerLogger();
+  const { addChannels, info } = registerLogger();
   addChannels(getDefaultChannels(context, "Data Processor"));
   try {
-    await handleMultipleDocuments(documents, info, log, handle);
+    await info("Revalidating receipt list");
+    await revalidateReceiptList();
   } catch (error) {
     context.error(error);
   }
 };
 
-const handle = async (document: unknown) => {
-  const receiptData = await enrichedReceiptDataSchema.parseAsync(document);
-
-  await revalidateReceiptList();
-
-  await sendLinkToReceipt(receiptData.merchantName, receiptData.id);
-};
-
+// TODO: P1 Remove after adding the dynamic receipt fetch
 const revalidateReceiptList = async () => {
   const revalidateUrl = `${config.WEB_BASE_URL}/api/revalidate?secret=${config.REVALIDATE_SECRET}`;
   await fetch(revalidateUrl);
-};
-
-const sendLinkToReceipt = async (
-  merchantName: string | undefined,
-  id: string
-) => {
-  const client = getWebhookClient();
-
-  const url = `${config.WEB_BASE_URL}/receipts/${id}`;
-  const content = `Receipt from ${merchantName} processed. [View](${url})`;
-
-  await client.send({
-    username: "Receipt Assistant",
-    content: content,
-  });
 };

@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/shadcn/button";
 import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
-// TODO: P0 Remove bot
 const AddReceipt = async () => {
   return (
     <div className="flex flex-col mx-auto gap-4 max-w-prose">
