@@ -5,9 +5,11 @@ import { BundleReceiptList } from "@/components/processing-bundles/receipt-list"
 import { ReceiptListSkeleton } from "@/components/processing-bundles/receipt-list/receipt-list-skeleton";
 import { ProcessingBundleEvent } from "@/lib/processing-bundle/common/processing-bundle-event";
 import { ProcessingBundle } from "@/lib/processing-bundle/common/processing-bundle";
+import { useRedirectToProcessedReceipt } from "./use-redirect-to-processed-receipt";
 
 export const ProcessingBundleStatus = ({ id }: ProcessingBundleStatusProps) => {
   const [processingBundle, setProcessingBundle] = useState<ProcessingBundle>();
+  useRedirectToProcessedReceipt(processingBundle);
 
   useEffect(() => {
     const eventSource = new EventSource(`/api/processing/${id}`);
