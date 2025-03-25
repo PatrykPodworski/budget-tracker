@@ -14,6 +14,7 @@ import { useDebounce } from "@/lib/utils/use-debounce";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { TotalPrice } from "./total-price";
 import { DeleteReceiptButton } from "./delete-receipt-button";
+import { AddReceiptItem } from "./add-receipt-item";
 
 // TODO: P2 Table view for desktop
 // TODO: P3 Numbers formatting in inputs vs in labels
@@ -22,6 +23,7 @@ export const Receipt = ({
   onReceiptItemChange,
   onMerchantChange,
   onDateChange,
+  onAddItem,
 }: ReceiptProps) => {
   const { isLoading, debounced } = useDebounce(onMerchantChange);
   const { isLoading: isDateChangeLoading, debounced: debouncedOnDateChange } =
@@ -65,6 +67,7 @@ export const Receipt = ({
               onItemChange={(newItem) => onReceiptItemChange(newItem, index)}
             />
           ))}
+          <AddReceiptItem onAddItem={onAddItem} />
         </div>
       </CardContent>
     </Card>
@@ -76,4 +79,5 @@ type ReceiptProps = {
   onReceiptItemChange: (newItem: EnrichedItem, index: number) => Promise<void>;
   onMerchantChange: (newMerchant: string) => Promise<void>;
   onDateChange: (newDate: Date | undefined) => Promise<void>;
+  onAddItem: () => Promise<void>;
 };

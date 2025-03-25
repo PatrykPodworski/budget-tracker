@@ -11,6 +11,7 @@ import {
   updateReceiptItem,
   updateReceiptMerchantName,
   updateReceiptTransactionDate,
+  addReceiptItem,
 } from "@/lib/receipt-data/update";
 
 // TODO: P2 Input with end icon
@@ -59,6 +60,12 @@ export const ReceiptDetails = ({
     setReceipt(updatedReceipt);
   };
 
+  const handleAddItem = async () => {
+    const updatedReceipt = await addReceiptItem(receipt.id, receipt.userId);
+
+    setReceipt(updatedReceipt);
+  };
+
   return (
     <>
       <Receipt
@@ -66,6 +73,7 @@ export const ReceiptDetails = ({
         onReceiptItemChange={handleReceiptItemChange}
         onMerchantChange={handleMerchantChange}
         onDateChange={handleDateChange}
+        onAddItem={handleAddItem}
       />
       <ExcelOutput
         items={receipt.items}

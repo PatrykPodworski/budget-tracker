@@ -26,7 +26,7 @@ export const ReceiptItem = ({
   const idPrefix = `item-${index}`;
 
   return (
-    <div className="grid grid-cols-[min-content,auto] gap-x-4 gap-y-2 auto-cols-auto">
+    <div className="grid grid-cols-[64px,auto] gap-x-4 gap-y-2 auto-cols-auto">
       <Label htmlFor={`${idPrefix}-name`} className="self-center">
         Name
       </Label>
