@@ -3,23 +3,26 @@ import {
   EnrichedItem,
   enrichedItemSchema,
 } from "@/models/enriched-item-schema";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 
 export const useEditReceiptItem = (
   item: EnrichedItem,
-  onItemChange: (item: EnrichedItem) => void
+  onItemChange: (item: EnrichedItem) => Promise<void>,
+  onItemDelete: () => Promise<void>
 ) => {
-  const { isLoading, debounced } = useDebounce(onItemChange);
+  const { isLoading: isChangeLoading, debounced } = useDebounce(onItemChange);
+  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
+
   const ref = useRef<HTMLInputElement>(undefined);
 
   useEffect(() => {
-    if (isLoading || !ref.current) {
+    if (isChangeLoading || !ref.current) {
       return;
     }
 
     ref.current.focus();
     ref.current = undefined;
-  }, [isLoading]);
+  }, [isChangeLoading]);
 
   const handleCategoryChange = (value: string) => {
     const newItem = { ...item, category: value };
@@ -81,12 +84,20 @@ export const useEditReceiptItem = (
     debounced(newItem);
   };
 
+  const handleDelete = async () => {
+    setIsDeleteLoading(true);
+    await onItemDelete();
+    setIsDeleteLoading(false);
+    ref.current = undefined;
+  };
+
   return {
     handleCategoryChange,
     handleNameChange,
     handleQuantityChange,
     handleUnitPriceChange,
     handleDiscountChange,
-    isLoading,
+    handleDelete,
+    isLoading: isDeleteLoading || isChangeLoading,
   };
 };

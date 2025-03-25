@@ -14,7 +14,7 @@ export const DeleteReceiptButton = ({ id }: DeleteReceiptButton) => {
 
   return (
     <Button className="sm:mt-6" variant="destructive" onClick={handleDelete}>
-      Delete
+      Delete recept
     </Button>
   );
 };
