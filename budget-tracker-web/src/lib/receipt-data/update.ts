@@ -3,7 +3,6 @@ import { PatchOperation } from "@azure/cosmos";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 import { enrichedReceiptDataSchema } from "@/models/enriched-receipt-data-schema";
 import { getReceiptContainer } from "@/lib/receipt-data/common/get-receipt-container";
-import { categories } from "@/data/categories";
 
 export const updateReceiptItem = async (
   id: string,
@@ -35,36 +34,6 @@ const updateReceiptField = async (
 
   const operations: PatchOperation[] = [
     { op: "replace", path: `/${field}`, value },
-  ];
-
-  const { resource } = await container
-    .item(id, partitionKey)
-    .patch({ operations });
-
-  const parsed = enrichedReceiptDataSchema.parse(resource);
-  return parsed;
-};
-
-/**
- * Adds a new default item to the end of the receipt's items array
- */
-export const addReceiptItem = async (id: string, partitionKey: string) => {
-  const container = getReceiptContainer();
-
-  // Create a new default item
-  const newItem: EnrichedItem = {
-    name: "New Item",
-    originalName: "New Item",
-    category: categories[0],
-    quantity: 1,
-    unitPrice: 0,
-    discount: 0,
-    totalPrice: 0,
-  };
-
-  // Use the JSON Patch "-" syntax to append to the array
-  const operations: PatchOperation[] = [
-    { op: "add", path: "/items/-", value: newItem },
   ];
 
   const { resource } = await container

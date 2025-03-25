@@ -24,6 +24,7 @@ export const Receipt = ({
   onMerchantChange,
   onDateChange,
   onAddItem,
+  onItemDelete,
 }: ReceiptProps) => {
   const { isLoading, debounced } = useDebounce(onMerchantChange);
   const { isLoading: isDateChangeLoading, debounced: debouncedOnDateChange } =
@@ -64,7 +65,10 @@ export const Receipt = ({
               key={index}
               index={index}
               item={item}
-              onItemChange={(newItem) => onReceiptItemChange(newItem, index)}
+              onItemChange={async (newItem) =>
+                await onReceiptItemChange(newItem, index)
+              }
+              onItemDelete={async () => await onItemDelete(index)}
             />
           ))}
           <AddReceiptItem onAddItem={onAddItem} />
@@ -80,4 +84,5 @@ type ReceiptProps = {
   onMerchantChange: (newMerchant: string) => Promise<void>;
   onDateChange: (newDate: Date | undefined) => Promise<void>;
   onAddItem: () => Promise<void>;
+  onItemDelete: (index: number) => Promise<void>;
 };

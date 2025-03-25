@@ -11,9 +11,11 @@ import {
   updateReceiptItem,
   updateReceiptMerchantName,
   updateReceiptTransactionDate,
-  addReceiptItem,
 } from "@/lib/receipt-data/update";
+import { addReceiptItem } from "@/lib/receipt-data/add-receipt-item";
+import { deleteReceiptItem } from "@/lib/receipt-data/delete-receipt-item";
 
+// TODO: P1 Zustand store; move handlers down
 // TODO: P2 Input with end icon
 // TODO: P3 Error handling on update
 export const ReceiptDetails = ({
@@ -66,6 +68,16 @@ export const ReceiptDetails = ({
     setReceipt(updatedReceipt);
   };
 
+  const handleItemDelete = async (index: number) => {
+    const updatedReceipt = await deleteReceiptItem(
+      receipt.id,
+      receipt.userId,
+      index
+    );
+
+    setReceipt(updatedReceipt);
+  };
+
   return (
     <>
       <Receipt
@@ -74,6 +86,7 @@ export const ReceiptDetails = ({
         onMerchantChange={handleMerchantChange}
         onDateChange={handleDateChange}
         onAddItem={handleAddItem}
+        onItemDelete={handleItemDelete}
       />
       <ExcelOutput
         items={receipt.items}
