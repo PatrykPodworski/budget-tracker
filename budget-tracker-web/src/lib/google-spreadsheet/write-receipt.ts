@@ -12,6 +12,7 @@ import { getSheetTitleToWrite } from "./utils/get-sheet-title-to-write";
 
 // TODO: P2 Check for duplicated writes
 export const writeReceipt = async ({
+  receiptId,
   total,
   transactionDate,
   merchantName,
@@ -22,7 +23,12 @@ export const writeReceipt = async ({
   const sheetTitle = getSheetTitleToWrite(transactionDate);
 
   const categoryParams = getCategoryParams(categories, transactionDate);
-  const expenseParam = getExpenseParam(transactionDate, total, merchantName);
+  const expenseParam = getExpenseParam(
+    transactionDate,
+    total,
+    merchantName,
+    receiptId
+  );
   const writeParams = [...categoryParams, expenseParam];
 
   await bulkWrite(sheetTitle, writeParams);
@@ -33,6 +39,7 @@ type WriteReceiptParams = {
   items: EnrichedItem[]; // TODO: P2 Limit the fields
   total: number;
   merchantName: string | undefined;
+  receiptId: string;
 };
 
 const getCategoryParams = (
@@ -70,7 +77,8 @@ const getCategoryParam = (
 const getExpenseParam = (
   transactionDate: Date,
   total: number,
-  merchantName: string | undefined
+  merchantName: string | undefined,
+  receiptId: string
 ) => {
   const column = getColumnToWrite(transactionDate);
   const row = getRowToWrite();
@@ -79,7 +87,7 @@ const getExpenseParam = (
     column,
     row,
     formula: total.toFixed(2),
-    comment: `${formatCurrency(total)}\t${merchantName}`,
+    comment: `${formatCurrency(total)}\t${merchantName} ${receiptId}`,
   };
 
   return param;

@@ -8,6 +8,8 @@ import { LoadingButton } from "@/components/ui/loading-button";
 import { createProcessingBundle } from "@/lib/processing-bundle/create-processing-bundle";
 import { redirect } from "next/navigation";
 
+// TODO: P0 Handle payload too large error
+// TODO: P0 Log number of tokens consumed by enricher
 // TODO: P1 Improve UI
 // TODO: P1 Check mobile behavior
 // TODO: P1 Upload from clipboard
