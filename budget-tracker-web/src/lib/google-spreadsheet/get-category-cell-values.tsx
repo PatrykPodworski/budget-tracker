@@ -30,8 +30,8 @@ const generateCategoryCellValues = (
   const sheetsFormulas = Object.entries(grouped).reduce(
     (acc: Record<string, CellValues>, [category, items]) => {
       const formula = formatCategoryFormula(items);
-      const comment = formatCategoryComment(items);
-      acc[category] = { formula, comment };
+      const note = formatCategoryNote(items);
+      acc[category] = { formula, note };
       return acc;
     },
     {}
@@ -53,7 +53,7 @@ const formatItemPriceFormula = (item: EnrichedItem) => {
   return item.discount > 0 ? `${fullPrice}-${item.discount}` : fullPrice;
 };
 
-const formatCategoryComment = (items: EnrichedItem[]) => {
+const formatCategoryNote = (items: EnrichedItem[]) => {
   return items
     .map((item) => `${formatCurrency(item.totalPrice)}\t${item.name}`)
     .join("\n");

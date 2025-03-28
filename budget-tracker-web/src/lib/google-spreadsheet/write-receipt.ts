@@ -3,14 +3,13 @@
 import { isCategory } from "@/data/categories";
 import { getCategoryCellValues } from "./get-category-cell-values";
 import { bulkWrite } from "./bulk-write";
-import { CellValues, CellWrite } from "./cell-write";
+import { CellValidation, CellValues, CellWrite } from "./cell-write";
 import { getRowToWrite } from "./utils/get-row-to-write";
 import { getColumnToWrite } from "./utils/get-column-to-write";
 import { formatCurrency } from "../utils";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 import { getSheetTitleToWrite } from "./utils/get-sheet-title-to-write";
 
-// TODO: P2 Check for duplicated writes
 export const writeReceipt = async ({
   receiptId,
   total,
@@ -30,8 +29,14 @@ export const writeReceipt = async ({
     receiptId
   );
   const writeParams = [...categoryParams, expenseParam];
+  const validation: CellValidation = {
+    type: "noteId",
+    value: receiptId,
+    column: expenseParam.column,
+    row: expenseParam.row,
+  };
 
-  await bulkWrite(sheetTitle, writeParams);
+  await bulkWrite(sheetTitle, writeParams, validation);
 };
 
 type WriteReceiptParams = {
@@ -87,7 +92,7 @@ const getExpenseParam = (
     column,
     row,
     formula: total.toFixed(2),
-    comment: `${formatCurrency(total)}\t${merchantName} ${receiptId}`,
+    note: `${formatCurrency(total)}\t${merchantName} ${receiptId}`,
   };
 
   return param;

@@ -13,8 +13,7 @@ import { LoadingButton } from "@/components/ui/loading-button";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 
 // TODO: P0 Rename
-// TODO: P0 Add id to notes
-// TODO: P0 Detect if the receipt is already in the spreadsheet
+// TODO: P0 Disable button when receipt already in the budget
 // TODO: P1 Find potential duplicated receipts (amount, date, merchant name)
 export const ExcelOutput = ({
   receiptId,
