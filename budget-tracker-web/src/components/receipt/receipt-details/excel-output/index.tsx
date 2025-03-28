@@ -12,8 +12,11 @@ import { useTransition } from "react";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 
-// TODO: P1 Rename
+// TODO: P0 Rename
+// TODO: P0 Disable button when receipt already in the budget
+// TODO: P1 Find potential duplicated receipts (amount, date, merchant name)
 export const ExcelOutput = ({
+  receiptId,
   items,
   merchantName,
   total,
@@ -29,6 +32,7 @@ export const ExcelOutput = ({
 
     return startTransition(() =>
       writeReceipt({
+        receiptId,
         total,
         transactionDate,
         merchantName,
@@ -62,6 +66,7 @@ export const ExcelOutput = ({
 };
 
 type ExcelOutputProps = {
+  receiptId: string;
   total: number;
   transactionDate?: Date;
   merchantName: string | undefined;

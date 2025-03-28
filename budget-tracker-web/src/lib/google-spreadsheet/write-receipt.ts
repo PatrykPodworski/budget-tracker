@@ -3,15 +3,15 @@
 import { isCategory } from "@/data/categories";
 import { getCategoryCellValues } from "./get-category-cell-values";
 import { bulkWrite } from "./bulk-write";
-import { CellValues, CellWrite } from "./cell-write";
+import { CellValidation, CellValues, CellWrite } from "./cell-write";
 import { getRowToWrite } from "./utils/get-row-to-write";
 import { getColumnToWrite } from "./utils/get-column-to-write";
 import { formatCurrency } from "../utils";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 import { getSheetTitleToWrite } from "./utils/get-sheet-title-to-write";
 
-// TODO: P2 Check for duplicated writes
 export const writeReceipt = async ({
+  receiptId,
   total,
   transactionDate,
   merchantName,
@@ -22,10 +22,21 @@ export const writeReceipt = async ({
   const sheetTitle = getSheetTitleToWrite(transactionDate);
 
   const categoryParams = getCategoryParams(categories, transactionDate);
-  const expenseParam = getExpenseParam(transactionDate, total, merchantName);
+  const expenseParam = getExpenseParam(
+    transactionDate,
+    total,
+    merchantName,
+    receiptId
+  );
   const writeParams = [...categoryParams, expenseParam];
+  const validation: CellValidation = {
+    type: "noteId",
+    value: receiptId,
+    column: expenseParam.column,
+    row: expenseParam.row,
+  };
 
-  await bulkWrite(sheetTitle, writeParams);
+  await bulkWrite(sheetTitle, writeParams, validation);
 };
 
 type WriteReceiptParams = {
@@ -33,6 +44,7 @@ type WriteReceiptParams = {
   items: EnrichedItem[]; // TODO: P2 Limit the fields
   total: number;
   merchantName: string | undefined;
+  receiptId: string;
 };
 
 const getCategoryParams = (
@@ -70,7 +82,8 @@ const getCategoryParam = (
 const getExpenseParam = (
   transactionDate: Date,
   total: number,
-  merchantName: string | undefined
+  merchantName: string | undefined,
+  receiptId: string
 ) => {
   const column = getColumnToWrite(transactionDate);
   const row = getRowToWrite();
@@ -79,7 +92,7 @@ const getExpenseParam = (
     column,
     row,
     formula: total.toFixed(2),
-    comment: `${formatCurrency(total)}\t${merchantName}`,
+    note: `${formatCurrency(total)}\t${merchantName} ${receiptId}`,
   };
 
   return param;

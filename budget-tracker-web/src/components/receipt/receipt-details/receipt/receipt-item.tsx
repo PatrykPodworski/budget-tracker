@@ -8,7 +8,6 @@ import { PriceCollapse } from "./price-collapse";
 import { Button } from "@/components/ui/shadcn/button";
 import { TrashIcon } from "lucide-react";
 
-// TODO: P1 Add item option
 // TODO: P2 Implement generic handler
 
 export const ReceiptItem = ({

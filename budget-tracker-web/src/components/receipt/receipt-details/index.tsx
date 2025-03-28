@@ -89,6 +89,7 @@ export const ReceiptDetails = ({
         onItemDelete={handleItemDelete}
       />
       <ExcelOutput
+        receiptId={receipt.id}
         items={receipt.items}
         merchantName={receipt.merchantName}
         total={receipt.total}

@@ -1,7 +1,5 @@
 import { z } from "zod";
 
-// TODO: P1 Unify ids (image, raw, enriched)
-
 export const enrichedItemSchema = z.object({
   originalName: z.string().min(1),
   name: z.string().min(1),
