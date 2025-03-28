@@ -62,7 +62,7 @@ export const Receipt = ({
         <div className="flex flex-col gap-8 sm:gap-4">
           {receipt.items.map((item, index) => (
             <ReceiptItem
-              key={index}
+              key={`${item.name}-${index}`}
               index={index}
               item={item}
               onItemChange={async (newItem) =>
