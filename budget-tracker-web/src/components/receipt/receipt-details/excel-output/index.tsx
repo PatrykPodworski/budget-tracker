@@ -1,4 +1,5 @@
 "use client";
+
 import {
   Card,
   CardContent,
@@ -11,9 +12,10 @@ import { writeReceipt } from "@/lib/google-spreadsheet/write-receipt";
 import { useTransition } from "react";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { EnrichedItem } from "@/models/enriched-item-schema";
+import { useReceiptValidation } from "@/lib/utils/use-receipt-validation";
 
 // TODO: P0 Rename
-// TODO: P0 Disable button when receipt already in the budget
+// TODO: P0 Mark receipt as sent in CosmosDB
 // TODO: P1 Find potential duplicated receipts (amount, date, merchant name)
 export const ExcelOutput = ({
   receiptId,
@@ -22,7 +24,12 @@ export const ExcelOutput = ({
   total,
   transactionDate,
 }: ExcelOutputProps) => {
-  const [isLoading, startTransition] = useTransition();
+  const [isSending, startSending] = useTransition();
+  const { isValidating, validationResult } = useReceiptValidation({
+    receiptId,
+    transactionDate,
+  });
+
   const categoryCellValues = getCategoryCellValues(items);
 
   const handleClick = () => {
@@ -30,15 +37,39 @@ export const ExcelOutput = ({
       return;
     }
 
-    return startTransition(() =>
-      writeReceipt({
-        receiptId,
-        total,
-        transactionDate,
-        merchantName,
-        items,
-      })
-    );
+    // Use startSending for sending to budget
+    startSending(async () => {
+      try {
+        await writeReceipt({
+          receiptId,
+          total,
+          transactionDate,
+          merchantName,
+          items,
+        });
+      } catch (error) {
+        console.error("Error writing receipt to spreadsheet:", error);
+      }
+    });
+  };
+
+  // Button should be disabled if:
+  // 1. No transaction date
+  // 2. Currently validating
+  // 3. Validation completed and failed
+  const isButtonDisabled =
+    !transactionDate ||
+    isValidating ||
+    (!!validationResult && !validationResult.isValid);
+
+  const getButtonTooltip = () => {
+    if (!transactionDate) {
+      return "Transaction date is required";
+    }
+    if (validationResult && !validationResult.isValid) {
+      return validationResult.message || "Receipt validation failed";
+    }
+    return "";
   };
 
   return (
@@ -52,11 +83,17 @@ export const ExcelOutput = ({
             <ExcelFormula category={category} key={index} formula={formula} />
           )
         )}
+        {validationResult && !validationResult.isValid && (
+          <div className="text-red-500 text-sm">
+            {validationResult.message || "Receipt validation failed"}
+          </div>
+        )}
         <LoadingButton
           className="self-center"
           onClick={handleClick}
-          loading={isLoading}
-          disabled={!transactionDate}
+          loading={isValidating || isSending}
+          disabled={isButtonDisabled}
+          title={getButtonTooltip()}
         >
           Send to budget
         </LoadingButton>

@@ -1,32 +1,24 @@
 "use server";
 
-import { env } from "@/env";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetCell,
   GoogleSpreadsheetWorksheet,
 } from "google-spreadsheet";
+import { env } from "@/env";
 import { getAuth } from "./get-auth";
-import { CellWrite, CellInfo, CellValidation } from "./cell-write";
+import { CellWrite, CellInfo } from "./cell-write";
 
-export const bulkWrite = async (
-  sheetTitle: string,
-  writes: CellWrite[],
-  validation?: CellValidation
-) => {
+export const bulkWrite = async (sheetTitle: string, writes: CellWrite[]) => {
   const document = await getAndPrepareDocument();
   const sheet = await getAndPrepareSheet(document, sheetTitle, writes);
-
-  if (!validate(sheet, validation)) {
-    console.log("Validation failed, skipping write.");
-    return;
-  }
 
   writes.forEach((x) => writeToCell(sheet, x));
 
   await sheet.saveUpdatedCells();
 };
 
+// TODO: P0: Reuse logic in write and read
 const getAndPrepareDocument = async () => {
   const auth = await getAuth();
   const document = new GoogleSpreadsheet(env.GOOGLE_DOCUMENT_ID, auth);
@@ -62,41 +54,6 @@ const getCellRange = (cellInfos: CellInfo[]) => {
     startRowIndex: startRow,
     endRowIndex: endRow + 1,
   };
-};
-
-const validate = (
-  sheet: GoogleSpreadsheetWorksheet,
-  validation?: CellValidation
-) => {
-  if (!validation) {
-    return true;
-  }
-  const { type, value } = validation;
-  const { column, row } = validation;
-
-  const cell = sheet.getCell(row, column);
-  const isValid = isCellValid(cell, type, value);
-
-  return isValid;
-};
-
-const isCellValid = (
-  cell: GoogleSpreadsheetCell,
-  type: CellValidation["type"],
-  value: CellValidation["value"]
-) => {
-  switch (type) {
-    case "noteId":
-      console.log(
-        "Validating noteId",
-        cell.note,
-        value,
-        cell.note?.includes(value)
-      );
-      return cell.note ? !cell.note.includes(value) : true;
-    default:
-      return type satisfies never;
-  }
 };
 
 const writeToCell = (
