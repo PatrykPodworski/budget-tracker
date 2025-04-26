@@ -1,11 +1,11 @@
 "use server";
 
-import { env } from "@/env";
 import {
   GoogleSpreadsheet,
   GoogleSpreadsheetCell,
   GoogleSpreadsheetWorksheet,
 } from "google-spreadsheet";
+import { env } from "@/env";
 import { getAuth } from "./get-auth";
 import { CellWrite, CellInfo, CellValidation } from "./cell-write";
 
@@ -27,6 +27,7 @@ export const bulkWrite = async (
   await sheet.saveUpdatedCells();
 };
 
+// TODO: P0: Reuse logic in write and read
 const getAndPrepareDocument = async () => {
   const auth = await getAuth();
   const document = new GoogleSpreadsheet(env.GOOGLE_DOCUMENT_ID, auth);

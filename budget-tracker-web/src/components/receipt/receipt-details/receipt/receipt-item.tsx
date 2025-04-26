@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/shadcn/button";
 import { TrashIcon } from "lucide-react";
 
 // TODO: P2 Implement generic handler
-
 export const ReceiptItem = ({
   item,
   onItemChange,

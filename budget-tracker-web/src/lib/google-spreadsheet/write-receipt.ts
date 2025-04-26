@@ -9,6 +9,7 @@ import { getColumnToWrite } from "./utils/get-column-to-write";
 import { formatCurrency } from "../utils";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 import { getSheetTitleToWrite } from "./utils/get-sheet-title-to-write";
+import { validateReceipt } from "./validate-receipt";
 
 export const writeReceipt = async ({
   receiptId,
@@ -17,17 +18,33 @@ export const writeReceipt = async ({
   merchantName,
   items,
 }: WriteReceiptParams) => {
-  const categories = getCategoryCellValues(items);
-
-  const sheetTitle = getSheetTitleToWrite(transactionDate);
-
-  const categoryParams = getCategoryParams(categories, transactionDate);
   const expenseParam = getExpenseParam(
     transactionDate,
     total,
     merchantName,
     receiptId
   );
+
+  // Validate receipt before writing
+  // TODO: P0 Check if can be done in a single document load
+  const validationResult = await validateReceipt({
+    receiptId,
+    transactionDate,
+    expenseCellInfo: {
+      column: expenseParam.column,
+      row: expenseParam.row,
+    },
+  });
+
+  // Skip writing if validation fails
+  if (!validationResult.isValid) {
+    console.log(`Receipt validation failed: ${validationResult.message}`);
+    return;
+  }
+
+  const categories = getCategoryCellValues(items);
+  const sheetTitle = getSheetTitleToWrite(transactionDate);
+  const categoryParams = getCategoryParams(categories, transactionDate);
   const writeParams = [...categoryParams, expenseParam];
   const validation: CellValidation = {
     type: "noteId",
