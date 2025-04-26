@@ -51,7 +51,7 @@ export const useReceiptValidation = ({
         });
       }
     });
-  }, [receiptId, transactionDate, startValidation]);
+  }, [receiptId, transactionDate]);
 
   return {
     isValidating,

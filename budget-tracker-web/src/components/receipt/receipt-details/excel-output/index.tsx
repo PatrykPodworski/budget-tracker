@@ -12,7 +12,7 @@ import { writeReceipt } from "@/lib/google-spreadsheet/write-receipt";
 import { useTransition } from "react";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { EnrichedItem } from "@/models/enriched-item-schema";
-import { useReceiptValidation } from "@/lib/utils/use-receipt-validation";
+import { useReceiptValidation } from "./use-receipt-validation";
 
 // TODO: P0 Rename
 // TODO: P0 Mark receipt as sent in CosmosDB
@@ -37,7 +37,6 @@ export const ExcelOutput = ({
       return;
     }
 
-    // Use startSending for sending to budget
     startSending(async () => {
       try {
         await writeReceipt({

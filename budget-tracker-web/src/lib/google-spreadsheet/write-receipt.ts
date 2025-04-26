@@ -26,6 +26,7 @@ export const writeReceipt = async ({
   );
 
   // Validate receipt before writing
+  // TODO: P0 Check if can be done in a single document load
   const validationResult = await validateReceipt({
     receiptId,
     transactionDate,
