@@ -9,6 +9,7 @@ export const enrichedReceiptDataSchema = z.object({
   merchantName: z.string().optional(),
   transactionDate: z.string().pipe(z.coerce.date()).optional(),
   items: z.array(enrichedItemSchema),
+  isSentToBudget: z.boolean(),
 });
 
 export type EnrichedReceiptData = z.infer<typeof enrichedReceiptDataSchema>;
