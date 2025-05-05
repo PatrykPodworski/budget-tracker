@@ -10,6 +10,7 @@ import { formatCurrency } from "../utils";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 import { getSheetTitleToWrite } from "./utils/get-sheet-title-to-write";
 import { validateReceipt } from "./validate-receipt";
+import { markReceiptAsSent } from "../receipt-data/update";
 
 export const writeReceipt = async ({
   receiptId,
@@ -17,6 +18,7 @@ export const writeReceipt = async ({
   transactionDate,
   merchantName,
   items,
+  userId,
 }: WriteReceiptParams) => {
   const expenseParam = getExpenseParam(
     transactionDate,
@@ -54,6 +56,10 @@ export const writeReceipt = async ({
   };
 
   await bulkWrite(sheetTitle, writeParams, validation);
+
+  // TODO: P0 This cannot be in google spreadsheet lib
+  console.log(`Receipt ${receiptId}, user ${userId}`);
+  await markReceiptAsSent(receiptId, userId);
 };
 
 type WriteReceiptParams = {
@@ -62,6 +68,7 @@ type WriteReceiptParams = {
   total: number;
   merchantName: string | undefined;
   receiptId: string;
+  userId: string;
 };
 
 const getCategoryParams = (

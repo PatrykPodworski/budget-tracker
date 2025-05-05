@@ -94,6 +94,7 @@ export const ReceiptDetails = ({
         merchantName={receipt.merchantName}
         total={receipt.total}
         transactionDate={receipt.transactionDate}
+        userId={receipt.userId}
       />
     </>
   );
