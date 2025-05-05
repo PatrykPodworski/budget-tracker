@@ -27,7 +27,9 @@ const getAssistantResponse = async (document: ReceiptRawData) => {
   if (run.status !== "completed") {
     // TODO: P2 Handle retry if 4o-mini is too dumb
     throw new Error(
-      `Run failed with status: ${run.status}, reason: ${run.last_error}`
+      `Run failed with status: ${run.status}, reason: ${JSON.stringify(
+        run.last_error
+      )}`
     );
   }
 
