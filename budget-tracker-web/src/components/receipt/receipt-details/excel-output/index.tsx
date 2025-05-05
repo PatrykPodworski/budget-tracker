@@ -15,7 +15,6 @@ import { EnrichedItem } from "@/models/enriched-item-schema";
 import { useReceiptValidation } from "./use-receipt-validation";
 
 // TODO: P0 Rename
-// TODO: P0 Mark receipt as sent in CosmosDB
 // TODO: P1 Find potential duplicated receipts (amount, date, merchant name)
 export const ExcelOutput = ({
   receiptId,
@@ -23,6 +22,7 @@ export const ExcelOutput = ({
   merchantName,
   total,
   transactionDate,
+  userId,
 }: ExcelOutputProps) => {
   const [isSending, startSending] = useTransition();
   const { isValidating, validationResult } = useReceiptValidation({
@@ -45,6 +45,7 @@ export const ExcelOutput = ({
           transactionDate,
           merchantName,
           items,
+          userId,
         });
       } catch (error) {
         console.error("Error writing receipt to spreadsheet:", error);
@@ -107,4 +108,5 @@ type ExcelOutputProps = {
   transactionDate?: Date;
   merchantName: string | undefined;
   items: EnrichedItem[];
+  userId: string;
 };
