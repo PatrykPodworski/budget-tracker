@@ -3,14 +3,17 @@ import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
 import { Button } from "@/components/ui/shadcn/button";
+import { ReceiptStatusIcon } from "./receipt-status-icon";
 
-// TODO: P2 Improve the merchant name based on the list of known merchants
 export const ReceiptListItem = ({ receipt }: ReceiptListItemProps) => (
   <Card>
     <CardContent>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <div>
-          <h3 className="text-lg font-semibold">{receipt.merchantName}</h3>
+          <div className="flex items-center gap-1">
+            <ReceiptStatusIcon isSent={receipt.isSentToBudget} />
+            <h3 className="text-lg font-semibold">{receipt.merchantName}</h3>
+          </div>
           <p className="text-sm text-muted-foreground">
             {formatDateTime(receipt.transactionDate)}
           </p>
