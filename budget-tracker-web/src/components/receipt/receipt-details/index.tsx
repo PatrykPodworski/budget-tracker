@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import { ExcelOutput } from "@/components/receipt/receipt-details/excel-output";
 import { Receipt } from "@/components/receipt/receipt-details/receipt";
 import {
   EnrichedItem,
@@ -79,24 +78,14 @@ export const ReceiptDetails = ({
   };
 
   return (
-    <>
-      <Receipt
-        receipt={receipt}
-        onReceiptItemChange={handleReceiptItemChange}
-        onMerchantChange={handleMerchantChange}
-        onDateChange={handleDateChange}
-        onAddItem={handleAddItem}
-        onItemDelete={handleItemDelete}
-      />
-      <ExcelOutput
-        receiptId={receipt.id}
-        items={receipt.items}
-        merchantName={receipt.merchantName}
-        total={receipt.total}
-        transactionDate={receipt.transactionDate}
-        userId={receipt.userId}
-      />
-    </>
+    <Receipt
+      receipt={receipt}
+      onReceiptItemChange={handleReceiptItemChange}
+      onMerchantChange={handleMerchantChange}
+      onDateChange={handleDateChange}
+      onAddItem={handleAddItem}
+      onItemDelete={handleItemDelete}
+    />
   );
 };
 
