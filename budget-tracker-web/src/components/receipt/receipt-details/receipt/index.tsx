@@ -15,6 +15,7 @@ import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { TotalPrice } from "./total-price";
 import { DeleteReceiptButton } from "./delete-receipt-button";
 import { AddReceiptItem } from "./add-receipt-item";
+import { SendToBudgetButton } from "../send-to-budget-button";
 
 // TODO: P2 Table view for desktop
 // TODO: P3 Numbers formatting in inputs vs in labels
@@ -32,30 +33,35 @@ export const Receipt = ({
 
   return (
     <Card className="w-full max-w-4xl">
-      <CardHeader>
+      <CardHeader className="sm:pb-0">
         <div className="flex flex-wrap mb-2 gap-4 sm:justify-between flex-col sm:flex-row ">
-          <div className="flex gap-2 flex-wrap grow">
-            <div className="w-full sm:w-auto md:w-full sm:max-w-60">
-              <Label htmlFor="merchant">Merchant</Label>
-              <Input
-                id="merchant"
-                defaultValue={receipt.merchantName}
-                disabled={isLoading}
-                onChange={(event) => debounced(event.target.value)}
-              />
+          <div className="flex flex-col grow gap-4">
+            <div className="flex gap-2 flex-wrap">
+              <div className="w-full sm:w-auto md:w-full sm:max-w-60">
+                <Label htmlFor="merchant">Merchant</Label>
+                <Input
+                  id="merchant"
+                  defaultValue={receipt.merchantName}
+                  disabled={isLoading}
+                  onChange={(event) => debounced(event.target.value)}
+                />
+              </div>
+              <div className="w-full sm:w-auto md:w-full sm:max-w-60">
+                <Label htmlFor="transactionDate">Date</Label>
+                <DateTimePicker
+                  disabled={isDateChangeLoading}
+                  defaultValue={receipt.transactionDate}
+                  onChange={debouncedOnDateChange}
+                />
+              </div>
             </div>
-            <div className="w-full sm:w-auto md:w-full sm:max-w-60">
-              <Label htmlFor="transactionDate">Date</Label>
-              <DateTimePicker
-                disabled={isDateChangeLoading}
-                defaultValue={receipt.transactionDate}
-                onChange={debouncedOnDateChange}
-              />
-            </div>
+            <TotalPrice total={receipt.total} items={receipt.items} />
           </div>
-          <DeleteReceiptButton id={receipt.id} />
+          <div className="flex sm:flex-col gap-2">
+            <SendToBudgetButton receipt={receipt} />
+            <DeleteReceiptButton id={receipt.id} />
+          </div>
         </div>
-        <TotalPrice total={receipt.total} items={receipt.items} />
       </CardHeader>
       <CardContent>
         <CardTitle className="mb-2">Items</CardTitle>

@@ -10,7 +10,7 @@ export const TotalPrice = ({ total, items }: TotalPriceProps) => {
   console.log(total, calculatedTotal, totalDifference);
 
   return (
-    <>
+    <div>
       <div className="flex gap-2 items-baseline">
         <Label htmlFor="total">Total</Label>
         <span id="total" className="text-base">
@@ -31,7 +31,7 @@ export const TotalPrice = ({ total, items }: TotalPriceProps) => {
           </>
         )}
       </div>
-    </>
+    </div>
   );
 };
 
