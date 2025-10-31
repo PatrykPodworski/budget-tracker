@@ -101,3 +101,6 @@ __azurite_db*__.json
 
 # Visual Studio Code files
 .vscode/
+
+# Claude
+.claude/settings.local.json
