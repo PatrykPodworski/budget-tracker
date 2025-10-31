@@ -4,7 +4,7 @@ Next.js web application for tracking receipts and managing budgets.
 
 ## Tech Stack
 
-- **Framework**: Next.js 15.1.4 with React 19
+- **Framework**: Next.js 16 with React 19
 - **Styling**: Tailwind CSS with shadcn/ui components
 - **Backend**: Azure Cosmos DB and Azure Blob Storage
 - **Google Integration**: Google Sheets API for budget exports
