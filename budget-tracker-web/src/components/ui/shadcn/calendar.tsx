@@ -9,6 +9,7 @@ import { buttonVariants } from "@/components/ui/shadcn/button";
 
 export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
+// TODO: P2 Fix calendar styling
 function Calendar({
   className,
   classNames,
