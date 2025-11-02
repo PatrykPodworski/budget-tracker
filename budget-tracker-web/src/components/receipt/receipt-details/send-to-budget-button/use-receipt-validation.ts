@@ -16,6 +16,7 @@ import { getRowToWrite } from "@/lib/google-spreadsheet/utils/get-row-to-write";
 export const useReceiptValidation = ({
   receiptId,
   transactionDate,
+  isSentToBudget,
 }: UseReceiptValidationProps) => {
   const [isValidating, startValidation] = useTransition();
   const [validationResult, setValidationResult] =
@@ -23,7 +24,8 @@ export const useReceiptValidation = ({
 
   // Run validation when component mounts or transaction date changes
   useEffect(() => {
-    if (!transactionDate) {
+    // Skip validation if receipt is already sent
+    if (!transactionDate || isSentToBudget) {
       return;
     }
 
@@ -51,7 +53,7 @@ export const useReceiptValidation = ({
         });
       }
     });
-  }, [receiptId, transactionDate]);
+  }, [receiptId, transactionDate, isSentToBudget]);
 
   return {
     isValidating,
@@ -62,4 +64,5 @@ export const useReceiptValidation = ({
 type UseReceiptValidationProps = {
   receiptId: string;
   transactionDate?: Date;
+  isSentToBudget: boolean;
 };

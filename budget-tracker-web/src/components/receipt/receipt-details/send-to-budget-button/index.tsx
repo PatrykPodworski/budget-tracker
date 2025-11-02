@@ -6,15 +6,15 @@ import { writeReceipt } from "@/lib/google-spreadsheet/write-receipt";
 import { useReceiptValidation } from "./use-receipt-validation";
 import { EnrichedItem } from "@/models/enriched-item-schema";
 
-// TODO: P0 Fix disabling the button when the receipt is already sent
 // TODO: P1 Make the loading button always the same width
 export const SendToBudgetButton = ({
-  receipt: { id, items, merchantName, total, transactionDate, userId },
+  receipt: { id, items, merchantName, total, transactionDate, userId, isSentToBudget },
 }: SendToBudgetButtonProps) => {
   const [isSending, startSending] = useTransition();
   const { isValidating, validationResult } = useReceiptValidation({
     receiptId: id,
     transactionDate,
+    isSentToBudget,
   });
 
   const handleClick = () => {
@@ -40,11 +40,15 @@ export const SendToBudgetButton = ({
   const isButtonDisabled =
     !transactionDate ||
     isValidating ||
+    isSentToBudget ||
     (!!validationResult && !validationResult.isValid);
 
   const getButtonTooltip = () => {
     if (!transactionDate) {
       return "Transaction date is required";
+    }
+    if (isSentToBudget) {
+      return "Receipt has already been sent to budget";
     }
     if (validationResult && !validationResult.isValid) {
       return validationResult.message || "Receipt validation failed";
@@ -57,6 +61,11 @@ export const SendToBudgetButton = ({
       {validationResult && !validationResult.isValid && (
         <div className="text-red-500 text-sm">
           {validationResult.message || "Receipt validation failed"}
+        </div>
+      )}
+      {isSentToBudget && (
+        <div className="text-green-600 text-sm">
+          Receipt has been sent to budget
         </div>
       )}
       <LoadingButton
@@ -80,5 +89,6 @@ type SendToBudgetButtonProps = {
     merchantName?: string;
     items: EnrichedItem[];
     userId: string;
+    isSentToBudget: boolean;
   };
 };
