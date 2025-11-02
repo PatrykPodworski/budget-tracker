@@ -4,12 +4,12 @@
   "version": "1.0.0",
   "author": "Patryk Podworski",
   "scripts": {
+    "clean": "rimraf dist",
+    "prestart": "pnpm clean && pnpm build",
+    "start": "func start",
+    "dev": "pnpm prestart && pnpm start",
     "build": "tsc",
     "watch": "tsc -w",
-    "clean": "rimraf dist",
-    "prestart": "yarn clean && yarn build",
-    "restart": "yarn prestart && yarn start",
-    "start": "func start",
     "test": "echo \"No tests yet...\"",
     "deploy": "func azure functionapp publish"
   },

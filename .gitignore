@@ -58,6 +58,13 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+# pnpm
+pnpm-lock.yaml
+.pnpm-debug.log*
+
+# Turborepo
+.turbo
+
 # dotenv environment variables file
 .env
 .env.test
