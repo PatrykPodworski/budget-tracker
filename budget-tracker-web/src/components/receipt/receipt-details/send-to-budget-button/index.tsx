@@ -14,6 +14,7 @@ export const SendToBudgetButton = ({
   const { isValidating, validationResult } = useReceiptValidation({
     receiptId: id,
     transactionDate,
+    isSentToBudget,
   });
 
   const handleClick = () => {
