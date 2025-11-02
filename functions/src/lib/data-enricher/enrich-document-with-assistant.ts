@@ -3,6 +3,7 @@ import { ReceiptRawData } from "../../models/receipt-raw-data";
 import { config } from "../../config";
 import { assistantResponseSchema } from "./assistant-response";
 
+// TODO: P1 Migrate Assistant to Responses API
 // TODO: P3 Check the warning
 // Set "WEBSITE_RUN_FROM_PACKAGE" to "1" to significantly improve load times. Learn more here: https://aka.ms/AAjon54
 
@@ -25,7 +26,6 @@ const getAssistantResponse = async (document: ReceiptRawData) => {
   });
 
   if (run.status !== "completed") {
-    // TODO: P2 Handle retry if 4o-mini is too dumb
     throw new Error(
       `Run failed with status: ${run.status}, reason: ${JSON.stringify(
         run.last_error
