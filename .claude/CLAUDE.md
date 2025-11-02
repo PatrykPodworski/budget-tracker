@@ -4,7 +4,7 @@ This is a budget tracking application with a web frontend and backend services f
 
 ## Project Structure
 
-- `budget-tracker-web/` - Next.js 14+ web application with App Router
+- `budget-tracker-web/` - Next.js 16 web application with App Router
   - Receipt upload and processing interface
   - Receipt item management and categorization
   - Integration with Google Spreadsheets for budget tracking
