@@ -14,17 +14,17 @@
     "deploy": "func azure functionapp publish"
   },
   "dependencies": {
-    "@azure/ai-form-recognizer": "5.0.0",
-    "@azure/cosmos": "^4.3.0",
-    "@azure/functions": "^4.7.0",
-    "@azure/identity": "^4.8.0",
-    "openai": "^4.87.4",
-    "zod": "^3.24.2"
+    "@azure/ai-form-recognizer": "^5.1.0",
+    "@azure/cosmos": "^4.7.0",
+    "@azure/functions": "^4.8.0",
+    "@azure/identity": "^4.13.0",
+    "openai": "^4.104.0",
+    "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@types/node": "^22.13.10",
-    "rimraf": "^6.0.1",
-    "typescript": "^5.7.2"
+    "@types/node": "^24.9.2",
+    "rimraf": "^6.1.0",
+    "typescript": "^5.9.3"
   },
   "main": "dist/src/{index.js,functions/*.js}"
 }
