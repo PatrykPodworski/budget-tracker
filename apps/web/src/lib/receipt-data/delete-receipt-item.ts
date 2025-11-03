@@ -1,5 +1,5 @@
 "use server";
-import { enrichedReceiptDataSchema } from "@/models/enriched-receipt-data-schema";
+import { enrichedReceiptDataSchema } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { PatchOperation } from "@azure/cosmos";
 import { getReceiptContainer } from "./common/get-receipt-container";
 

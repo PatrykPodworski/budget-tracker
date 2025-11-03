@@ -2,7 +2,7 @@ import { useDebounce } from "@/lib/utils/use-debounce";
 import {
   EnrichedItem,
   enrichedItemSchema,
-} from "@/models/enriched-item-schema";
+} from "@budget-tracker/shared/enriched-item-schema";
 import { useRef, useEffect, useState } from "react";
 
 export const useEditReceiptItem = (

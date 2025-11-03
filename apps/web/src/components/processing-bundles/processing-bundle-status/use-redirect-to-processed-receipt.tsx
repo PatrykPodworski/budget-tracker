@@ -2,8 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useEffect } from "react";
-import { ProcessingBundle } from "@/lib/processing-bundle/common/processing-bundle";
-import { ProcessingStatus } from "@/lib/processing-bundle/common/processing-steps";
+import { ProcessingBundle } from "@budget-tracker/shared/processing-bundle";
+import { ProcessingStatus } from "@budget-tracker/shared/processing-steps";
 
 /**
  * Custom hook that redirects to the processed receipt page when a processing bundle's receipt status changes to "enriched".

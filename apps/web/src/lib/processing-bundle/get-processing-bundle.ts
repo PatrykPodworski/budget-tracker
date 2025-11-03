@@ -1,7 +1,7 @@
 "use server";
 
 import { getContainer } from "./common/get-container";
-import { processingBundleSchema } from "./common/processing-bundle";
+import { processingBundleSchema } from "@budget-tracker/shared/processing-bundle";
 
 export const getProcessingBundle = async (id: string) => {
   const container = getContainer();

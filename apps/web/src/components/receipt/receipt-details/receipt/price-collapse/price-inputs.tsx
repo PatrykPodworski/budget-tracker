@@ -1,4 +1,4 @@
-import { EnrichedItem } from "@/models/enriched-item-schema";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { Input } from "@/components/ui/shadcn/input";
 import { Label } from "@/components/ui/shadcn/label";
 import React from "react";

@@ -1,4 +1,4 @@
-import { EnrichedItem } from "@/models/enriched-item-schema";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { CategorySelect } from "@/components/category-select";
 import { Input } from "@/components/ui/shadcn/input";
 import { useEditReceiptItem } from "./useEditReceiptItem";

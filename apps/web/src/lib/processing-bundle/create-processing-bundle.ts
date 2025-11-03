@@ -2,7 +2,7 @@
 import { env } from "@/env";
 import { UploadFile, uploadFiles } from "../storage/upload-file";
 import { getContainer } from "./common/get-container";
-import { ProcessingBundle } from "./common/processing-bundle";
+import { ProcessingBundle } from "@budget-tracker/shared/processing-bundle";
 
 export const createProcessingBundle = async (files: ProcessingBundleFile[]) => {
   const container = getContainer();

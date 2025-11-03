@@ -1,7 +1,7 @@
 "use client";
-import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
+import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { ReceiptItem } from "./receipt-item";
-import { EnrichedItem } from "@/models/enriched-item-schema";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { Label } from "@/components/ui/shadcn/label";
 import { Input } from "@/components/ui/shadcn/input";
 import {

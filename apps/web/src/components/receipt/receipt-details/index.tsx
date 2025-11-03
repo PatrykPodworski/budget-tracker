@@ -4,8 +4,8 @@ import { Receipt } from "@/components/receipt/receipt-details/receipt";
 import {
   EnrichedItem,
   enrichedItemSchema,
-} from "@/models/enriched-item-schema";
-import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
+} from "@budget-tracker/shared/enriched-item-schema";
+import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import {
   updateReceiptItem,
   updateReceiptMerchantName,

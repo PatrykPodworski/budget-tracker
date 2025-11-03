@@ -1,7 +1,7 @@
 "use server";
 import { PatchOperation } from "@azure/cosmos";
-import { EnrichedItem } from "@/models/enriched-item-schema";
-import { enrichedReceiptDataSchema } from "@/models/enriched-receipt-data-schema";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
+import { enrichedReceiptDataSchema } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { getReceiptContainer } from "@/lib/receipt-data/common/get-receipt-container";
 
 export const updateReceiptItem = async (

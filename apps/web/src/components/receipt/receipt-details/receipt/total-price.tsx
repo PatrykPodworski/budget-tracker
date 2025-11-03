@@ -1,7 +1,7 @@
 "use client";
 import { Label } from "@/components/ui/shadcn/label";
 import { formatCurrency } from "@/lib/utils";
-import { EnrichedItem } from "@/models/enriched-item-schema";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 
 export const TotalPrice = ({ total, items }: TotalPriceProps) => {
   const calculatedTotal = calculateTotal(items);

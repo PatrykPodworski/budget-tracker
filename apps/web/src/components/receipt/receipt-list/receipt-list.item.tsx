@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
+import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
 import { Button } from "@/components/ui/shadcn/button";

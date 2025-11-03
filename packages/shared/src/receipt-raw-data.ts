@@ -1,5 +1,6 @@
 import { z } from "zod";
 
+// TODO: P0 Remove deprecated zod uuid
 export const receiptRawDataSchema = z.object({
   id: z.string().uuid(),
   processingStatusId: z.string().uuid(),

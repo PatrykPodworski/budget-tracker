@@ -1,10 +1,8 @@
 import { InvocationContext } from "@azure/functions";
-import { receiptRawDataSchema } from "../../models/receipt-raw-data";
+import { receiptRawDataSchema } from "@budget-tracker/shared/receipt-raw-data";
+import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { enrichDocumentWithAssistant } from "./enrich-document-with-assistant";
-import {
-  EnrichedReceiptData,
-  mapToEnrichedReceiptData,
-} from "../../models/enriched-receipt-data-schema";
+import { mapToEnrichedReceiptData } from "./map-to-enriched-receipt-data";
 import { handleMultipleDocuments } from "../../utils/handleMultipleDocuments";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";

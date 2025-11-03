@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { PROCESSING_STATUS_ERROR, PROCESSING_STEPS } from "./processing-steps";
 
-// TODO: P1 Unify the types in web and function projects
 const processingBundleReceiptSchema = z.union([
   z.object({
     status: z.enum(PROCESSING_STEPS),

@@ -1,6 +1,6 @@
 "use server";
 
-import { enrichedReceiptDataSchema } from "@/models/enriched-receipt-data-schema";
+import { enrichedReceiptDataSchema } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { getReceiptContainer } from "./common/get-receipt-container";
 
 export const getReceiptData = async (id: string) => {

@@ -4,7 +4,7 @@ import { useTransition } from "react";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { writeReceipt } from "@/lib/google-spreadsheet/write-receipt";
 import { useReceiptValidation } from "./use-receipt-validation";
-import { EnrichedItem } from "@/models/enriched-item-schema";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 
 // TODO: P1 Make the loading button always the same width
 export const SendToBudgetButton = ({

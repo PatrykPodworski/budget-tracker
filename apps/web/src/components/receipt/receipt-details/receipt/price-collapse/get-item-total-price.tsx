@@ -1,4 +1,4 @@
-import { EnrichedItem } from "@/models/enriched-item-schema";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 
 export const getItemTotalPrice = (
   item: Pick<EnrichedItem, "quantity" | "unitPrice" | "discount">

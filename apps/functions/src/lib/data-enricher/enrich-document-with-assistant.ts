@@ -1,5 +1,5 @@
 import OpenAI from "openai";
-import { ReceiptRawData } from "../../models/receipt-raw-data";
+import { ReceiptRawData } from "@budget-tracker/shared/receipt-raw-data";
 import { config } from "../../config";
 import { assistantResponseSchema } from "./assistant-response";
 

@@ -1,0 +1,41 @@
+{
+  "name": "@budget-tracker/shared",
+  "version": "1.0.0",
+  "private": true,
+  "exports": {
+    "./enriched-item-schema": {
+      "types": "./dist/enriched-item-schema.d.ts",
+      "default": "./dist/enriched-item-schema.js"
+    },
+    "./enriched-receipt-data-schema": {
+      "types": "./dist/enriched-receipt-data-schema.d.ts",
+      "default": "./dist/enriched-receipt-data-schema.js"
+    },
+    "./receipt-raw-data": {
+      "types": "./dist/receipt-raw-data.d.ts",
+      "default": "./dist/receipt-raw-data.js"
+    },
+    "./processing-bundle": {
+      "types": "./dist/processing-bundle.d.ts",
+      "default": "./dist/processing-bundle.js"
+    },
+    "./processing-steps": {
+      "types": "./dist/processing-steps.d.ts",
+      "default": "./dist/processing-steps.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@types/node": "^24.9.2",
+    "rimraf": "^6.1.0",
+    "typescript": "^5.9.3"
+  }
+}

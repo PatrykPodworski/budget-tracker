@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { enrichedItemSchema } from "../../models/enriched-item-schema";
+import { enrichedItemSchema } from "@budget-tracker/shared/enriched-item-schema";
 
 export const assistantResponseSchema = z.object({
   merchantName: z.string().optional(),

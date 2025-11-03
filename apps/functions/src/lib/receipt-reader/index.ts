@@ -10,7 +10,7 @@ import {
 import { config } from "../../config";
 import { registerLogger } from "../../utils/logger/registerLogger";
 import { getDefaultChannels } from "../../utils/logger/getDefaultChannels";
-import { ReceiptRawData } from "../../models/receipt-raw-data";
+import { ReceiptRawData } from "@budget-tracker/shared/receipt-raw-data";
 
 //TODO: P1 Remove @azure/functions dependency
 export const receiptReader = async (

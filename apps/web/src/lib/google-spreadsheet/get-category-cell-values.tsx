@@ -1,4 +1,4 @@
-import { EnrichedItem } from "@/models/enriched-item-schema";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { CellValues } from "./cell-write";
 import { formatCurrency } from "../utils";
 

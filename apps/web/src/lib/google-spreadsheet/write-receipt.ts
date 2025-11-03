@@ -7,7 +7,7 @@ import { CellValidation, CellValues, CellWrite } from "./cell-write";
 import { getRowToWrite } from "./utils/get-row-to-write";
 import { getColumnToWrite } from "./utils/get-column-to-write";
 import { formatCurrency } from "../utils";
-import { EnrichedItem } from "@/models/enriched-item-schema";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { getSheetTitleToWrite } from "./utils/get-sheet-title-to-write";
 import { validateReceipt } from "./validate-receipt";
 import { markReceiptAsSent } from "../receipt-data/update";

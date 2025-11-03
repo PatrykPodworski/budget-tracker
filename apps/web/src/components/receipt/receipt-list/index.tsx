@@ -1,4 +1,4 @@
-import { EnrichedReceiptData } from "@/models/enriched-receipt-data-schema";
+import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { ReceiptListItem } from "./receipt-list.item";
 import { AddNewReceiptListItem } from "./add-new-receipt-list-item";
 

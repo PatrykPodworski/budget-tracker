@@ -1,4 +1,4 @@
-import { ProcessingBundle } from "./processing-bundle";
+import { ProcessingBundle } from "@budget-tracker/shared/processing-bundle";
 
 export type ProcessingBundleEvent = {
   data: ProcessingBundle;

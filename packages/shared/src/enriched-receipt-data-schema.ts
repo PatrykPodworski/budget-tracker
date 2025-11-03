@@ -3,6 +3,7 @@ import { enrichedItemSchema } from "./enriched-item-schema";
 
 export const enrichedReceiptDataSchema = z.object({
   id: z.string().uuid(),
+  processingStatusId: z.string().uuid(),
   userId: z.string().uuid(),
   rawDocumentId: z.string().uuid(),
   total: z.number(),

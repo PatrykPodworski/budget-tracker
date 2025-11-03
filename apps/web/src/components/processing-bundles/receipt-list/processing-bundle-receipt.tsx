@@ -4,7 +4,7 @@ import { ArrowRight } from "lucide-react";
 import {
   ProcessingStatus,
   isFinishedStatus,
-} from "@/lib/processing-bundle/common/processing-steps";
+} from "@budget-tracker/shared/processing-steps";
 import {
   Card,
   CardContent,

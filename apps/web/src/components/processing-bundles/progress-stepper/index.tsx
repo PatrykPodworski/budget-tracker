@@ -2,7 +2,7 @@ import {
   getStepIndex,
   PROCESSING_STEPS,
   ProcessingStatus,
-} from "@/lib/processing-bundle/common/processing-steps";
+} from "@budget-tracker/shared/processing-steps";
 import { ProgressStepperStep } from "./progress-stepper-step";
 import { ProgressStepperBar } from "./progress-stepper-bar";
 import { Fragment } from "react";
