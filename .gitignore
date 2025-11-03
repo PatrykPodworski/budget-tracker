@@ -59,7 +59,6 @@ typings/
 .yarn-integrity
 
 # pnpm
-pnpm-lock.yaml
 .pnpm-debug.log*
 
 # Turborepo
