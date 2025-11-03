@@ -4,11 +4,12 @@
   "version": "1.0.0",
   "author": "Patryk Podworski",
   "scripts": {
+    "build": "tsc",
+    "dev": "pnpm prestart && pnpm start",
     "clean": "rimraf dist",
+    "type-check": "tsc --noEmit",
     "prestart": "pnpm clean && pnpm build",
     "start": "func start",
-    "dev": "pnpm prestart && pnpm start",
-    "build": "tsc",
     "watch": "tsc -w",
     "test": "echo \"No tests yet...\"",
     "deploy": "func azure functionapp publish"

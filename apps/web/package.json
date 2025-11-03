@@ -6,7 +6,8 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "clean": "rimraf .next",
+    "type-check": "next lint",
     "build:migration": "rimraf dist && tsc --project tsconfig.migration.json",
     "migration": "pnpm build:migration && node dist/scripts/run-migration.js"
   },
