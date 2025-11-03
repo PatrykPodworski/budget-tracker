@@ -3,7 +3,26 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
+      "env": [
+        "REVALIDATE_SECRET",
+        "TEMP_USER_ID",
+        "COSMOS_ENDPOINT",
+        "COSMOS_KEY",
+        "COSMOS_DATABASE",
+        "COSMOS_RECEIPT_CONTAINER",
+        "COSMOS_PROCESSING_BUNDLE_CONTAINER",
+        "COSMOS_RAW_CONTAINER",
+        "COSMOS_ENRICHED_CONTAINER",
+        "GOOGLE_DOCUMENT_ID",
+        "GOOGLE_SERVICE_ACCOUNT_BASE64",
+        "AZURE_STORAGE_CONNECTION_STRING",
+        "AZURE_STORAGE_CONTAINER_NAME",
+        "DI_ENDPOINT",
+        "DI_KEY",
+        "OPENAI_ASSISTANT_ID",
+        "WEB_BASE_URL"
+      ]
     },
     "dev": {
       "cache": false,
