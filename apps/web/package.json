@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "clean": "rimraf .next",
-    "type-check": "next lint",
+    "type-check": "tsc --noEmit",
     "build:migration": "rimraf dist && tsc --project tsconfig.migration.json",
     "migration": "pnpm build:migration && node dist/scripts/run-migration.js"
   },
