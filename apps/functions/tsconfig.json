@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "es2022",
+    "module": "nodenext",
     "target": "es2022",
     "outDir": "dist",
     "rootDir": ".",
@@ -12,6 +12,6 @@
     "strict": true,
     "strictNullChecks": true,
     "skipLibCheck": true,
-    "moduleResolution": "bundler"
+    "moduleResolution": "nodenext"
   }
 }
