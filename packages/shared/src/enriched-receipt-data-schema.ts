@@ -2,10 +2,10 @@ import { z } from "zod";
 import { enrichedItemSchema } from "./enriched-item-schema";
 
 export const enrichedReceiptDataSchema = z.object({
-  id: z.string().uuid(),
-  processingStatusId: z.string().uuid(),
-  userId: z.string().uuid(),
-  rawDocumentId: z.string().uuid(),
+  id: z.uuid(),
+  processingStatusId: z.uuid(),
+  userId: z.uuid(),
+  rawDocumentId: z.uuid(),
   total: z.number(),
   merchantName: z.string().optional(),
   transactionDate: z.string().pipe(z.coerce.date()).optional(),

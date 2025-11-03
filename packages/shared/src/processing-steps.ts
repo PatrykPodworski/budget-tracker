@@ -10,7 +10,7 @@ export const PROCESSING_STEPS = [
 ] as const;
 
 type ProcessingStep = (typeof PROCESSING_STEPS)[number];
-type ProcessingStatus = ProcessingStep | typeof PROCESSING_STATUS_ERROR;
+export type ProcessingStatus = ProcessingStep | typeof PROCESSING_STATUS_ERROR;
 
 export const getStepIndex = (step: ProcessingStatus) => {
   if (step === PROCESSING_STATUS_ERROR) {

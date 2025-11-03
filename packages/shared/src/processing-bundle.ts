@@ -12,9 +12,9 @@ const processingBundleReceiptSchema = z.union([
 ]);
 
 export const processingBundleSchema = z.object({
-  id: z.string().uuid(),
-  userId: z.string().uuid(),
-  receipts: z.record(z.string().uuid(), processingBundleReceiptSchema),
+  id: z.uuid(),
+  userId: z.uuid(),
+  receipts: z.record(z.uuid(), processingBundleReceiptSchema),
 });
 
 export type ProcessingBundle = z.infer<typeof processingBundleSchema>;
