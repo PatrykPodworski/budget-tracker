@@ -4,14 +4,17 @@ This is a budget tracking application with a web frontend and backend services f
 
 ## Project Structure
 
-- `budget-tracker-web/` - Next.js 16 web application with App Router
+This is a Turborepo monorepo using pnpm for package management.
+
+- `apps/web/` - Next.js 16 web application with App Router
   - Receipt upload and processing interface
   - Receipt item management and categorization
   - Integration with Google Spreadsheets for budget tracking
   - Azure Cosmos DB for receipt data storage
-- `functions/` - Azure Functions backend services
+- `apps/functions/` - Azure Functions backend services
   - Receipt processing and data enrichment
   - Azure Blob Storage integration for receipt images
+- `packages/` - Shared packages (ready for future use)
 
 ## Key Features
 
@@ -32,7 +35,8 @@ User Upload → [uploaded] → Receipt Reader → [read] → Data Enricher → [
 ```
 
 #### Stage 1: Upload (`uploaded`)
-**Location:** Web application ([create-processing-bundle.ts](../budget-tracker-web/src/lib/processing-bundle/create-processing-bundle.ts))
+
+**Location:** Web application ([create-processing-bundle.ts](../apps/web/src/lib/processing-bundle/create-processing-bundle.ts))
 
 1. User uploads receipt image(s) via drag-and-drop or file picker
 2. Web app creates a processing bundle with unique ID in Cosmos DB
@@ -41,9 +45,10 @@ User Upload → [uploaded] → Receipt Reader → [read] → Data Enricher → [
 5. User redirected to `/processing-bundles/{bundleId}` for real-time status
 
 #### Stage 2: Extract Data (`read`)
+
 **Trigger:** Azure Blob Storage trigger
-**Function:** `receipt-reader` ([receipt-reader.ts](../functions/src/functions/receipt-reader.ts))
-**Processing:** [receipt-reader/index.ts](../functions/src/lib/receipt-reader/index.ts)
+**Function:** `receipt-reader` ([receipt-reader.ts](../apps/functions/src/functions/receipt-reader.ts))
+**Processing:** [receipt-reader/index.ts](../apps/functions/src/lib/receipt-reader/index.ts)
 
 1. Function automatically triggered when image uploaded to blob storage
 2. Uses **Azure Form Recognizer** (Document Intelligence) with prebuilt receipt model
@@ -56,9 +61,10 @@ User Upload → [uploaded] → Receipt Reader → [read] → Data Enricher → [
 5. Updates processing bundle status to `"read"`
 
 #### Stage 3: Enrich Data (`enriched`)
+
 **Trigger:** Cosmos DB change feed on `receipts-raw` container
-**Function:** `data-enricher` ([data-enricher.ts](../functions/src/functions/data-enricher.ts))
-**Processing:** [data-enricher/index.ts](../functions/src/lib/data-enricher/index.ts)
+**Function:** `data-enricher` ([data-enricher.ts](../apps/functions/src/functions/data-enricher.ts))
+**Processing:** [data-enricher/index.ts](../apps/functions/src/lib/data-enricher/index.ts)
 
 1. Function triggered by Cosmos DB change feed when raw receipt created
 2. Uses **OpenAI Assistant API** with thread-based conversation
@@ -72,9 +78,10 @@ User Upload → [uploaded] → Receipt Reader → [read] → Data Enricher → [
 5. Updates processing bundle status to `"enriched"`
 
 #### Stage 4: Notify Web App
+
 **Trigger:** Cosmos DB change feed on `receipts` (enriched) container
-**Function:** `data-processing` ([data-processing.ts](../functions/src/functions/data-processing.ts))
-**Processing:** [data-processing/index.ts](../functions/src/lib/data-processing/index.ts)
+**Function:** `data-processing` ([data-processing.ts](../apps/functions/src/functions/data-processing.ts))
+**Processing:** [data-processing/index.ts](../apps/functions/src/lib/data-processing/index.ts)
 
 1. Function triggered when enriched receipt created
 2. Calls web app revalidation endpoint: `{WEB_BASE_URL}/api/revalidate?secret={REVALIDATE_SECRET}`
@@ -83,7 +90,7 @@ User Upload → [uploaded] → Receipt Reader → [read] → Data Enricher → [
 
 ### Real-Time Status Updates
 
-**Endpoint:** `/api/processing/[id]` ([route.ts](../budget-tracker-web/src/app/api/processing/[id]/route.ts))
+**Endpoint:** `/api/processing/[id]` ([route.ts](../apps/web/src/app/api/processing/[id]/route.ts))
 
 - Uses Server-Sent Events (SSE) for real-time updates
 - Polls Cosmos DB every 3 seconds for processing bundle status changes
@@ -92,9 +99,10 @@ User Upload → [uploaded] → Receipt Reader → [read] → Data Enricher → [
 - Connection closes when final status reached
 
 **Components:**
-- [ProcessingBundleStatus](../budget-tracker-web/src/components/processing-bundles/processing-bundle-status/index.tsx) - Status page UI
-- [ProgressStepper](../budget-tracker-web/src/components/processing-bundles/progress-stepper/index.tsx) - Visual progress indicator
-- [useRedirectToProcessedReceipt](../budget-tracker-web/src/components/processing-bundles/processing-bundle-status/use-redirect-to-processed-receipt.tsx) - Auto-redirect hook
+
+- [ProcessingBundleStatus](../apps/web/src/components/processing-bundles/processing-bundle-status/index.tsx) - Status page UI
+- [ProgressStepper](../apps/web/src/components/processing-bundles/progress-stepper/index.tsx) - Visual progress indicator
+- [useRedirectToProcessedReceipt](../apps/web/src/components/processing-bundles/processing-bundle-status/use-redirect-to-processed-receipt.tsx) - Auto-redirect hook
 
 ### Error Handling
 
@@ -108,35 +116,39 @@ User Upload → [uploaded] → Receipt Reader → [read] → Data Enricher → [
 - **Cosmos DB Partition Key:** `userId` (supports multi-user scenarios)
 - **Change Feed:** Enables reactive, event-driven processing without polling
 - **Processing Bundle Pattern:** Groups multiple receipt uploads for batch status tracking
-- **OpenAI Assistant Configuration:** Located in [assistant-instructions.md](../functions/src/lib/data-enricher/resources/assistant-instructions.md)
-- **Response Schema:** Validated with Zod using [assistant-response-schema.json](../functions/src/lib/data-enricher/resources/assistant-response-schema.json)
+- **OpenAI Assistant Configuration:** Located in [assistant-instructions.md](../apps/functions/src/lib/data-enricher/resources/assistant-instructions.md)
+- **Response Schema:** Validated with Zod using [assistant-response-schema.json](../apps/functions/src/lib/data-enricher/resources/assistant-response-schema.json)
 
 ## Application Routes
 
 ### Page Routes
 
-- **`/`** ([page.tsx](../budget-tracker-web/src/app/page.tsx)) - Home page displaying list of recent receipts
-- **`/receipts/add`** ([page.tsx](../budget-tracker-web/src/app/receipts/add/page.tsx)) - Upload receipt images via drag-and-drop
-- **`/receipts/[id]`** ([page.tsx](../budget-tracker-web/src/app/receipts/[id]/page.tsx)) - View and edit receipt details (merchant, date, items, categories)
-- **`/processing-bundles/[id]`** ([page.tsx](../budget-tracker-web/src/app/processing-bundles/[id]/page.tsx)) - Real-time processing status with SSE updates
+- **`/`** ([page.tsx](../apps/web/src/app/page.tsx)) - Home page displaying list of recent receipts
+- **`/receipts/add`** ([page.tsx](../apps/web/src/app/receipts/add/page.tsx)) - Upload receipt images via drag-and-drop
+- **`/receipts/[id]`** ([page.tsx](../apps/web/src/app/receipts/[id]/page.tsx)) - View and edit receipt details (merchant, date, items, categories)
+- **`/processing-bundles/[id]`** ([page.tsx](../apps/web/src/app/processing-bundles/[id]/page.tsx)) - Real-time processing status with SSE updates
 
 ### API Routes
 
-- **`GET /api/processing/[id]`** ([route.ts](../budget-tracker-web/src/app/api/processing/[id]/route.ts)) - SSE endpoint that polls Cosmos DB every 3 seconds for processing status updates
-- **`GET /api/revalidate`** ([route.ts](../budget-tracker-web/src/app/api/revalidate/route.ts)) - Cache revalidation endpoint (protected by secret) called by Azure Functions after processing
+- **`GET /api/processing/[id]`** ([route.ts](../apps/web/src/app/api/processing/[id]/route.ts)) - SSE endpoint that polls Cosmos DB every 3 seconds for processing status updates
+- **`GET /api/revalidate`** ([route.ts](../apps/web/src/app/api/revalidate/route.ts)) - Cache revalidation endpoint (protected by secret) called by Azure Functions after processing
 
 ## Development Commands
 
-- **Web**: `cd budget-tracker-web && yarn dev` - Start Next.js dev server
-- **Functions**: `cd functions && yarn start` - Start Azure Functions
-- **Type Check**: `cd budget-tracker-web && npx tsc --noEmit` - Run TypeScript type checking
-- **Lint/Fix**: `yarn lint` (in respective directories)
-- **Build**: `yarn build` (in respective directories)
-- **Deploy Functions**: `cd functions && yarn deploy`
+All commands should be run from the root directory using pnpm.
+
+- **Dev (all apps)**: `pnpm dev` - Start all apps in parallel
+- **Build (all apps)**: `pnpm build` - Build all apps with Turborepo caching
+- **Lint (all apps)**: `pnpm lint` - Lint all apps
+- **Specific app commands**: Use `pnpm --filter <app-name> <script>`
+  - `pnpm --filter web dev` - Start Next.js dev server
+  - `pnpm --filter functions start` - Start Azure Functions
+  - `pnpm --filter functions deploy` - Deploy Functions to Azure
 
 ## Code Style Guidelines
 
 ### TypeScript
+
 - TypeScript with strict mode enabled across all projects
 - Always use semicolons at the end of statements
 - Place types below the function signature
@@ -144,11 +156,13 @@ User Upload → [uploaded] → Receipt Reader → [read] → Data Enricher → [
 - Prefer `type` over `interface` for consistency
 
 ### Control Flow
+
 - Always use brackets for control statements, even single-line ones
 - Handle errors with try/catch and proper logging
 - Return early to avoid deep nesting
 
 ### React & Next.js
+
 - Use React hooks for state management
 - Use Next.js App Router pattern (app directory)
 - Mark server-side functions with `"use server"` directive
@@ -158,28 +172,33 @@ User Upload → [uploaded] → Receipt Reader → [read] → Data Enricher → [
 - Custom hooks should start with `use` prefix
 
 ### Code Organization
+
 - Follow consistent import ordering: external deps first, then internal
 - Group related functionality in custom hooks
 - Keep components focused on presentation, move logic to hooks
 - Use functional programming patterns where possible
 
 ### Styling
+
 - Use Tailwind CSS for styling components
 - Use shadcn/ui components as base
 - Follow mobile-first responsive design
 
 ### Performance
+
 - Debounce frequent operations (e.g., auto-save)
 - Skip validation/processing when data hasn't changed
 
 ## Development Workflow
 
 ### Testing & Type Checking
+
 - Test changes thoroughly before committing
-- Run type checks before committing: `cd budget-tracker-web && npx tsc --noEmit`
+- Run type checks before committing: `pnpm type-check`
 - Validate data before writing to external systems (Cosmos DB, Google Sheets)
 
 ### Commit Messages
+
 - Use present tense ("Add feature" not "Added feature")
 - Be concise but descriptive
 - Reference issue numbers when applicable
