@@ -63,6 +63,7 @@ jobs:
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Deploy to Azure Functions
-        run: |
-          cd apps/functions
-          func azure functionapp publish ${{ secrets.AZURE_FUNCTIONAPP_NAME }} --typescript
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{ secrets.AZURE_FUNCTIONAPP_NAME }}
+          package: apps/functions
