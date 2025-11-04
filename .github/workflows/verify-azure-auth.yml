@@ -2,7 +2,7 @@ name: Verify Azure OIDC Authentication
 
 on:
   pull_request:
-    types: [closed]
+    types: [opened, synchronize, closed]
     branches:
       - main
   workflow_dispatch:
@@ -14,7 +14,6 @@ permissions:
 jobs:
   verify-auth:
     name: Verify Azure Authentication
-    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.merged == true
     runs-on: ubuntu-latest
 
     steps:
