@@ -10,7 +10,6 @@ export const mapToEnrichedReceiptData = (
     id: source.id,
     processingStatusId: source.processingStatusId,
     userId: source.userId,
-    rawDocumentId: source.id,
     total: response.total,
     merchantName: response.merchantName,
     transactionDate: response.transactionDate,
