@@ -1,5 +1,8 @@
 "use client";
-import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
+import {
+  EnrichedReceiptData,
+  PaymentParticipant,
+} from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { ReceiptItem } from "./receipt-item";
 import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { Label } from "@/components/ui/shadcn/label";
@@ -16,20 +19,27 @@ import { TotalPrice } from "./total-price";
 import { DeleteReceiptButton } from "./delete-receipt-button";
 import { AddReceiptItem } from "./add-receipt-item";
 import { SendToBudgetButton } from "../send-to-budget-button";
+import { PaidBy } from "./paid-by";
+import { Person } from "@/data/people";
+import { calculateTotal } from "./calculate-total";
 
 // TODO: P2 Table view for desktop
 // TODO: P3 Numbers formatting in inputs vs in labels
 export const Receipt = ({
   receipt,
+  people,
   onReceiptItemChange,
   onMerchantChange,
   onDateChange,
+  onPaidByChange,
   onAddItem,
   onItemDelete,
 }: ReceiptProps) => {
   const { isLoading, debounced } = useDebounce(onMerchantChange);
   const { isLoading: isDateChangeLoading, debounced: debouncedOnDateChange } =
     useDebounce(onDateChange);
+
+  const calculatedTotal = calculateTotal(receipt.items);
 
   return (
     <Card className="w-full max-w-4xl">
@@ -54,8 +64,17 @@ export const Receipt = ({
                   onChange={debouncedOnDateChange}
                 />
               </div>
+              <PaidBy
+                paidBy={receipt.paidBy}
+                calculatedTotal={calculatedTotal}
+                people={people}
+                onChange={onPaidByChange}
+              />
             </div>
-            <TotalPrice total={receipt.total} items={receipt.items} />
+            <TotalPrice
+              total={receipt.total}
+              calculatedTotal={calculatedTotal}
+            />
           </div>
           <div className="flex sm:flex-col gap-2">
             <SendToBudgetButton receipt={receipt} />
@@ -86,9 +105,11 @@ export const Receipt = ({
 
 type ReceiptProps = {
   receipt: EnrichedReceiptData;
+  people: readonly Person[];
   onReceiptItemChange: (newItem: EnrichedItem, index: number) => Promise<void>;
   onMerchantChange: (newMerchant: string) => Promise<void>;
   onDateChange: (newDate: Date | undefined) => Promise<void>;
+  onPaidByChange: (paidBy: PaymentParticipant[]) => Promise<void>;
   onAddItem: () => Promise<void>;
   onItemDelete: (index: number) => Promise<void>;
 };
