@@ -5,20 +5,26 @@ import {
   EnrichedItem,
   enrichedItemSchema,
 } from "@budget-tracker/shared/enriched-item-schema";
-import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
+import {
+  EnrichedReceiptData,
+  PaymentParticipant,
+} from "@budget-tracker/shared/enriched-receipt-data-schema";
 import {
   updateReceiptItem,
   updateReceiptMerchantName,
   updateReceiptTransactionDate,
+  updateReceiptPaidBy,
 } from "@/lib/receipt-data/update";
 import { addReceiptItem } from "@/lib/receipt-data/add-receipt-item";
 import { deleteReceiptItem } from "@/lib/receipt-data/delete-receipt-item";
+import { Person } from "@/data/people";
 
 // TODO: P1 Zustand store; move handlers down
 // TODO: P2 Input with end icon
 // TODO: P3 Error handling on update
 export const ReceiptDetails = ({
   receipt: initialReceiptData,
+  people,
 }: ReceiptDetailsProps) => {
   const [receipt, setReceipt] = useState(initialReceiptData);
 
@@ -77,12 +83,24 @@ export const ReceiptDetails = ({
     setReceipt(updatedReceipt);
   };
 
+  const handlePaidByChange = async (paidBy: PaymentParticipant[]) => {
+    const updatedReceipt = await updateReceiptPaidBy(
+      receipt.id,
+      receipt.userId,
+      paidBy
+    );
+
+    setReceipt(updatedReceipt);
+  };
+
   return (
     <Receipt
       receipt={receipt}
+      people={people}
       onReceiptItemChange={handleReceiptItemChange}
       onMerchantChange={handleMerchantChange}
       onDateChange={handleDateChange}
+      onPaidByChange={handlePaidByChange}
       onAddItem={handleAddItem}
       onItemDelete={handleItemDelete}
     />
@@ -91,4 +109,5 @@ export const ReceiptDetails = ({
 
 type ReceiptDetailsProps = {
   receipt: EnrichedReceiptData;
+  people: readonly Person[];
 };

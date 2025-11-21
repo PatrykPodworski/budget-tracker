@@ -6,7 +6,7 @@ const paymentParticipantSchema = z.object({
   sharePercentage: z.number().min(0).max(100),
 });
 
-type PaymentParticipant = z.infer<typeof paymentParticipantSchema>;
+export type PaymentParticipant = z.infer<typeof paymentParticipantSchema>;
 
 export const enrichedReceiptDataSchema = z
   .object({

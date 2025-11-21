@@ -1,16 +1,17 @@
 import { env } from "@/env";
 
-export const people = [
-  { id: env.TEMP_USER_ID, name: "Me" },
-  { id: "person-2", name: "Partner" },
-] as const;
+export const getPeople = () =>
+  [
+    { id: env.TEMP_USER_ID, name: "Patryk" },
+    { id: "person-2", name: "Paulina" },
+  ] as const;
 
-const personIds = new Set(people.map((p) => p.id));
+export const people = getPeople();
 
-export type Person = (typeof people)[number];
+export type Person = ReturnType<typeof getPeople>[number];
 
 export const isValidPersonId = (id: string): boolean => {
-  return personIds.has(id);
+  return people.some((p) => p.id === id);
 };
 
 export const getPersonById = (id: string) => {

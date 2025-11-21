@@ -1,13 +1,9 @@
 "use client";
 import { Label } from "@/components/ui/shadcn/label";
 import { formatCurrency } from "@/lib/utils";
-import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 
-export const TotalPrice = ({ total, items }: TotalPriceProps) => {
-  const calculatedTotal = calculateTotal(items);
-
+export const TotalPrice = ({ total, calculatedTotal }: TotalPriceProps) => {
   const totalDifference = total - calculatedTotal;
-  console.log(total, calculatedTotal, totalDifference);
 
   return (
     <div>
@@ -35,23 +31,7 @@ export const TotalPrice = ({ total, items }: TotalPriceProps) => {
   );
 };
 
-const calculateTotal = (items: EnrichedItem[]) => {
-  const totalInCents = items.reduce((acc, item) => {
-    const itemTotal = getItemTotal(item);
-    return acc + itemTotal;
-  }, 0);
-
-  return totalInCents / 100;
-};
-
-const getItemTotal = (item: EnrichedItem) => {
-  const unitPrice = item.unitPrice * 100;
-  const quantity = item.quantity * 1000;
-  const discount = item.discount * 100;
-  return Math.round((unitPrice * quantity) / 1000 - discount);
-};
-
 type TotalPriceProps = {
   total: number;
-  items: EnrichedItem[];
+  calculatedTotal: number;
 };

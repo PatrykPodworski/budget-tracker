@@ -1,7 +1,10 @@
 "use server";
 import { PatchOperation } from "@azure/cosmos";
 import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
-import { enrichedReceiptDataSchema } from "@budget-tracker/shared/enriched-receipt-data-schema";
+import {
+  enrichedReceiptDataSchema,
+  PaymentParticipant,
+} from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { getReceiptContainer } from "@/lib/receipt-data/common/get-receipt-container";
 
 export const updateReceiptItem = async (
@@ -23,6 +26,12 @@ export const updateReceiptTransactionDate = async (
   newTransactionDate: Date | undefined
 ) =>
   updateReceiptField(id, partitionKey, "transactionDate", newTransactionDate);
+
+export const updateReceiptPaidBy = async (
+  id: string,
+  partitionKey: string,
+  paidBy: PaymentParticipant[]
+) => updateReceiptField(id, partitionKey, "paidBy", paidBy);
 
 export const markReceiptAsSent = async (id: string, partitionKey: string) =>
   updateReceiptField(id, partitionKey, "isSentToBudget", true);
