@@ -14,6 +14,7 @@ import {
   updateReceiptMerchantName,
   updateReceiptTransactionDate,
   updateReceiptPaidBy,
+  updateReceiptTotal,
 } from "@/lib/receipt-data/update";
 import { addReceiptItem } from "@/lib/receipt-data/add-receipt-item";
 import { deleteReceiptItem } from "@/lib/receipt-data/delete-receipt-item";
@@ -93,6 +94,16 @@ export const ReceiptDetails = ({
     setReceipt(updatedReceipt);
   };
 
+  const handleTotalChange = async (newTotal: number) => {
+    const updatedReceipt = await updateReceiptTotal(
+      receipt.id,
+      receipt.userId,
+      newTotal
+    );
+
+    setReceipt(updatedReceipt);
+  };
+
   return (
     <Receipt
       receipt={receipt}
@@ -101,6 +112,7 @@ export const ReceiptDetails = ({
       onMerchantChange={handleMerchantChange}
       onDateChange={handleDateChange}
       onPaidByChange={handlePaidByChange}
+      onTotalChange={handleTotalChange}
       onAddItem={handleAddItem}
       onItemDelete={handleItemDelete}
     />

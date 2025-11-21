@@ -8,21 +8,25 @@ import { Person } from "@/data/people";
 import { useDebounce } from "@/lib/utils/use-debounce";
 import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { formatCurrency } from "@/lib/utils";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
+import { calculateTotal } from "./calculate-total";
 
 type PaidByProps = {
   paidBy: PaymentParticipant[];
-  calculatedTotal: number;
+  items: EnrichedItem[];
   people: readonly Person[];
   onChange: (paidBy: PaymentParticipant[]) => Promise<void>;
 };
 
 export const PaidBy = ({
   paidBy,
-  calculatedTotal,
+  items,
   people,
   onChange,
 }: PaidByProps) => {
   const { isLoading, debounced } = useDebounce(onChange);
+
+  const calculatedTotal = calculateTotal(items);
 
   const selectedPersonIds = paidBy.map((p) => p.personId);
 

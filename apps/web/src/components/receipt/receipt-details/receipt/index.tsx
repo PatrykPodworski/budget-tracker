@@ -21,7 +21,6 @@ import { AddReceiptItem } from "./add-receipt-item";
 import { SendToBudgetButton } from "../send-to-budget-button";
 import { PaidBy } from "./paid-by";
 import { Person } from "@/data/people";
-import { calculateTotal } from "./calculate-total";
 
 // TODO: P2 Table view for desktop
 // TODO: P3 Numbers formatting in inputs vs in labels
@@ -32,14 +31,13 @@ export const Receipt = ({
   onMerchantChange,
   onDateChange,
   onPaidByChange,
+  onTotalChange,
   onAddItem,
   onItemDelete,
 }: ReceiptProps) => {
   const { isLoading, debounced } = useDebounce(onMerchantChange);
   const { isLoading: isDateChangeLoading, debounced: debouncedOnDateChange } =
     useDebounce(onDateChange);
-
-  const calculatedTotal = calculateTotal(receipt.items);
 
   return (
     <Card className="w-full max-w-4xl">
@@ -66,14 +64,15 @@ export const Receipt = ({
               </div>
               <PaidBy
                 paidBy={receipt.paidBy}
-                calculatedTotal={calculatedTotal}
+                items={receipt.items}
                 people={people}
                 onChange={onPaidByChange}
               />
             </div>
             <TotalPrice
               total={receipt.total}
-              calculatedTotal={calculatedTotal}
+              items={receipt.items}
+              onTotalChange={onTotalChange}
             />
           </div>
           <div className="flex sm:flex-col gap-2">
@@ -110,6 +109,7 @@ type ReceiptProps = {
   onMerchantChange: (newMerchant: string) => Promise<void>;
   onDateChange: (newDate: Date | undefined) => Promise<void>;
   onPaidByChange: (paidBy: PaymentParticipant[]) => Promise<void>;
+  onTotalChange: (newTotal: number) => Promise<void>;
   onAddItem: () => Promise<void>;
   onItemDelete: (index: number) => Promise<void>;
 };
