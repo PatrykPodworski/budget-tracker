@@ -11,6 +11,8 @@ import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { getSheetTitleToWrite } from "./utils/get-sheet-title-to-write";
 import { validateReceipt } from "./validate-receipt";
 import { markReceiptAsSent } from "../receipt-data/update";
+import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
+import { getExpenseRowForPerson } from "./utils/get-expense-row-for-person";
 
 export const writeReceipt = async ({
   receiptId,
@@ -19,12 +21,14 @@ export const writeReceipt = async ({
   merchantName,
   items,
   userId,
+  paidBy,
 }: WriteReceiptParams) => {
-  const expenseParam = getExpenseParam(
+  const expenseParams = getExpenseParams(
     transactionDate,
     total,
     merchantName,
-    receiptId
+    receiptId,
+    paidBy
   );
 
   // Validate receipt before writing
@@ -33,8 +37,8 @@ export const writeReceipt = async ({
     receiptId,
     transactionDate,
     expenseCellInfo: {
-      column: expenseParam.column,
-      row: expenseParam.row,
+      column: expenseParams[0].column,
+      row: expenseParams[0].row,
     },
   });
 
@@ -47,12 +51,12 @@ export const writeReceipt = async ({
   const categories = getCategoryCellValues(items);
   const sheetTitle = getSheetTitleToWrite(transactionDate);
   const categoryParams = getCategoryParams(categories, transactionDate);
-  const writeParams = [...categoryParams, expenseParam];
+  const writeParams = [...categoryParams, ...expenseParams];
   const validation: CellValidation = {
     type: "noteId",
     value: receiptId,
-    column: expenseParam.column,
-    row: expenseParam.row,
+    column: expenseParams[0].column,
+    row: expenseParams[0].row,
   };
 
   await bulkWrite(sheetTitle, writeParams, validation);
@@ -69,6 +73,7 @@ type WriteReceiptParams = {
   merchantName: string | undefined;
   receiptId: string;
   userId: string;
+  paidBy: PaymentParticipant[];
 };
 
 const getCategoryParams = (
@@ -103,21 +108,24 @@ const getCategoryParam = (
   return writeParam;
 };
 
-const getExpenseParam = (
+const getExpenseParams = (
   transactionDate: Date,
   total: number,
   merchantName: string | undefined,
-  receiptId: string
-) => {
+  receiptId: string,
+  paidBy: PaymentParticipant[]
+): CellWrite[] => {
   const column = getColumnToWrite(transactionDate);
-  const row = getRowToWrite();
 
-  const param: CellWrite = {
-    column,
-    row,
-    formula: total.toFixed(2),
-    note: `${formatCurrency(total)}\t${merchantName} ${receiptId}`,
-  };
+  return paidBy.map(({ personId, sharePercentage }) => {
+    const row = getExpenseRowForPerson(personId);
+    const personAmount = (total * sharePercentage) / 100;
 
-  return param;
+    return {
+      column,
+      row,
+      formula: personAmount.toFixed(2),
+      note: `${formatCurrency(personAmount)}\t${merchantName} ${receiptId}`,
+    };
+  });
 };

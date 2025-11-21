@@ -2,6 +2,7 @@
 import { Label } from "@/components/ui/shadcn/label";
 import { formatCurrency } from "@/lib/utils";
 
+// TODO: P0 Move calculating here; use total from receipt elsewhere; allow to edit total
 export const TotalPrice = ({ total, calculatedTotal }: TotalPriceProps) => {
   const totalDifference = total - calculatedTotal;
 

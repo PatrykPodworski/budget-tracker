@@ -5,10 +5,11 @@ import { LoadingButton } from "@/components/ui/loading-button";
 import { writeReceipt } from "@/lib/google-spreadsheet/write-receipt";
 import { useReceiptValidation } from "./use-receipt-validation";
 import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
+import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
 
 // TODO: P1 Make the loading button always the same width
 export const SendToBudgetButton = ({
-  receipt: { id, items, merchantName, total, transactionDate, userId, isSentToBudget },
+  receipt: { id, items, merchantName, total, transactionDate, userId, isSentToBudget, paidBy },
 }: SendToBudgetButtonProps) => {
   const [isSending, startSending] = useTransition();
   const { isValidating, validationResult } = useReceiptValidation({
@@ -30,6 +31,7 @@ export const SendToBudgetButton = ({
           merchantName,
           items,
           userId,
+          paidBy,
         });
       } catch (error) {
         console.error("Error writing receipt to spreadsheet:", error);
@@ -90,5 +92,6 @@ type SendToBudgetButtonProps = {
     items: EnrichedItem[];
     userId: string;
     isSentToBudget: boolean;
+    paidBy: PaymentParticipant[];
   };
 };
