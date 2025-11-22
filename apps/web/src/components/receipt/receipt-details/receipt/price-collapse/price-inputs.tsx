@@ -25,7 +25,7 @@ export const PriceInputs = ({
           type="number"
           defaultValue={item.quantity}
           onChange={handleQuantityChange}
-          className=" no-input-arrows"
+          className="no-input-arrows"
           disabled={isLoading}
         />
       </div>
