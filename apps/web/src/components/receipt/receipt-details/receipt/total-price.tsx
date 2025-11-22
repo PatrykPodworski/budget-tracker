@@ -1,10 +1,5 @@
 "use client";
 import { Input } from "@/components/ui/shadcn/input";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "@/components/ui/shadcn/input-group";
 import { Label } from "@/components/ui/shadcn/label";
 import { formatCurrency } from "@/lib/utils";
 import { useDebounce } from "@/lib/utils/use-debounce";
@@ -43,17 +38,19 @@ export const TotalPrice = ({
     <div>
       <div className="flex gap-2 items-center mb-2">
         <Label htmlFor="total">Total</Label>
-        <InputGroup className="w-32 h-8">
-          <InputGroupInput
+        <div className="relative w-32">
+          <Input
             id="total"
             type="text"
             inputMode="decimal"
             value={localTotal}
             onChange={handleTotalChange}
-            className="h-8"
+            className="h-8 pr-8"
           />
-          <InputGroupAddon align="inline-end">zł</InputGroupAddon>
-        </InputGroup>
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+            zł
+          </span>
+        </div>
       </div>
       <div className="flex gap-2 items-baseline">
         <Label htmlFor="calculatedTotal">Calculated Total</Label>
