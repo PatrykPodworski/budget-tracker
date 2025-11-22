@@ -11,14 +11,14 @@ import { formatCurrency } from "@/lib/utils";
 
 type PaidByProps = {
   paidBy: PaymentParticipant[];
-  calculatedTotal: number;
+  total: number;
   people: readonly Person[];
   onChange: (paidBy: PaymentParticipant[]) => Promise<void>;
 };
 
 export const PaidBy = ({
   paidBy,
-  calculatedTotal,
+  total,
   people,
   onChange,
 }: PaidByProps) => {
@@ -43,7 +43,7 @@ export const PaidBy = ({
   const peopleWithAmount = people.map((person) => ({
     id: person.id,
     name: person.name,
-    amount: getPersonAmount(person.id, paidBy, calculatedTotal),
+    amount: getPersonAmount(person.id, paidBy, total),
   }));
 
   return (

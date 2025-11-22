@@ -27,6 +27,12 @@ export const updateReceiptTransactionDate = async (
 ) =>
   updateReceiptField(id, partitionKey, "transactionDate", newTransactionDate);
 
+export const updateReceiptTotal = async (
+  id: string,
+  partitionKey: string,
+  newTotal: number
+) => updateReceiptField(id, partitionKey, "total", newTotal);
+
 export const updateReceiptPaidBy = async (
   id: string,
   partitionKey: string,

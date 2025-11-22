@@ -1,18 +1,58 @@
 "use client";
+import { Input } from "@/components/ui/shadcn/input";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/shadcn/input-group";
 import { Label } from "@/components/ui/shadcn/label";
 import { formatCurrency } from "@/lib/utils";
+import { useDebounce } from "@/lib/utils/use-debounce";
+import { useState, useEffect } from "react";
+import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
+import { calculateTotal } from "./calculate-total";
 
-// TODO: P0 Move calculating here; use total from receipt elsewhere; allow to edit total
-export const TotalPrice = ({ total, calculatedTotal }: TotalPriceProps) => {
+export const TotalPrice = ({
+  total,
+  items,
+  onTotalChange,
+}: TotalPriceProps) => {
+  const [localTotal, setLocalTotal] = useState(total.toString());
+  const { debounced } = useDebounce(onTotalChange);
+
+  const calculatedTotal = calculateTotal(items);
   const totalDifference = total - calculatedTotal;
+
+  useEffect(() => {
+    setLocalTotal(total.toString());
+  }, [total]);
+
+  const handleTotalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Allow numbers with up to 2 decimal places
+    if (/^\d*\.?\d{0,2}$/.test(value)) {
+      setLocalTotal(value);
+      const numericValue = parseFloat(value);
+      if (!isNaN(numericValue)) {
+        debounced(numericValue);
+      }
+    }
+  };
 
   return (
     <div>
-      <div className="flex gap-2 items-baseline">
+      <div className="flex gap-2 items-center mb-2">
         <Label htmlFor="total">Total</Label>
-        <span id="total" className="text-base">
-          {formatCurrency(total)}
-        </span>
+        <InputGroup className="w-24 h-8">
+          <InputGroupInput
+            id="total"
+            type="number"
+            value={localTotal}
+            onChange={handleTotalChange}
+            className="h-8 no-input-arrows"
+          />
+          <InputGroupAddon align="inline-end">zł</InputGroupAddon>
+        </InputGroup>
       </div>
       <div className="flex gap-2 items-baseline">
         <Label htmlFor="calculatedTotal">Calculated Total</Label>
@@ -34,5 +74,6 @@ export const TotalPrice = ({ total, calculatedTotal }: TotalPriceProps) => {
 
 type TotalPriceProps = {
   total: number;
-  calculatedTotal: number;
+  items: EnrichedItem[];
+  onTotalChange: (newTotal: number) => Promise<void>;
 };
