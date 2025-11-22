@@ -5,6 +5,7 @@ import React from "react";
 import clsx from "clsx";
 import { PriceTotal } from "./price-total";
 
+// TODO: P2 Reuse input group with zł addon from total-price.tsx
 export const PriceInputs = ({
   id,
   item,
