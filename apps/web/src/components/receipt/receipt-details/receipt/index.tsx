@@ -64,7 +64,7 @@ export const Receipt = ({
               </div>
               <PaidBy
                 paidBy={receipt.paidBy}
-                items={receipt.items}
+                total={receipt.total}
                 people={people}
                 onChange={onPaidByChange}
               />
