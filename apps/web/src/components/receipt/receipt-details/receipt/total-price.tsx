@@ -36,16 +36,21 @@ export const TotalPrice = ({
 
   return (
     <div>
-      <div className="flex gap-2 items-baseline mb-2">
+      <div className="flex gap-2 items-center mb-2">
         <Label htmlFor="total">Total</Label>
-        <Input
-          id="total"
-          type="text"
-          inputMode="decimal"
-          value={localTotal}
-          onChange={handleTotalChange}
-          className="w-32 h-8"
-        />
+        <div className="relative w-32">
+          <Input
+            id="total"
+            type="text"
+            inputMode="decimal"
+            value={localTotal}
+            onChange={handleTotalChange}
+            className="h-8 pr-8"
+          />
+          <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-muted-foreground pointer-events-none">
+            zł
+          </span>
+        </div>
       </div>
       <div className="flex gap-2 items-baseline">
         <Label htmlFor="calculatedTotal">Calculated Total</Label>
