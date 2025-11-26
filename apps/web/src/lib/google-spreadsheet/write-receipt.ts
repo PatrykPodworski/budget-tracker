@@ -1,18 +1,15 @@
 "use server";
 
-import { isCategory } from "@/data/categories";
 import { getCategoryCellValues } from "./get-category-cell-values";
 import { bulkWrite } from "./bulk-write";
-import { CellValidation, CellValues, CellWrite } from "./cell-write";
-import { getRowToWrite } from "./utils/get-row-to-write";
-import { getColumnToWrite } from "./utils/get-column-to-write";
-import { formatCurrency } from "../utils";
+import { CellValidation, CellValues } from "./cell-write";
 import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { getSheetTitleToWrite } from "./utils/get-sheet-title-to-write";
 import { validateReceipt } from "./validate-receipt";
 import { markReceiptAsSent } from "../receipt-data/update";
 import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
-import { getExpenseRowForPerson } from "./utils/get-expense-row-for-person";
+import { getExpenseParams } from "./utils/get-expense-params";
+import { getCategoryParam } from "./utils/get-category-param";
 
 export const writeReceipt = async ({
   receiptId,
@@ -26,6 +23,7 @@ export const writeReceipt = async ({
   const expenseParams = getExpenseParams(
     transactionDate,
     total,
+    "PLN",
     merchantName,
     receiptId,
     paidBy
@@ -85,47 +83,3 @@ const getCategoryParams = (
       getCategoryParam(category, cellValues, transactionDate)
     )
     .filter((x) => x !== undefined);
-
-const getCategoryParam = (
-  category: string,
-  cellValues: CellValues,
-  transactionDate: Date
-) => {
-  const isCategoryType = isCategory(category);
-  if (!isCategoryType) {
-    return undefined;
-  }
-
-  const column = getColumnToWrite(transactionDate);
-  const row = getRowToWrite(category);
-
-  const writeParam: CellWrite = {
-    column,
-    row,
-    ...cellValues,
-  };
-
-  return writeParam;
-};
-
-const getExpenseParams = (
-  transactionDate: Date,
-  total: number,
-  merchantName: string | undefined,
-  receiptId: string,
-  paidBy: PaymentParticipant[]
-): CellWrite[] => {
-  const column = getColumnToWrite(transactionDate);
-
-  return paidBy.map(({ personId, sharePercentage }) => {
-    const row = getExpenseRowForPerson(personId);
-    const personAmount = (total * sharePercentage) / 100;
-
-    return {
-      column,
-      row,
-      formula: personAmount.toFixed(2),
-      note: `${formatCurrency(personAmount)}\t${merchantName} ${receiptId}`,
-    };
-  });
-};

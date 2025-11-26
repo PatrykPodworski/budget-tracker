@@ -1,25 +1,25 @@
 import { z } from "zod";
-import { enrichedItemSchema } from "./enriched-item-schema";
 import {
   paymentParticipantSchema,
   type PaymentParticipant,
 } from "./payment-participant-schema";
+import { currencySchema } from "./currency";
 
-export type { PaymentParticipant };
-
-export const enrichedReceiptDataSchema = z
+export const quickExpenseSchema = z
   .object({
     id: z.uuid(),
-    processingStatusId: z.uuid(),
     userId: z.uuid(),
-    total: z.number(),
-    merchantName: z.string().optional(),
-    transactionDate: z.coerce.date().optional(),
-    items: z.array(enrichedItemSchema),
-    isSentToBudget: z.boolean(),
+    name: z.string().min(1, "Name is required"),
+    category: z.string().min(1, "Category is required"),
+    amount: z.number().nonnegative(),
+    currency: currencySchema,
+    amountPLN: z.number().nonnegative(),
+    transactionDate: z.coerce.date(),
     paidBy: z
       .array(paymentParticipantSchema)
       .min(1, "At least one person must be assigned"),
+    isSentToBudget: z.boolean(),
+    createdAt: z.coerce.date(),
   })
   .refine(
     (data) => {
@@ -29,4 +29,4 @@ export const enrichedReceiptDataSchema = z
     { message: "Share percentages must sum to 100" }
   );
 
-export type EnrichedReceiptData = z.infer<typeof enrichedReceiptDataSchema>;
+export type QuickExpense = z.infer<typeof quickExpenseSchema>;
