@@ -12,6 +12,11 @@ export const exchangeRates: Record<Currency, number> = {
   PHP: 0.063,
 };
 
+export const currencyLocales: Record<Currency, string> = {
+  PLN: "pl-PL",
+  PHP: "en-PH",
+};
+
 export const currencySchema = z.enum(currencies);
 
 export const convertToBaseCurrency = (

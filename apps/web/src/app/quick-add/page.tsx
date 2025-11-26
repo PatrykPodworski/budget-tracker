@@ -1,4 +1,4 @@
-import { QuickAddForm } from "@/components/quick-add/quick-add-form";
+import { QuickExpenseForm } from "@/components/quick-expense/quick-expense-form";
 import { Button } from "@/components/ui/shadcn/button";
 import { people } from "@/data/people";
 import { env } from "@/env";
@@ -7,7 +7,7 @@ import Link from "next/link";
 const QuickAddPage = () => {
   return (
     <div className="flex flex-col gap-4 items-center mb-4">
-      <QuickAddForm people={people} defaultUserId={env.TEMP_USER_ID} />
+      <QuickExpenseForm people={people} defaultUserId={env.TEMP_USER_ID} />
       <Button
         asChild
         variant="outline"
