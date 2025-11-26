@@ -1,3 +1,5 @@
+"use server";
+
 import { quickExpenseSchema } from "@budget-tracker/shared/quick-expense-schema";
 import { getQuickExpenseContainer } from "./get-container";
 
@@ -10,10 +12,7 @@ export const getLatestQuickExpenses = async () => {
     )
     .fetchAll();
 
-  const parsed = data.resources.map((item) =>
-    quickExpenseSchema.parse(item)
-  );
+  const parsed = data.resources.map((item) => quickExpenseSchema.parse(item));
 
   return parsed;
 };
-
