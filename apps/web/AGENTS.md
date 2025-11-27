@@ -15,11 +15,15 @@ Next.js web application for tracking receipts and managing budgets.
 - `src/app/` - Next.js app router pages and API routes
 - `src/components/` - React components organized by feature
   - `receipt/` - Receipt management components
+  - `quick-expense/` - Quick expense form and details components
+  - `quick-add/` - Quick add mode components (currency toggle)
+  - `unified-expense-list/` - Unified list combining receipts and quick expenses
   - `processing-bundles/` - Receipt processing workflow
   - `ui/` - Shared UI components (shadcn/ui)
 - `src/lib/` - Utility functions and business logic
   - `receipt-data/` - Cosmos DB operations for receipts
-  - `google-spreadsheet/` - Google Sheets integration
+  - `quick-expense/` - Cosmos DB operations for quick expenses
+  - `google-spreadsheet/` - Google Sheets integration (receipts and quick expenses)
   - `processing-bundle/` - Processing workflow logic
   - `storage/` - Azure Blob Storage operations
 - `src/models/` - Zod schemas for data validation
@@ -45,6 +49,10 @@ Next.js web application for tracking receipts and managing budgets.
 ## Key Features
 
 - Receipt upload and processing
+- Quick expense entry (manual expense entry without receipts)
+- Unified expense list combining receipts and quick expenses
+- Multi-currency support (PLN, PHP) with automatic conversion
+- Payment participant tracking (who paid, with share percentages)
 - Item categorization and price tracking
 - Google Sheets export for budget tracking
 - Real-time processing status updates

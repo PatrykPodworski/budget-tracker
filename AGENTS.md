@@ -9,20 +9,29 @@ This is a Turborepo monorepo using pnpm for package management.
 - `apps/web/` - Next.js 16 web application with App Router
   - Receipt upload and processing interface
   - Receipt item management and categorization
+  - Quick expense entry and management
+  - Unified expense list (receipts + quick expenses)
   - Integration with Google Spreadsheets for budget tracking
-  - Azure Cosmos DB for receipt data storage
+  - Azure Cosmos DB for receipt and quick expense data storage
 - `apps/functions/` - Azure Functions backend services
   - Receipt processing and data enrichment
   - Azure Blob Storage integration for receipt images
-- `packages/` - Shared packages (ready for future use)
+- `packages/shared/` - Shared TypeScript schemas and utilities
+  - Expense data schemas (receipts, quick expenses, unified expenses)
+  - Currency support with exchange rates
+  - Payment participant schemas
 
 ## Key Features
 
 - Upload receipt images to Azure Blob Storage
 - AI-powered receipt data extraction and enrichment
 - Manual editing of receipt items (merchant, date, items, categories)
+- Quick expense entry for expenses without receipts
+- Multi-currency support (PLN, PHP) with automatic conversion
+- Payment participant tracking (who paid, with share percentages)
+- Unified expense list combining receipts and quick expenses
 - Validation against existing Google Spreadsheet entries to prevent duplicates
-- Send receipts to budget spreadsheet with category breakdown
+- Send receipts and quick expenses to budget spreadsheet with category breakdown
 
 ## Processing Pipeline Architecture
 
@@ -118,14 +127,19 @@ User Upload → [uploaded] → Receipt Reader → [read] → Data Enricher → [
 - **Processing Bundle Pattern:** Groups multiple receipt uploads for batch status tracking
 - **OpenAI Assistant Configuration:** Located in [assistant-instructions.md](../apps/functions/src/lib/data-enricher/resources/assistant-instructions.md)
 - **Response Schema:** Validated with Zod using [assistant-response-schema.json](../apps/functions/src/lib/data-enricher/resources/assistant-response-schema.json)
+- **Quick Expenses:** Stored in Cosmos DB `quick-expenses` container, support multi-currency (PLN, PHP) with exchange rate conversion
+- **Unified Expense List:** Combines receipts and quick expenses on home page, sorted by transaction date (newest first), limited to top 10
+- **Currency Support:** Exchange rates defined in [currency.ts](../packages/shared/src/currency.ts), base currency is PLN
 
 ## Application Routes
 
 ### Page Routes
 
-- **`/`** ([page.tsx](../apps/web/src/app/page.tsx)) - Home page displaying list of recent receipts
+- **`/`** ([page.tsx](../apps/web/src/app/page.tsx)) - Home page displaying unified list of recent receipts and quick expenses, sorted by date
 - **`/receipts/add`** ([page.tsx](../apps/web/src/app/receipts/add/page.tsx)) - Upload receipt images via drag-and-drop
 - **`/receipts/[id]`** ([page.tsx](../apps/web/src/app/receipts/[id]/page.tsx)) - View and edit receipt details (merchant, date, items, categories)
+- **`/quick-add`** ([page.tsx](../apps/web/src/app/quick-add/page.tsx)) - Create new quick expense manually (name, amount, currency, category, payment participants)
+- **`/quick-expenses/[id]`** ([page.tsx](../apps/web/src/app/quick-expenses/[id]/page.tsx)) - View and edit quick expense details
 - **`/processing-bundles/[id]`** ([page.tsx](../apps/web/src/app/processing-bundles/[id]/page.tsx)) - Real-time processing status with SSE updates
 
 ### API Routes

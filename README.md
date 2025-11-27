@@ -1,6 +1,6 @@
 # Budget Tracker
 
-A budget tracking application with AI-powered receipt processing and Google Spreadsheets integration. Upload receipt images, extract data with Azure AI, enrich with OpenAI, and automatically sync expenses to Google Sheets with category breakdowns.
+A budget tracking application with AI-powered receipt processing and Google Spreadsheets integration. Upload receipt images, extract data with Azure AI, enrich with OpenAI, and automatically sync expenses to Google Sheets with category breakdowns. Also supports manual quick expense entry for expenses without receipts, with multi-currency support and payment participant tracking.
 
 ## Prerequisites
 
@@ -15,25 +15,29 @@ This is a Turborepo monorepo using pnpm for package management.
 
 - `apps/web/` - Next.js 16 web application with App Router
 - `apps/functions/` - Azure Functions backend for receipt processing
-- `packages/` - Shared packages (ready for future use)
+- `packages/shared/` - Shared TypeScript schemas and utilities (expense schemas, currency support)
 
 ## Development Setup
 
 1. **Install pnpm** (if not already installed):
+
 ```bash
 npm install -g pnpm
 ```
 
 2. **Install dependencies** (from root):
+
 ```bash
 pnpm install
 ```
 
 3. **Configure environment variables:**
+
    - Web: Copy `apps/web/.env.example` to `apps/web/.env.local`
    - Functions: Copy `apps/functions/local.settings.json.example` to `apps/functions/local.settings.json`
 
 4. **Run development servers:**
+
 ```bash
 # Start all apps in parallel
 pnpm dev
@@ -48,15 +52,16 @@ pnpm --filter functions start
 All commands run from the root directory:
 
 ### Run All Apps
+
 - `pnpm dev` - Start all apps in development mode
 - `pnpm build` - Build all apps with Turborepo caching
 - `pnpm lint` - Lint all apps
 - `pnpm type-check` - Type check all apps
 
 ### Run Specific Apps
+
 - `pnpm --filter web dev` - Start Next.js dev server with Turbopack
 - `pnpm --filter web build` - Build web for production
 - `pnpm --filter functions start` - Start Azure Functions locally
 - `pnpm --filter functions build` - Build functions TypeScript
 - `pnpm --filter functions deploy` - Deploy functions to Azure
-
