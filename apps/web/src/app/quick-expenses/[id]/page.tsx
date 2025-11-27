@@ -5,10 +5,15 @@ import { getQuickExpense } from "@/lib/quick-expense/get-quick-expense";
 import { people } from "@/data/people";
 import { env } from "@/env";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 
 const QuickExpensePageContent = async ({ id }: { id: string }) => {
   const quickExpense = await getQuickExpense(id);
+
+  if (!quickExpense) {
+    notFound();
+  }
 
   return (
     <div className="flex flex-col gap-4 items-center mb-4">
