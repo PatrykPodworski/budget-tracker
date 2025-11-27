@@ -35,7 +35,7 @@ export const getExpenseParams = (
 };
 
 export const getFormula = (amount: number, currency: Currency) =>
-  `${amount}*${exchangeRates[currency]}`;
+  `${amount.toFixed(2)}*${exchangeRates[currency]}`;
 
 export const formatAmountWithCurrency = (
   amount: number,
