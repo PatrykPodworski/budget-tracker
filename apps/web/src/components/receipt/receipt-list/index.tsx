@@ -1,11 +1,11 @@
 import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { ReceiptListItem } from "./receipt-list.item";
-import { AddNewReceiptListItem } from "./add-new-receipt-list-item";
+import { AddNewButtons } from "./add-new-buttons";
 
 export const ReceiptsList = ({ receipts }: ReceiptsListProps) => {
   return (
     <div className="flex flex-col gap-4">
-      <AddNewReceiptListItem />
+      <AddNewButtons />
       {receipts.map((x) => (
         <ReceiptListItem key={x.id} receipt={x} />
       ))}

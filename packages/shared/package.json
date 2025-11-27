@@ -22,6 +22,22 @@
     "./processing-steps": {
       "types": "./dist/processing-steps.d.ts",
       "default": "./dist/processing-steps.js"
+    },
+    "./payment-participant-schema": {
+      "types": "./dist/payment-participant-schema.d.ts",
+      "default": "./dist/payment-participant-schema.js"
+    },
+    "./currency": {
+      "types": "./dist/currency.d.ts",
+      "default": "./dist/currency.js"
+    },
+    "./quick-expense-schema": {
+      "types": "./dist/quick-expense-schema.d.ts",
+      "default": "./dist/quick-expense-schema.js"
+    },
+    "./unified-expense-schema": {
+      "types": "./dist/unified-expense-schema.d.ts",
+      "default": "./dist/unified-expense-schema.js"
     }
   },
   "scripts": {

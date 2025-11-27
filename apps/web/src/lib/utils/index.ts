@@ -1,3 +1,4 @@
+import { Currency, currencyLocales } from "@budget-tracker/shared/currency";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -5,10 +6,11 @@ export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export const formatCurrency = (amount: number) => {
-  return new Intl.NumberFormat("pl-PL", {
+export const formatCurrency = (amount: number, currency: Currency = "PLN") => {
+  const locale = currencyLocales[currency];
+  return new Intl.NumberFormat(locale, {
     style: "currency",
-    currency: "PLN",
+    currency: currency,
   }).format(amount);
 };
 

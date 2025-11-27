@@ -12,6 +12,7 @@ import { useState, useEffect } from "react";
 import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { calculateTotal } from "./calculate-total";
 
+// TODO: P1 Add currency toggle
 export const TotalPrice = ({
   total,
   items,
