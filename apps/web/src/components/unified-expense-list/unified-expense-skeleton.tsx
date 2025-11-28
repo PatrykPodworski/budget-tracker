@@ -26,10 +26,8 @@ export const UnifiedExpenseSkeleton = () => (
 
 export const UnifiedExpenseListSkeleton = () => (
   <div className="flex flex-col gap-4">
-    <UnifiedExpenseSkeleton />
-    <UnifiedExpenseSkeleton />
-    <UnifiedExpenseSkeleton />
-    <UnifiedExpenseSkeleton />
-    <UnifiedExpenseSkeleton />
+    {Array.from({ length: 10 }).map((_, i) => (
+      <UnifiedExpenseSkeleton key={i} />
+    ))}
   </div>
 );
