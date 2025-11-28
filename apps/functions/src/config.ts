@@ -44,4 +44,5 @@ export const config = {
   COSMOS_PROCESSING_BUNDLE_CONTAINER,
   COSMOS_ENDPOINT,
   COSMOS_KEY,
+  DEFAULT_PAID_BY: [{ personId: TEMP_USER_ID, sharePercentage: 100 }],
 } as const;

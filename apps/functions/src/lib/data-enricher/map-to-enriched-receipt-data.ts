@@ -1,6 +1,10 @@
-import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
+import {
+  enrichedReceiptDataSchema,
+  EnrichedReceiptData,
+} from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { ReceiptRawData } from "@budget-tracker/shared/receipt-raw-data";
 import { AssistantResponse } from "./assistant-response";
+import { config } from "../../config";
 
 export const mapToEnrichedReceiptData = (
   response: AssistantResponse,
@@ -15,7 +19,9 @@ export const mapToEnrichedReceiptData = (
     transactionDate: response.transactionDate,
     items: response.items,
     isSentToBudget: false,
+    paidBy: config.DEFAULT_PAID_BY,
   };
 
-  return enriched;
+  // Validate the enriched data before saving to Cosmos DB
+  return enrichedReceiptDataSchema.parse(enriched);
 };
