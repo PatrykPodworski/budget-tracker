@@ -1,9 +1,30 @@
-import { EnrichedReceiptData } from "./enriched-receipt-data-schema";
-import { QuickExpense } from "./quick-expense-schema";
+import { z } from "zod";
+import {
+  enrichedReceiptDataSchema,
+  EnrichedReceiptData,
+} from "./enriched-receipt-data-schema";
+import { quickExpenseSchema, QuickExpense } from "./quick-expense-schema";
 
 export type UnifiedExpense =
   | { type: "receipt"; data: EnrichedReceiptData }
   | { type: "quick-expense"; data: QuickExpense };
+
+const unifiedReceiptSchema = z.object({
+  type: z.literal("receipt"),
+  data: enrichedReceiptDataSchema,
+});
+
+const unifiedQuickExpenseSchema = z.object({
+  type: z.literal("quick-expense"),
+  data: quickExpenseSchema,
+});
+
+export const unifiedExpenseSchema = z.discriminatedUnion("type", [
+  unifiedReceiptSchema,
+  unifiedQuickExpenseSchema,
+]);
+
+export const unifiedExpenseListSchema = z.array(unifiedExpenseSchema);
 
 export const mergeAndSortExpenses = (
   receipts: EnrichedReceiptData[],
