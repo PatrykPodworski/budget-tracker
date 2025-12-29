@@ -5,6 +5,7 @@ import {
 import { ReceiptRawData } from "@budget-tracker/shared/receipt-raw-data";
 import { AssistantResponse } from "./assistant-response";
 import { config } from "../../config";
+import { normalizeTransactionDate } from "./normalize-transaction-date";
 
 export const mapToEnrichedReceiptData = (
   response: AssistantResponse,
@@ -16,7 +17,9 @@ export const mapToEnrichedReceiptData = (
     userId: source.userId,
     total: response.total,
     merchantName: response.merchantName,
-    transactionDate: response.transactionDate,
+    transactionDate: response.transactionDate
+      ? normalizeTransactionDate(response.transactionDate)
+      : response.transactionDate,
     items: response.items,
     isSentToBudget: false,
     paidBy: config.DEFAULT_PAID_BY,
