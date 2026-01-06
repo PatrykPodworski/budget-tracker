@@ -20,11 +20,7 @@
         "GOOGLE_DOCUMENT_ID",
         "GOOGLE_SERVICE_ACCOUNT_BASE64",
         "AZURE_STORAGE_CONNECTION_STRING",
-        "AZURE_STORAGE_CONTAINER_NAME",
-        "DI_ENDPOINT",
-        "DI_KEY",
-        "OPENAI_ASSISTANT_ID",
-        "WEB_BASE_URL"
+        "AZURE_STORAGE_CONTAINER_NAME"
       ]
     },
     "dev": {
