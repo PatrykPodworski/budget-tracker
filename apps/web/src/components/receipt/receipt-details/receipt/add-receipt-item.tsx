@@ -1,34 +1,19 @@
-import { LoadingButton } from "@/components/ui/loading-button";
+import { Button } from "@/components/ui/shadcn/button";
 import { PlusIcon } from "lucide-react";
-import { useState } from "react";
 
 export const AddReceiptItem = ({ onAddItem }: AddReceiptItemProps) => {
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleAddItem = async () => {
-    if (isLoading) return;
-
-    try {
-      setIsLoading(true);
-      await onAddItem();
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   return (
-    <LoadingButton
+    <Button
       variant="outline"
-      onClick={handleAddItem}
+      onClick={onAddItem}
       className="ml-[80px]"
-      loading={isLoading}
     >
       <PlusIcon className="h-4 w-4 mr-2" />
       Add Item
-    </LoadingButton>
+    </Button>
   );
 };
 
 type AddReceiptItemProps = {
-  onAddItem: () => Promise<void>;
+  onAddItem: () => void;
 };

@@ -1,5 +1,4 @@
 "use client";
-import { Input } from "@/components/ui/shadcn/input";
 import {
   InputGroup,
   InputGroupAddon,
@@ -7,7 +6,6 @@ import {
 } from "@/components/ui/shadcn/input-group";
 import { Label } from "@/components/ui/shadcn/label";
 import { formatCurrency } from "@/lib/utils";
-import { useDebounce } from "@/lib/utils/use-debounce";
 import { useState, useEffect } from "react";
 import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { calculateTotal } from "./calculate-total";
@@ -19,7 +17,6 @@ export const TotalPrice = ({
   onTotalChange,
 }: TotalPriceProps) => {
   const [localTotal, setLocalTotal] = useState(total.toString());
-  const { debounced } = useDebounce(onTotalChange);
 
   const calculatedTotal = calculateTotal(items);
   const totalDifference = total - calculatedTotal;
@@ -35,7 +32,7 @@ export const TotalPrice = ({
       setLocalTotal(value);
       const numericValue = parseFloat(value);
       if (!isNaN(numericValue)) {
-        debounced(numericValue);
+        onTotalChange(numericValue);
       }
     }
   };
@@ -76,5 +73,5 @@ export const TotalPrice = ({
 type TotalPriceProps = {
   total: number;
   items: EnrichedItem[];
-  onTotalChange: (newTotal: number) => Promise<void>;
+  onTotalChange: (newTotal: number) => void;
 };

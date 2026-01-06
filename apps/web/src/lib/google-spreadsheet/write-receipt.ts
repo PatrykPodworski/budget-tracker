@@ -60,7 +60,6 @@ export const writeReceipt = async ({
   await bulkWrite(sheetTitle, writeParams, validation);
 
   // TODO: P0 This cannot be in google spreadsheet lib
-  console.log(`Receipt ${receiptId}, user ${userId}`);
   await markReceiptAsSent(receiptId, userId);
 };
 

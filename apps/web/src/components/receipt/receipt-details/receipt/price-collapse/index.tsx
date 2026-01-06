@@ -8,7 +8,6 @@ import { getItemTotalPrice } from "./get-item-total-price";
 export const PriceCollapse = ({
   item,
   id,
-  isLoading,
   handleQuantityChange,
   handleUnitPriceChange,
   handleDiscountChange,
@@ -28,7 +27,6 @@ export const PriceCollapse = ({
         className="bg-accent"
         id={id}
         item={item}
-        isLoading={isLoading}
         handleQuantityChange={handleQuantityChange}
         handleUnitPriceChange={handleUnitPriceChange}
         handleDiscountChange={handleDiscountChange}

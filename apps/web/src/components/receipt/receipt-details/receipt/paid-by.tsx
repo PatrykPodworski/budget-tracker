@@ -5,7 +5,6 @@ import {
   ToggleGroupItem,
 } from "@/components/ui/shadcn/toggle-group";
 import { Person } from "@/data/people";
-import { useDebounce } from "@/lib/utils/use-debounce";
 import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { formatCurrency } from "@/lib/utils";
 
@@ -13,7 +12,7 @@ type PaidByProps = {
   paidBy: PaymentParticipant[];
   total: number;
   people: readonly Person[];
-  onChange: (paidBy: PaymentParticipant[]) => Promise<void>;
+  onChange: (paidBy: PaymentParticipant[]) => void;
 };
 
 export const PaidBy = ({
@@ -22,8 +21,6 @@ export const PaidBy = ({
   people,
   onChange,
 }: PaidByProps) => {
-  const { isLoading, debounced } = useDebounce(onChange);
-
   const selectedPersonIds = paidBy.map((p) => p.personId);
 
   const handleValueChange = (selectedIds: string[]) => {
@@ -37,7 +34,7 @@ export const PaidBy = ({
       sharePercentage,
     }));
 
-    debounced(newPaidBy);
+    onChange(newPaidBy);
   };
 
   const peopleWithAmount = people.map((person) => ({
@@ -53,7 +50,6 @@ export const PaidBy = ({
         type="multiple"
         value={selectedPersonIds}
         onValueChange={handleValueChange}
-        disabled={isLoading}
         className="justify-start"
       >
         {peopleWithAmount.map((person) => (

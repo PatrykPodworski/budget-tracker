@@ -12,7 +12,6 @@ export const PriceInputs = ({
   handleDiscountChange,
   handleQuantityChange,
   handleUnitPriceChange,
-  isLoading,
   className,
 }: PriceInputsProps) => {
   return (
@@ -26,7 +25,6 @@ export const PriceInputs = ({
           defaultValue={item.quantity}
           onChange={handleQuantityChange}
           className="no-input-arrows"
-          disabled={isLoading}
         />
       </div>
       <div>
@@ -38,7 +36,6 @@ export const PriceInputs = ({
           defaultValue={item.unitPrice}
           onChange={handleUnitPriceChange}
           className=" no-input-arrows"
-          disabled={isLoading}
         />
       </div>
       <div>
@@ -50,7 +47,6 @@ export const PriceInputs = ({
           defaultValue={item.discount}
           onChange={handleDiscountChange}
           className="no-input-arrows"
-          disabled={isLoading}
         />
       </div>
       <div className="hidden sm:block">
@@ -65,7 +61,6 @@ export const PriceInputs = ({
 
 export type PriceInputsProps = {
   id: string;
-  isLoading: boolean;
   item: Pick<EnrichedItem, "quantity" | "unitPrice" | "discount">;
   handleQuantityChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleUnitPriceChange: (event: React.ChangeEvent<HTMLInputElement>) => void;

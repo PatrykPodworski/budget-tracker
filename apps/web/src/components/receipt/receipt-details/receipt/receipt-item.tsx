@@ -3,27 +3,24 @@ import { CategorySelect } from "@/components/category-select";
 import { Input } from "@/components/ui/shadcn/input";
 import { useEditReceiptItem } from "./useEditReceiptItem";
 import { Label } from "@/components/ui/shadcn/label";
-import React from "react";
 import { PriceCollapse } from "./price-collapse";
 import { Button } from "@/components/ui/shadcn/button";
 import { TrashIcon } from "lucide-react";
 
-// TODO: P2 Implement generic handler
 export const ReceiptItem = ({
   item,
   onItemChange,
   onItemDelete,
   index,
 }: ReceiptItemProps) => {
+  // TODO: P0 Implement generic handler
   const {
     handleCategoryChange,
     handleNameChange,
     handleQuantityChange,
     handleUnitPriceChange,
     handleDiscountChange,
-    handleDelete,
-    isLoading,
-  } = useEditReceiptItem(item, onItemChange, onItemDelete);
+  } = useEditReceiptItem(item, onItemChange);
   const idPrefix = `item-${index}`;
 
   return (
@@ -37,9 +34,8 @@ export const ReceiptItem = ({
           type="text"
           defaultValue={item.name}
           onChange={handleNameChange}
-          disabled={isLoading}
         />
-        <Button variant="outline" onClick={handleDelete} disabled={isLoading}>
+        <Button variant="outline" onClick={onItemDelete}>
           <TrashIcon className="h-4 w-4 text-destructive" />
           <span className="hidden sm:inline">Delete</span>
         </Button>
@@ -51,7 +47,6 @@ export const ReceiptItem = ({
         id={`${idPrefix}-category`}
         onValueChange={handleCategoryChange}
         value={item.category}
-        disabled={isLoading}
       />
       <Label htmlFor={`${idPrefix}-price`} className="mt-[11px]">
         Price
@@ -59,7 +54,6 @@ export const ReceiptItem = ({
       <PriceCollapse
         item={item}
         id={`${idPrefix}-price`}
-        isLoading={isLoading}
         handleQuantityChange={handleQuantityChange}
         handleUnitPriceChange={handleUnitPriceChange}
         handleDiscountChange={handleDiscountChange}
@@ -71,6 +65,6 @@ export const ReceiptItem = ({
 type ReceiptItemProps = {
   item: EnrichedItem;
   index: number;
-  onItemChange: (item: EnrichedItem) => Promise<void>;
-  onItemDelete: () => Promise<void>;
+  onItemChange: (item: EnrichedItem) => void;
+  onItemDelete: () => void;
 };

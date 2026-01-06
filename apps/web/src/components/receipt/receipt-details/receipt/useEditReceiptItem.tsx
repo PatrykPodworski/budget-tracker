@@ -1,37 +1,18 @@
-import { useDebounce } from "@/lib/utils/use-debounce";
 import {
   EnrichedItem,
   enrichedItemSchema,
 } from "@budget-tracker/shared/enriched-item-schema";
-import { useRef, useEffect, useState } from "react";
 
 export const useEditReceiptItem = (
   item: EnrichedItem,
-  onItemChange: (item: EnrichedItem) => Promise<void>,
-  onItemDelete: () => Promise<void>
+  onItemChange: (item: EnrichedItem) => void
 ) => {
-  const { isLoading: isChangeLoading, debounced } = useDebounce(onItemChange);
-  const [isDeleteLoading, setIsDeleteLoading] = useState(false);
-
-  const ref = useRef<HTMLInputElement>(undefined);
-
-  useEffect(() => {
-    if (isChangeLoading || !ref.current) {
-      return;
-    }
-
-    ref.current.focus();
-    ref.current = undefined;
-  }, [isChangeLoading]);
-
   const handleCategoryChange = (value: string) => {
     const newItem = { ...item, category: value };
-    debounced(newItem);
-    debounced.flush();
+    onItemChange(newItem);
   };
 
   const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    ref.current = event.target;
     const newName = event.target.value;
     const newItem = { ...item, name: newName };
 
@@ -40,11 +21,10 @@ export const useEditReceiptItem = (
       return;
     }
 
-    debounced(newItem);
+    onItemChange(newItem);
   };
 
   const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    ref.current = event.target;
     const newQuantity = parseFloat(event.target.value);
     const newItem = { ...item, quantity: newQuantity };
 
@@ -53,13 +33,12 @@ export const useEditReceiptItem = (
       return;
     }
 
-    debounced(newItem);
+    onItemChange(newItem);
   };
 
   const handleUnitPriceChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
-    ref.current = event.target;
     const newUnitPrice = parseFloat(event.target.value);
     const newItem = { ...item, unitPrice: newUnitPrice };
 
@@ -68,11 +47,10 @@ export const useEditReceiptItem = (
       return;
     }
 
-    debounced(newItem);
+    onItemChange(newItem);
   };
 
   const handleDiscountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    ref.current = event.target;
     const newDiscount = parseFloat(event.target.value);
     const newItem = { ...item, discount: newDiscount };
 
@@ -81,14 +59,7 @@ export const useEditReceiptItem = (
       return;
     }
 
-    debounced(newItem);
-  };
-
-  const handleDelete = async () => {
-    setIsDeleteLoading(true);
-    await onItemDelete();
-    setIsDeleteLoading(false);
-    ref.current = undefined;
+    onItemChange(newItem);
   };
 
   return {
@@ -97,7 +68,5 @@ export const useEditReceiptItem = (
     handleQuantityChange,
     handleUnitPriceChange,
     handleDiscountChange,
-    handleDelete,
-    isLoading: isDeleteLoading || isChangeLoading,
   };
 };

@@ -1,10 +1,8 @@
 "use client";
-import {
-  EnrichedReceiptData,
-  PaymentParticipant,
-} from "@budget-tracker/shared/enriched-receipt-data-schema";
-import { ReceiptItem } from "./receipt-item";
+import { useState } from "react";
+import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
+import { ReceiptItem } from "./receipt-item";
 import { Label } from "@/components/ui/shadcn/label";
 import { Input } from "@/components/ui/shadcn/input";
 import {
@@ -13,31 +11,57 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/shadcn/card";
-import { useDebounce } from "@/lib/utils/use-debounce";
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { TotalPrice } from "./total-price";
 import { DeleteReceiptButton } from "./delete-receipt-button";
 import { AddReceiptItem } from "./add-receipt-item";
-import { SendToBudgetButton } from "../send-to-budget-button";
 import { PaidBy } from "./paid-by";
 import { Person } from "@/data/people";
+import { ReceiptFormData } from "@/lib/receipt-data/update";
+import { ReceiptSaveButtons, SaveMessage } from "./receipt-save-buttons";
+import { categories } from "@/data/categories";
 
 // TODO: P2 Table view for desktop
 // TODO: P3 Numbers formatting in inputs vs in labels
 export const Receipt = ({
-  receipt,
+  receipt: initialReceipt,
   people,
-  onReceiptItemChange,
-  onMerchantChange,
-  onDateChange,
-  onPaidByChange,
-  onTotalChange,
-  onAddItem,
-  onItemDelete,
+  hasChanges,
+  onFormChange,
 }: ReceiptProps) => {
-  const { isLoading, debounced } = useDebounce(onMerchantChange);
-  const { isLoading: isDateChangeLoading, debounced: debouncedOnDateChange } =
-    useDebounce(onDateChange);
+  const [isSentToBudget, setIsSentToBudget] = useState(
+    initialReceipt.isSentToBudget
+  );
+  const [saveMessage, setSaveMessage] = useState<SaveMessage | null>(null);
+
+  const receipt = { ...initialReceipt, isSentToBudget };
+
+  const handleItemChange = (newItem: EnrichedItem, index: number) => {
+    onFormChange({
+      items: receipt.items.map((item, i) => (i === index ? newItem : item)),
+    });
+  };
+
+  const handleItemDelete = (index: number) => {
+    onFormChange({
+      items: receipt.items.filter((_, i) => i !== index),
+    });
+  };
+
+  const handleAddItem = () => {
+    const newItem: EnrichedItem = {
+      name: "New Item",
+      originalName: "New Item",
+      category: categories[0],
+      quantity: 1,
+      unitPrice: 0,
+      discount: 0,
+      totalPrice: 0,
+    };
+    onFormChange({
+      items: [...receipt.items, newItem],
+    });
+  };
 
   return (
     <Card className="w-full max-w-4xl">
@@ -50,36 +74,42 @@ export const Receipt = ({
                 <Input
                   id="merchant"
                   defaultValue={receipt.merchantName}
-                  disabled={isLoading}
-                  onChange={(event) => debounced(event.target.value)}
+                  onChange={(e) =>
+                    onFormChange({ merchantName: e.target.value })
+                  }
                 />
               </div>
               <div className="w-full sm:w-auto md:w-full sm:max-w-60">
                 <Label htmlFor="transactionDate">Date</Label>
                 <DateTimePicker
-                  disabled={isDateChangeLoading}
                   defaultValue={receipt.transactionDate}
-                  onChange={debouncedOnDateChange}
+                  onChange={(date) => onFormChange({ transactionDate: date })}
                 />
               </div>
               <PaidBy
                 paidBy={receipt.paidBy}
                 total={receipt.total}
                 people={people}
-                onChange={onPaidByChange}
+                onChange={(paidBy) => onFormChange({ paidBy })}
               />
             </div>
             <TotalPrice
               total={receipt.total}
               items={receipt.items}
-              onTotalChange={onTotalChange}
+              onTotalChange={(total) => onFormChange({ total })}
             />
           </div>
           <div className="flex sm:flex-col gap-2">
-            <SendToBudgetButton receipt={receipt} />
             <DeleteReceiptButton id={receipt.id} />
           </div>
         </div>
+        <ReceiptSaveButtons
+          receipt={receipt}
+          hasChanges={hasChanges}
+          saveMessage={saveMessage}
+          setSaveMessage={setSaveMessage}
+          setIsSentToBudget={setIsSentToBudget}
+        />
       </CardHeader>
       <CardContent>
         <CardTitle className="mb-2">Items</CardTitle>
@@ -89,13 +119,11 @@ export const Receipt = ({
               key={`${item.name}-${index}`}
               index={index}
               item={item}
-              onItemChange={async (newItem) =>
-                await onReceiptItemChange(newItem, index)
-              }
-              onItemDelete={async () => await onItemDelete(index)}
+              onItemChange={(newItem) => handleItemChange(newItem, index)}
+              onItemDelete={() => handleItemDelete(index)}
             />
           ))}
-          <AddReceiptItem onAddItem={onAddItem} />
+          <AddReceiptItem onAddItem={handleAddItem} />
         </div>
       </CardContent>
     </Card>
@@ -105,11 +133,6 @@ export const Receipt = ({
 type ReceiptProps = {
   receipt: EnrichedReceiptData;
   people: readonly Person[];
-  onReceiptItemChange: (newItem: EnrichedItem, index: number) => Promise<void>;
-  onMerchantChange: (newMerchant: string) => Promise<void>;
-  onDateChange: (newDate: Date | undefined) => Promise<void>;
-  onPaidByChange: (paidBy: PaymentParticipant[]) => Promise<void>;
-  onTotalChange: (newTotal: number) => Promise<void>;
-  onAddItem: () => Promise<void>;
-  onItemDelete: (index: number) => Promise<void>;
+  hasChanges: boolean;
+  onFormChange: (update: Partial<ReceiptFormData>) => void;
 };
