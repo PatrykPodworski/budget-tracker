@@ -8,6 +8,7 @@ import {
   exchangeRates,
   convertToBaseCurrency,
 } from "@budget-tracker/shared/currency";
+import { splitAmount } from "@budget-tracker/shared/split-amount";
 
 export const getExpenseParams = (
   transactionDate: Date,
@@ -19,9 +20,21 @@ export const getExpenseParams = (
 ): CellWrite[] => {
   const column = getColumnToWrite(transactionDate);
 
-  return paidBy.map(({ personId, sharePercentage }) => {
+  // Use splitAmount to handle rounding correctly
+  // This ensures the sum of individual amounts equals the original total
+  const splitResults = splitAmount(
+    amount,
+    paidBy.map((p) => ({ id: p.personId, sharePercentage: p.sharePercentage }))
+  );
+
+  // Create a map for quick lookup of split amounts by person ID
+  const amountByPersonId = new Map(
+    splitResults.map((r) => [r.id, r.amount])
+  );
+
+  return paidBy.map(({ personId }) => {
     const row = getExpenseRowForPerson(personId);
-    const personAmount = (amount * sharePercentage) / 100;
+    const personAmount = amountByPersonId.get(personId)!;
     const formula = getFormula(personAmount, currency);
     const noteAmount = formatAmountWithCurrency(personAmount, currency);
 

@@ -38,13 +38,19 @@
     "./unified-expense-schema": {
       "types": "./dist/unified-expense-schema.d.ts",
       "default": "./dist/unified-expense-schema.js"
+    },
+    "./split-amount": {
+      "types": "./dist/split-amount.d.ts",
+      "default": "./dist/split-amount.js"
     }
   },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
     "clean": "rimraf dist",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "zod": "^4.1.12"
@@ -52,6 +58,7 @@
   "devDependencies": {
     "@types/node": "^24.9.2",
     "rimraf": "^6.1.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.16"
   }
 }
