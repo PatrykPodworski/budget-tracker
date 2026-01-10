@@ -8,6 +8,7 @@ import { Person } from "@/data/people";
 import { useDebounce } from "@/lib/utils/use-debounce";
 import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { formatCurrency } from "@/lib/utils";
+import { splitAmount } from "@/lib/utils/split-amount";
 
 type PaidByProps = {
   paidBy: PaymentParticipant[];
@@ -40,10 +41,14 @@ export const PaidBy = ({
     debounced(newPaidBy);
   };
 
+  // Use splitAmount to get correctly rounded amounts for display
+  const splitResults = splitAmount(total, selectedPersonIds);
+  const amountByPersonId = new Map(splitResults.map((r) => [r.id, r.amount]));
+
   const peopleWithAmount = people.map((person) => ({
     id: person.id,
     name: person.name,
-    amount: getPersonAmount(person.id, paidBy, total),
+    amount: formatCurrency(amountByPersonId.get(person.id) ?? 0),
   }));
 
   return (
@@ -68,17 +73,4 @@ export const PaidBy = ({
       </ToggleGroup>
     </div>
   );
-};
-
-const getPersonAmount = (
-  personId: string,
-  paidBy: PaymentParticipant[],
-  total: number
-) => {
-  const participant = paidBy.find((p) => p.personId === personId);
-  if (!participant) {
-    return formatCurrency(0);
-  }
-  const amount = (total * participant.sharePercentage) / 100;
-  return formatCurrency(amount);
 };
