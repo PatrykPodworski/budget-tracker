@@ -41,9 +41,10 @@ export const PaidBy = ({
     debounced(newPaidBy);
   };
 
-  // Use splitAmount to get correctly rounded amounts for display
-  const splitResults = splitAmount(total, selectedPersonIds);
-  const amountByPersonId = new Map(splitResults.map((r) => [r.id, r.amount]));
+  const amounts = splitAmount(total, selectedPersonIds.length);
+  const amountByPersonId = new Map(
+    selectedPersonIds.map((id, index) => [id, amounts[index]])
+  );
 
   const peopleWithAmount = people.map((person) => ({
     id: person.id,

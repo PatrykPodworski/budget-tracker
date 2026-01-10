@@ -19,20 +19,11 @@ export const getExpenseParams = (
   paidBy: PaymentParticipant[]
 ): CellWrite[] => {
   const column = getColumnToWrite(transactionDate);
+  const amounts = splitAmount(amount, paidBy.length);
 
-  // Use splitAmount to handle rounding correctly
-  // This ensures the sum of individual amounts equals the original total
-  const splitResults = splitAmount(
-    amount,
-    paidBy.map((p) => p.personId)
-  );
-
-  // Create a map for quick lookup of split amounts by person ID
-  const amountByPersonId = new Map(splitResults.map((r) => [r.id, r.amount]));
-
-  return paidBy.map(({ personId }) => {
+  return paidBy.map(({ personId }, index) => {
     const row = getExpenseRowForPerson(personId);
-    const personAmount = amountByPersonId.get(personId)!;
+    const personAmount = amounts[index];
     const formula = getFormula(personAmount, currency);
     const noteAmount = formatAmountWithCurrency(personAmount, currency);
 
