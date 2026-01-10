@@ -8,7 +8,7 @@ import {
   exchangeRates,
   convertToBaseCurrency,
 } from "@budget-tracker/shared/currency";
-import { splitAmount } from "@budget-tracker/shared/split-amount";
+import { splitAmount } from "../../utils/split-amount";
 
 export const getExpenseParams = (
   transactionDate: Date,
