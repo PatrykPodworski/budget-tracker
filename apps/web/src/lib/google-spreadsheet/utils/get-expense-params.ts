@@ -24,13 +24,11 @@ export const getExpenseParams = (
   // This ensures the sum of individual amounts equals the original total
   const splitResults = splitAmount(
     amount,
-    paidBy.map((p) => ({ id: p.personId, sharePercentage: p.sharePercentage }))
+    paidBy.map((p) => p.personId)
   );
 
   // Create a map for quick lookup of split amounts by person ID
-  const amountByPersonId = new Map(
-    splitResults.map((r) => [r.id, r.amount])
-  );
+  const amountByPersonId = new Map(splitResults.map((r) => [r.id, r.amount]));
 
   return paidBy.map(({ personId }) => {
     const row = getExpenseRowForPerson(personId);

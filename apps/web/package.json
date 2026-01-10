@@ -8,6 +8,8 @@
     "start": "next start",
     "clean": "rimraf .next",
     "type-check": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
     "build:migration": "rimraf dist && tsc --project tsconfig.migration.json",
     "migration": "tsx --require dotenv/config src/scripts/run-migration.ts dotenv_config_path=.env.local"
   },
