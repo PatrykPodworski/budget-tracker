@@ -8,6 +8,7 @@ import {
   exchangeRates,
   convertToBaseCurrency,
 } from "@budget-tracker/shared/currency";
+import { splitAmount } from "../../utils/split-amount";
 
 export const getExpenseParams = (
   transactionDate: Date,
@@ -18,10 +19,11 @@ export const getExpenseParams = (
   paidBy: PaymentParticipant[]
 ): CellWrite[] => {
   const column = getColumnToWrite(transactionDate);
+  const amounts = splitAmount(amount, paidBy.length);
 
-  return paidBy.map(({ personId, sharePercentage }) => {
+  return paidBy.map(({ personId }, index) => {
     const row = getExpenseRowForPerson(personId);
-    const personAmount = (amount * sharePercentage) / 100;
+    const personAmount = amounts[index];
     const formula = getFormula(personAmount, currency);
     const noteAmount = formatAmountWithCurrency(personAmount, currency);
 
