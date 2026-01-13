@@ -2,7 +2,6 @@
 import { useState } from "react";
 import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
-import { ReceiptItem } from "./receipt-item";
 import { Label } from "@/components/ui/shadcn/label";
 import { Input } from "@/components/ui/shadcn/input";
 import {
@@ -14,12 +13,11 @@ import {
 import { DateTimePicker } from "@/components/ui/date-time-picker";
 import { TotalPrice } from "./total-price";
 import { DeleteReceiptButton } from "./delete-receipt-button";
-import { AddReceiptItem } from "./add-receipt-item";
 import { PaidBy } from "./paid-by";
 import { Person } from "@/data/people";
 import { ReceiptFormData } from "@/lib/receipt-data/update";
 import { ReceiptSaveButtons, SaveMessage } from "./receipt-save-buttons";
-import { categories } from "@/data/categories";
+import { ReceiptItemList } from "./receipt-item-list";
 
 // TODO: P2 Table view for desktop
 // TODO: P3 Numbers formatting in inputs vs in labels
@@ -35,33 +33,6 @@ export const Receipt = ({
   const [saveMessage, setSaveMessage] = useState<SaveMessage | null>(null);
 
   const receipt = { ...initialReceipt, isSentToBudget };
-
-  const handleItemChange = (newItem: EnrichedItem, index: number) => {
-    onFormChange({
-      items: receipt.items.map((item, i) => (i === index ? newItem : item)),
-    });
-  };
-
-  const handleItemDelete = (index: number) => {
-    onFormChange({
-      items: receipt.items.filter((_, i) => i !== index),
-    });
-  };
-
-  const handleAddItem = () => {
-    const newItem: EnrichedItem = {
-      name: "New Item",
-      originalName: "New Item",
-      category: categories[0],
-      quantity: 1,
-      unitPrice: 0,
-      discount: 0,
-      totalPrice: 0,
-    };
-    onFormChange({
-      items: [...receipt.items, newItem],
-    });
-  };
 
   return (
     <Card className="w-full max-w-4xl">
@@ -114,16 +85,14 @@ export const Receipt = ({
       <CardContent>
         <CardTitle className="mb-2">Items</CardTitle>
         <div className="flex flex-col gap-8 sm:gap-4">
-          {receipt.items.map((item, index) => (
-            <ReceiptItem
-              key={`${item.name}-${index}`}
-              index={index}
-              item={item}
-              onItemChange={(newItem) => handleItemChange(newItem, index)}
-              onItemDelete={() => handleItemDelete(index)}
-            />
-          ))}
-          <AddReceiptItem onAddItem={handleAddItem} />
+          <ReceiptItemList
+            items={receipt.items}
+            onItemsChange={(items) =>
+              onFormChange({
+                items: items,
+              })
+            }
+          />
         </div>
       </CardContent>
     </Card>
