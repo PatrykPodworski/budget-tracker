@@ -1,4 +1,5 @@
 "use client";
+import { useFormContext, useWatch } from "react-hook-form";
 import { Label } from "@/components/ui/shadcn/label";
 import {
   ToggleGroup,
@@ -7,20 +8,18 @@ import {
 import { Person } from "@/data/people";
 import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { formatCurrency } from "@/lib/utils";
+import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
 
 type PaidByProps = {
-  paidBy: PaymentParticipant[];
-  total: number;
   people: readonly Person[];
-  onChange: (paidBy: PaymentParticipant[]) => void;
 };
 
-export const PaidBy = ({
-  paidBy,
-  total,
-  people,
-  onChange,
-}: PaidByProps) => {
+export const PaidBy = ({ people }: PaidByProps) => {
+  const { control, setValue } = useFormContext<ReceiptFormData>();
+
+  const paidBy = useWatch({ control, name: "paidBy" });
+  const total = useWatch({ control, name: "total" });
+
   const selectedPersonIds = paidBy.map((p) => p.personId);
 
   const handleValueChange = (selectedIds: string[]) => {
@@ -34,7 +33,7 @@ export const PaidBy = ({
       sharePercentage,
     }));
 
-    onChange(newPaidBy);
+    setValue("paidBy", newPaidBy, { shouldDirty: true });
   };
 
   const peopleWithAmount = people.map((person) => ({

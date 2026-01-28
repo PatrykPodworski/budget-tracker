@@ -1,33 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useForm, FormProvider, Resolver } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Receipt } from "@/components/receipt/receipt-details/receipt";
 import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
-import { ReceiptFormData } from "@/lib/receipt-data/update";
 import { Person } from "@/data/people";
-import equal from "fast-deep-equal";
+import {
+  receiptFormSchema,
+  ReceiptFormData,
+} from "@/lib/receipt-data/receipt-form-schema";
 
 export const ReceiptDetails = ({
   receipt: initialReceipt,
   people,
 }: ReceiptDetailsProps) => {
-  const [formData, setFormData] = useState<ReceiptFormData>(() =>
-    getFormDataFromReceipt(initialReceipt)
-  );
-
-  const originalData = getFormDataFromReceipt(initialReceipt);
-  const hasChanges = !areEqual(formData, originalData);
-
-  const handleFormChange = (updateData: Partial<ReceiptFormData>) => {
-    setFormData((prev) => ({ ...prev, ...updateData }));
-  };
+  const form = useForm<ReceiptFormData>({
+    resolver: zodResolver(receiptFormSchema) as Resolver<ReceiptFormData>,
+    defaultValues: getFormDataFromReceipt(initialReceipt),
+    mode: "onChange",
+  });
 
   return (
-    <Receipt
-      receipt={{ ...initialReceipt, ...formData }}
-      people={people}
-      hasChanges={hasChanges}
-      onFormChange={handleFormChange}
-    />
+    <FormProvider {...form}>
+      <Receipt receipt={initialReceipt} people={people} />
+    </FormProvider>
   );
 };
 
@@ -45,16 +40,3 @@ const getFormDataFromReceipt = (
   items: receipt.items,
   paidBy: receipt.paidBy,
 });
-
-const areEqual = (a: ReceiptFormData, b: ReceiptFormData): boolean => {
-  const normalizedA = {
-    ...a,
-    transactionDate: a.transactionDate?.getTime(),
-  };
-  const normalizedB = {
-    ...b,
-    transactionDate: b.transactionDate?.getTime(),
-  };
-
-  return equal(normalizedA, normalizedB);
-};

@@ -1,26 +1,14 @@
-import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
+import { useFormContext, Controller } from "react-hook-form";
 import { CategorySelect } from "@/components/category-select";
 import { Input } from "@/components/ui/shadcn/input";
-import { useEditReceiptItem } from "./useEditReceiptItem";
 import { Label } from "@/components/ui/shadcn/label";
 import { PriceCollapse } from "./price-collapse";
 import { Button } from "@/components/ui/shadcn/button";
 import { TrashIcon } from "lucide-react";
+import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
 
-export const ReceiptItem = ({
-  item,
-  onItemChange,
-  onItemDelete,
-  index,
-}: ReceiptItemProps) => {
-  // TODO: P0 Implement generic handler
-  const {
-    handleCategoryChange,
-    handleNameChange,
-    handleQuantityChange,
-    handleUnitPriceChange,
-    handleDiscountChange,
-  } = useEditReceiptItem(item, onItemChange);
+export const ReceiptItem = ({ index, onItemDelete }: ReceiptItemProps) => {
+  const { register, control } = useFormContext<ReceiptFormData>();
   const idPrefix = `item-${index}`;
 
   return (
@@ -32,8 +20,7 @@ export const ReceiptItem = ({
         <Input
           id={`${idPrefix}-name`}
           type="text"
-          defaultValue={item.name}
-          onChange={handleNameChange}
+          {...register(`items.${index}.name`)}
         />
         <Button variant="outline" onClick={onItemDelete}>
           <TrashIcon className="h-4 w-4 text-destructive" />
@@ -43,28 +30,26 @@ export const ReceiptItem = ({
       <Label htmlFor={`${idPrefix}-category`} className="self-center">
         Category
       </Label>
-      <CategorySelect
-        id={`${idPrefix}-category`}
-        onValueChange={handleCategoryChange}
-        value={item.category}
+      <Controller
+        name={`items.${index}.category`}
+        control={control}
+        render={({ field }) => (
+          <CategorySelect
+            id={`${idPrefix}-category`}
+            onValueChange={field.onChange}
+            value={field.value}
+          />
+        )}
       />
       <Label htmlFor={`${idPrefix}-price`} className="mt-[11px]">
         Price
       </Label>
-      <PriceCollapse
-        item={item}
-        id={`${idPrefix}-price`}
-        handleQuantityChange={handleQuantityChange}
-        handleUnitPriceChange={handleUnitPriceChange}
-        handleDiscountChange={handleDiscountChange}
-      />
+      <PriceCollapse index={index} id={`${idPrefix}-price`} />
     </div>
   );
 };
 
 type ReceiptItemProps = {
-  item: EnrichedItem;
   index: number;
-  onItemChange: (item: EnrichedItem) => void;
   onItemDelete: () => void;
 };

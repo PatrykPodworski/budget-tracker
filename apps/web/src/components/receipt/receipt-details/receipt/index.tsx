@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
+import { useFormContext, Controller } from "react-hook-form";
 import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
-import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { Label } from "@/components/ui/shadcn/label";
 import { Input } from "@/components/ui/shadcn/input";
 import {
@@ -15,24 +15,16 @@ import { TotalPrice } from "./total-price";
 import { DeleteReceiptButton } from "./delete-receipt-button";
 import { PaidBy } from "./paid-by";
 import { Person } from "@/data/people";
-import { ReceiptFormData } from "@/lib/receipt-data/update";
+import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
 import { ReceiptSaveButtons, SaveMessage } from "./receipt-save-buttons";
 import { ReceiptItemList } from "./receipt-item-list";
 
 // TODO: P2 Table view for desktop
 // TODO: P3 Numbers formatting in inputs vs in labels
-export const Receipt = ({
-  receipt: initialReceipt,
-  people,
-  hasChanges,
-  onFormChange,
-}: ReceiptProps) => {
-  const [isSentToBudget, setIsSentToBudget] = useState(
-    initialReceipt.isSentToBudget
-  );
+export const Receipt = ({ receipt, people }: ReceiptProps) => {
+  const { register, control } = useFormContext<ReceiptFormData>();
+  const [isSentToBudget, setIsSentToBudget] = useState(receipt.isSentToBudget);
   const [saveMessage, setSaveMessage] = useState<SaveMessage | null>(null);
-
-  const receipt = { ...initialReceipt, isSentToBudget };
 
   return (
     <Card className="w-full max-w-4xl">
@@ -42,41 +34,31 @@ export const Receipt = ({
             <div className="flex gap-2 flex-wrap">
               <div className="w-full sm:w-auto md:w-full sm:max-w-60">
                 <Label htmlFor="merchant">Merchant</Label>
-                <Input
-                  id="merchant"
-                  defaultValue={receipt.merchantName}
-                  onChange={(e) =>
-                    onFormChange({ merchantName: e.target.value })
-                  }
-                />
+                <Input id="merchant" {...register("merchantName")} />
               </div>
               <div className="w-full sm:w-auto md:w-full sm:max-w-60">
                 <Label htmlFor="transactionDate">Date</Label>
-                <DateTimePicker
-                  defaultValue={receipt.transactionDate}
-                  onChange={(date) => onFormChange({ transactionDate: date })}
+                <Controller
+                  name="transactionDate"
+                  control={control}
+                  render={({ field }) => (
+                    <DateTimePicker
+                      defaultValue={field.value}
+                      onChange={field.onChange}
+                    />
+                  )}
                 />
               </div>
-              <PaidBy
-                paidBy={receipt.paidBy}
-                total={receipt.total}
-                people={people}
-                onChange={(paidBy) => onFormChange({ paidBy })}
-              />
+              <PaidBy people={people} />
             </div>
-            <TotalPrice
-              total={receipt.total}
-              items={receipt.items}
-              onTotalChange={(total) => onFormChange({ total })}
-            />
+            <TotalPrice />
           </div>
           <div className="flex sm:flex-col gap-2">
             <DeleteReceiptButton id={receipt.id} />
           </div>
         </div>
         <ReceiptSaveButtons
-          receipt={receipt}
-          hasChanges={hasChanges}
+          receipt={{ ...receipt, isSentToBudget }}
           saveMessage={saveMessage}
           setSaveMessage={setSaveMessage}
           setIsSentToBudget={setIsSentToBudget}
@@ -85,14 +67,7 @@ export const Receipt = ({
       <CardContent>
         <CardTitle className="mb-2">Items</CardTitle>
         <div className="flex flex-col gap-8 sm:gap-4">
-          <ReceiptItemList
-            items={receipt.items}
-            onItemsChange={(items) =>
-              onFormChange({
-                items: items,
-              })
-            }
-          />
+          <ReceiptItemList />
         </div>
       </CardContent>
     </Card>
@@ -102,6 +77,4 @@ export const Receipt = ({
 type ReceiptProps = {
   receipt: EnrichedReceiptData;
   people: readonly Person[];
-  hasChanges: boolean;
-  onFormChange: (update: Partial<ReceiptFormData>) => void;
 };

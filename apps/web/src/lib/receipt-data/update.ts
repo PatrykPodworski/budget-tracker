@@ -1,19 +1,8 @@
 "use server";
 import { PatchOperation } from "@azure/cosmos";
-import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
-import {
-  enrichedReceiptDataSchema,
-  PaymentParticipant,
-} from "@budget-tracker/shared/enriched-receipt-data-schema";
+import { enrichedReceiptDataSchema } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { getReceiptContainer } from "@/lib/receipt-data/common/get-receipt-container";
-
-export type ReceiptFormData = {
-  merchantName?: string;
-  transactionDate?: Date;
-  total: number;
-  items: EnrichedItem[];
-  paidBy: PaymentParticipant[];
-};
+import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
 
 export const saveReceipt = async (
   id: string,

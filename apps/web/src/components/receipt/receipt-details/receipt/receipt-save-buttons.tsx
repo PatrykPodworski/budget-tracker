@@ -1,6 +1,7 @@
 "use client";
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { useFormContext, useFormState } from "react-hook-form";
 import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { saveReceipt } from "@/lib/receipt-data/update";
 import { writeReceipt } from "@/lib/google-spreadsheet/write-receipt";
@@ -9,6 +10,7 @@ import { getColumnToWrite } from "@/lib/google-spreadsheet/utils/get-column-to-w
 import { getRowToWrite } from "@/lib/google-spreadsheet/utils/get-row-to-write";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { cn } from "@/lib/utils";
+import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
 
 export type SaveMessage = {
   type: "success" | "error" | "warning";
@@ -17,7 +19,6 @@ export type SaveMessage = {
 
 export const ReceiptSaveButtons = ({
   receipt,
-  hasChanges,
   saveMessage,
   setSaveMessage,
   setIsSentToBudget,
@@ -25,21 +26,27 @@ export const ReceiptSaveButtons = ({
   const router = useRouter();
   const [isSaving, startSaving] = useTransition();
 
+  const { control, reset, getValues } = useFormContext<ReceiptFormData>();
+  const { isDirty, isValid } = useFormState({ control });
+
   const handleSave = () => {
-    if (!hasChanges) {
+    if (!isDirty || !isValid) {
       return;
     }
 
+    const formData = getValues();
     setSaveMessage(null);
     startSaving(async () => {
       try {
         await saveReceipt(receipt.id, receipt.userId, {
-          merchantName: receipt.merchantName,
-          transactionDate: receipt.transactionDate,
-          total: receipt.total,
-          items: receipt.items,
-          paidBy: receipt.paidBy,
+          merchantName: formData.merchantName,
+          transactionDate: formData.transactionDate,
+          total: formData.total,
+          items: formData.items,
+          paidBy: formData.paidBy,
         });
+        // Reset form with current values to mark as clean
+        reset(formData);
         router.refresh();
         setSaveMessage({ type: "success", text: "Receipt saved" });
       } catch (error) {
@@ -50,7 +57,13 @@ export const ReceiptSaveButtons = ({
   };
 
   const handleSaveAndSend = () => {
-    if (!receipt.transactionDate) {
+    if (!isValid) {
+      return;
+    }
+
+    const formData = getValues();
+
+    if (!formData.transactionDate) {
       setSaveMessage({
         type: "error",
         text: "Transaction date is required to send to budget",
@@ -63,26 +76,28 @@ export const ReceiptSaveButtons = ({
       try {
         // Always save first
         await saveReceipt(receipt.id, receipt.userId, {
-          merchantName: receipt.merchantName,
-          transactionDate: receipt.transactionDate,
-          total: receipt.total,
-          items: receipt.items,
-          paidBy: receipt.paidBy,
+          merchantName: formData.merchantName,
+          transactionDate: formData.transactionDate,
+          total: formData.total,
+          items: formData.items,
+          paidBy: formData.paidBy,
         });
 
         // Validate before sending
         const expenseCellInfo = {
-          column: getColumnToWrite(receipt.transactionDate!),
+          column: getColumnToWrite(formData.transactionDate!),
           row: getRowToWrite(),
         };
 
         const validationResult = await validateReceipt({
           receiptId: receipt.id,
-          transactionDate: receipt.transactionDate!,
+          transactionDate: formData.transactionDate!,
           expenseCellInfo,
         });
 
         if (!validationResult.isValid) {
+          // Reset form with current values to mark as clean
+          reset(formData);
           setSaveMessage({
             type: "warning",
             text: `Receipt saved but not sent: ${validationResult.message}`,
@@ -94,14 +109,16 @@ export const ReceiptSaveButtons = ({
         // Send to budget
         await writeReceipt({
           receiptId: receipt.id,
-          total: receipt.total,
-          transactionDate: receipt.transactionDate!,
-          merchantName: receipt.merchantName,
-          items: receipt.items,
+          total: formData.total,
+          transactionDate: formData.transactionDate!,
+          merchantName: formData.merchantName,
+          items: formData.items,
           userId: receipt.userId,
-          paidBy: receipt.paidBy,
+          paidBy: formData.paidBy,
         });
 
+        // Reset form with current values to mark as clean
+        reset(formData);
         setIsSentToBudget(true);
         router.refresh();
         setSaveMessage({
@@ -136,7 +153,7 @@ export const ReceiptSaveButtons = ({
         <LoadingButton
           onClick={handleSave}
           loading={isSaving}
-          disabled={!hasChanges || isSaving}
+          disabled={!isDirty || !isValid || isSaving}
           variant="outline"
           className="flex-1"
         >
@@ -145,7 +162,7 @@ export const ReceiptSaveButtons = ({
         <LoadingButton
           onClick={handleSaveAndSend}
           loading={isSaving}
-          disabled={isSaving || receipt.isSentToBudget}
+          disabled={!isValid || isSaving || receipt.isSentToBudget}
           className="flex-1"
         >
           Save and Send
@@ -162,9 +179,7 @@ export const ReceiptSaveButtons = ({
 
 type ReceiptSaveButtonsProps = {
   receipt: EnrichedReceiptData;
-  hasChanges: boolean;
   saveMessage: SaveMessage | null;
   setSaveMessage: (message: SaveMessage | null) => void;
   setIsSentToBudget: (value: boolean) => void;
 };
-
