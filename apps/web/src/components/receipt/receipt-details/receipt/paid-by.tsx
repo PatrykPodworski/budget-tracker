@@ -8,14 +8,15 @@ import {
 import { Person } from "@/data/people";
 import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { formatCurrency } from "@/lib/utils";
-import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
+
+type FormWithPaidBy = { paidBy: PaymentParticipant[]; total: number };
 
 type PaidByProps = {
   people: readonly Person[];
 };
 
 export const PaidBy = ({ people }: PaidByProps) => {
-  const { control, setValue } = useFormContext<ReceiptFormData>();
+  const { control, setValue } = useFormContext<FormWithPaidBy>();
 
   const paidBy = useWatch({ control, name: "paidBy" });
   const total = useWatch({ control, name: "total" });
