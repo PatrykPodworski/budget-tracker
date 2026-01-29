@@ -8,6 +8,7 @@ import {
 import { Person } from "@/data/people";
 import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { formatCurrency } from "@/lib/utils";
+import { splitAmount } from "@/lib/utils/split-amount";
 
 type FormWithPaidBy = { paidBy: PaymentParticipant[]; total: number };
 
@@ -37,10 +38,15 @@ export const PaidBy = ({ people }: PaidByProps) => {
     setValue("paidBy", newPaidBy, { shouldDirty: true });
   };
 
+  const amounts = splitAmount(total, selectedPersonIds.length);
+  const amountByPersonId = new Map(
+    selectedPersonIds.map((id, index) => [id, amounts[index]])
+  );
+
   const peopleWithAmount = people.map((person) => ({
     id: person.id,
     name: person.name,
-    amount: getPersonAmount(person.id, paidBy, total),
+    amount: formatCurrency(amountByPersonId.get(person.id) ?? 0),
   }));
 
   return (
@@ -64,17 +70,4 @@ export const PaidBy = ({ people }: PaidByProps) => {
       </ToggleGroup>
     </div>
   );
-};
-
-const getPersonAmount = (
-  personId: string,
-  paidBy: PaymentParticipant[],
-  total: number
-) => {
-  const participant = paidBy.find((p) => p.personId === personId);
-  if (!participant) {
-    return formatCurrency(0);
-  }
-  const amount = (total * participant.sharePercentage) / 100;
-  return formatCurrency(amount);
 };
