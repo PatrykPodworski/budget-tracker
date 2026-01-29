@@ -1,19 +1,14 @@
+import { useFormContext, useWatch } from "react-hook-form";
 import { Collapse } from "@/components/ui/collapse";
-import { PriceInputs, PriceInputsProps } from "./price-inputs";
+import { PriceInputs } from "./price-inputs";
 import { formatCurrency } from "@/lib/utils";
 import { getItemTotalPrice } from "./get-item-total-price";
+import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
 
-// TODO: P1 One change handler for all inputs
 // TODO: P3 XS Label variant
-export const PriceCollapse = ({
-  item,
-  id,
-  isLoading,
-  handleQuantityChange,
-  handleUnitPriceChange,
-  handleDiscountChange,
-  className,
-}: PriceCollapseProps) => {
+export const PriceCollapse = ({ index, id }: PriceCollapseProps) => {
+  const { control } = useFormContext<ReceiptFormData>();
+  const item = useWatch({ control, name: `items.${index}` });
   const total = getItemTotalPrice(item);
 
   return (
@@ -22,19 +17,13 @@ export const PriceCollapse = ({
         item.unitPrice
       )} - ${formatCurrency(item.discount)} = ${formatCurrency(total)}`}
       id={`${id}`}
-      className={className}
     >
-      <PriceInputs
-        className="bg-accent"
-        id={id}
-        item={item}
-        isLoading={isLoading}
-        handleQuantityChange={handleQuantityChange}
-        handleUnitPriceChange={handleUnitPriceChange}
-        handleDiscountChange={handleDiscountChange}
-      />
+      <PriceInputs id={id} index={index} />
     </Collapse>
   );
 };
 
-type PriceCollapseProps = PriceInputsProps;
+type PriceCollapseProps = {
+  index: number;
+  id: string;
+};

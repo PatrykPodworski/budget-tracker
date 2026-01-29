@@ -1,29 +1,14 @@
-import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
+import { useFormContext, Controller } from "react-hook-form";
 import { CategorySelect } from "@/components/category-select";
 import { Input } from "@/components/ui/shadcn/input";
-import { useEditReceiptItem } from "./useEditReceiptItem";
 import { Label } from "@/components/ui/shadcn/label";
-import React from "react";
 import { PriceCollapse } from "./price-collapse";
 import { Button } from "@/components/ui/shadcn/button";
 import { TrashIcon } from "lucide-react";
+import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
 
-// TODO: P2 Implement generic handler
-export const ReceiptItem = ({
-  item,
-  onItemChange,
-  onItemDelete,
-  index,
-}: ReceiptItemProps) => {
-  const {
-    handleCategoryChange,
-    handleNameChange,
-    handleQuantityChange,
-    handleUnitPriceChange,
-    handleDiscountChange,
-    handleDelete,
-    isLoading,
-  } = useEditReceiptItem(item, onItemChange, onItemDelete);
+export const ReceiptItem = ({ index, onItemDelete }: ReceiptItemProps) => {
+  const { register, control } = useFormContext<ReceiptFormData>();
   const idPrefix = `item-${index}`;
 
   return (
@@ -35,11 +20,9 @@ export const ReceiptItem = ({
         <Input
           id={`${idPrefix}-name`}
           type="text"
-          defaultValue={item.name}
-          onChange={handleNameChange}
-          disabled={isLoading}
+          {...register(`items.${index}.name`)}
         />
-        <Button variant="outline" onClick={handleDelete} disabled={isLoading}>
+        <Button variant="outline" onClick={onItemDelete}>
           <TrashIcon className="h-4 w-4 text-destructive" />
           <span className="hidden sm:inline">Delete</span>
         </Button>
@@ -47,30 +30,26 @@ export const ReceiptItem = ({
       <Label htmlFor={`${idPrefix}-category`} className="self-center">
         Category
       </Label>
-      <CategorySelect
-        id={`${idPrefix}-category`}
-        onValueChange={handleCategoryChange}
-        value={item.category}
-        disabled={isLoading}
+      <Controller
+        name={`items.${index}.category`}
+        control={control}
+        render={({ field }) => (
+          <CategorySelect
+            id={`${idPrefix}-category`}
+            onValueChange={field.onChange}
+            value={field.value}
+          />
+        )}
       />
       <Label htmlFor={`${idPrefix}-price`} className="mt-[11px]">
         Price
       </Label>
-      <PriceCollapse
-        item={item}
-        id={`${idPrefix}-price`}
-        isLoading={isLoading}
-        handleQuantityChange={handleQuantityChange}
-        handleUnitPriceChange={handleUnitPriceChange}
-        handleDiscountChange={handleDiscountChange}
-      />
+      <PriceCollapse index={index} id={`${idPrefix}-price`} />
     </div>
   );
 };
 
 type ReceiptItemProps = {
-  item: EnrichedItem;
   index: number;
-  onItemChange: (item: EnrichedItem) => Promise<void>;
-  onItemDelete: () => Promise<void>;
+  onItemDelete: () => void;
 };

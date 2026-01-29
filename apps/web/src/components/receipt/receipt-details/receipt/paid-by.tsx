@@ -1,29 +1,26 @@
 "use client";
+import { useFormContext, useWatch } from "react-hook-form";
 import { Label } from "@/components/ui/shadcn/label";
 import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/shadcn/toggle-group";
 import { Person } from "@/data/people";
-import { useDebounce } from "@/lib/utils/use-debounce";
 import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { formatCurrency } from "@/lib/utils";
 import { splitAmount } from "@/lib/utils/split-amount";
 
+type FormWithPaidBy = { paidBy: PaymentParticipant[]; total: number };
+
 type PaidByProps = {
-  paidBy: PaymentParticipant[];
-  total: number;
   people: readonly Person[];
-  onChange: (paidBy: PaymentParticipant[]) => Promise<void>;
 };
 
-export const PaidBy = ({
-  paidBy,
-  total,
-  people,
-  onChange,
-}: PaidByProps) => {
-  const { isLoading, debounced } = useDebounce(onChange);
+export const PaidBy = ({ people }: PaidByProps) => {
+  const { control, setValue } = useFormContext<FormWithPaidBy>();
+
+  const paidBy = useWatch({ control, name: "paidBy" });
+  const total = useWatch({ control, name: "total" });
 
   const selectedPersonIds = paidBy.map((p) => p.personId);
 
@@ -38,7 +35,7 @@ export const PaidBy = ({
       sharePercentage,
     }));
 
-    debounced(newPaidBy);
+    setValue("paidBy", newPaidBy, { shouldDirty: true });
   };
 
   const amounts = splitAmount(total, selectedPersonIds.length);
@@ -59,7 +56,6 @@ export const PaidBy = ({
         type="multiple"
         value={selectedPersonIds}
         onValueChange={handleValueChange}
-        disabled={isLoading}
         className="justify-start"
       >
         {peopleWithAmount.map((person) => (
