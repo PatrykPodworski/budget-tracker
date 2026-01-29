@@ -1,5 +1,5 @@
 "use client";
-import { Input } from "@/components/ui/shadcn/input";
+import { useFormContext, useWatch } from "react-hook-form";
 import {
   InputGroup,
   InputGroupAddon,
@@ -7,38 +7,19 @@ import {
 } from "@/components/ui/shadcn/input-group";
 import { Label } from "@/components/ui/shadcn/label";
 import { formatCurrency } from "@/lib/utils";
-import { useDebounce } from "@/lib/utils/use-debounce";
-import { useState, useEffect } from "react";
-import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
 import { calculateTotal } from "./calculate-total";
+import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
 
+// TODO: P0 Fix NaN issue when item price is empty
 // TODO: P1 Add currency toggle
-export const TotalPrice = ({
-  total,
-  items,
-  onTotalChange,
-}: TotalPriceProps) => {
-  const [localTotal, setLocalTotal] = useState(total.toString());
-  const { debounced } = useDebounce(onTotalChange);
+export const TotalPrice = () => {
+  const { control, register } = useFormContext<ReceiptFormData>();
+
+  const items = useWatch({ control, name: "items" });
+  const total = useWatch({ control, name: "total" });
 
   const calculatedTotal = calculateTotal(items);
   const totalDifference = total - calculatedTotal;
-
-  useEffect(() => {
-    setLocalTotal(total.toString());
-  }, [total]);
-
-  const handleTotalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    // Allow numbers with up to 2 decimal places
-    if (/^\d*\.?\d{0,2}$/.test(value)) {
-      setLocalTotal(value);
-      const numericValue = parseFloat(value);
-      if (!isNaN(numericValue)) {
-        debounced(numericValue);
-      }
-    }
-  };
 
   return (
     <div>
@@ -48,8 +29,7 @@ export const TotalPrice = ({
           <InputGroupInput
             id="total"
             type="number"
-            value={localTotal}
-            onChange={handleTotalChange}
+            {...register("total", { valueAsNumber: true })}
             className="h-8 no-input-arrows"
           />
           <InputGroupAddon align="inline-end">zł</InputGroupAddon>
@@ -71,10 +51,4 @@ export const TotalPrice = ({
       </div>
     </div>
   );
-};
-
-type TotalPriceProps = {
-  total: number;
-  items: EnrichedItem[];
-  onTotalChange: (newTotal: number) => Promise<void>;
 };

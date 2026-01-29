@@ -1,121 +1,28 @@
 "use client";
-import { useState } from "react";
+import { useForm, FormProvider, Resolver } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { Receipt } from "@/components/receipt/receipt-details/receipt";
-import {
-  EnrichedItem,
-  enrichedItemSchema,
-} from "@budget-tracker/shared/enriched-item-schema";
-import {
-  EnrichedReceiptData,
-  PaymentParticipant,
-} from "@budget-tracker/shared/enriched-receipt-data-schema";
-import {
-  updateReceiptItem,
-  updateReceiptMerchantName,
-  updateReceiptTransactionDate,
-  updateReceiptPaidBy,
-  updateReceiptTotal,
-} from "@/lib/receipt-data/update";
-import { addReceiptItem } from "@/lib/receipt-data/add-receipt-item";
-import { deleteReceiptItem } from "@/lib/receipt-data/delete-receipt-item";
+import { EnrichedReceiptData } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { Person } from "@/data/people";
+import {
+  receiptFormSchema,
+  ReceiptFormData,
+} from "@/lib/receipt-data/receipt-form-schema";
 
-// TODO: P1 Zustand store; move handlers down
-// TODO: P2 Input with end icon
-// TODO: P3 Error handling on update
 export const ReceiptDetails = ({
-  receipt: initialReceiptData,
+  receipt: initialReceipt,
   people,
 }: ReceiptDetailsProps) => {
-  const [receipt, setReceipt] = useState(initialReceiptData);
-
-  const handleReceiptItemChange = async (
-    newItem: EnrichedItem,
-    index: number
-  ) => {
-    const isValidItem = enrichedItemSchema.safeParse(newItem);
-    if (!isValidItem.success) {
-      return;
-    }
-
-    const updatedReceipt = await updateReceiptItem(
-      receipt.id,
-      receipt.userId,
-      newItem,
-      index
-    );
-
-    setReceipt(updatedReceipt);
-  };
-
-  const handleMerchantChange = async (newMerchantName: string) => {
-    const updatedReceipt = await updateReceiptMerchantName(
-      receipt.id,
-      receipt.userId,
-      newMerchantName
-    );
-
-    setReceipt(updatedReceipt);
-  };
-
-  const handleDateChange = async (newDate: Date | undefined) => {
-    const updatedReceipt = await updateReceiptTransactionDate(
-      receipt.id,
-      receipt.userId,
-      newDate
-    );
-
-    setReceipt(updatedReceipt);
-  };
-
-  const handleAddItem = async () => {
-    const updatedReceipt = await addReceiptItem(receipt.id, receipt.userId);
-
-    setReceipt(updatedReceipt);
-  };
-
-  const handleItemDelete = async (index: number) => {
-    const updatedReceipt = await deleteReceiptItem(
-      receipt.id,
-      receipt.userId,
-      index
-    );
-
-    setReceipt(updatedReceipt);
-  };
-
-  const handlePaidByChange = async (paidBy: PaymentParticipant[]) => {
-    const updatedReceipt = await updateReceiptPaidBy(
-      receipt.id,
-      receipt.userId,
-      paidBy
-    );
-
-    setReceipt(updatedReceipt);
-  };
-
-  const handleTotalChange = async (newTotal: number) => {
-    const updatedReceipt = await updateReceiptTotal(
-      receipt.id,
-      receipt.userId,
-      newTotal
-    );
-
-    setReceipt(updatedReceipt);
-  };
+  const form = useForm<ReceiptFormData>({
+    resolver: zodResolver(receiptFormSchema) as Resolver<ReceiptFormData>,
+    defaultValues: getFormDataFromReceipt(initialReceipt),
+    mode: "onChange",
+  });
 
   return (
-    <Receipt
-      receipt={receipt}
-      people={people}
-      onReceiptItemChange={handleReceiptItemChange}
-      onMerchantChange={handleMerchantChange}
-      onDateChange={handleDateChange}
-      onPaidByChange={handlePaidByChange}
-      onTotalChange={handleTotalChange}
-      onAddItem={handleAddItem}
-      onItemDelete={handleItemDelete}
-    />
+    <FormProvider {...form}>
+      <Receipt receipt={initialReceipt} people={people} />
+    </FormProvider>
   );
 };
 
@@ -123,3 +30,13 @@ type ReceiptDetailsProps = {
   receipt: EnrichedReceiptData;
   people: readonly Person[];
 };
+
+const getFormDataFromReceipt = (
+  receipt: EnrichedReceiptData
+): ReceiptFormData => ({
+  merchantName: receipt.merchantName,
+  transactionDate: receipt.transactionDate,
+  total: receipt.total,
+  items: receipt.items,
+  paidBy: receipt.paidBy,
+});

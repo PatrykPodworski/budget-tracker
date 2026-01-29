@@ -1,56 +1,44 @@
-import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
+import { useFormContext, useWatch } from "react-hook-form";
 import { Input } from "@/components/ui/shadcn/input";
 import { Label } from "@/components/ui/shadcn/label";
-import React from "react";
-import clsx from "clsx";
 import { PriceTotal } from "./price-total";
+import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
 
 // TODO: P2 Reuse input group with zł addon from total-price.tsx
-export const PriceInputs = ({
-  id,
-  item,
-  handleDiscountChange,
-  handleQuantityChange,
-  handleUnitPriceChange,
-  isLoading,
-  className,
-}: PriceInputsProps) => {
+export const PriceInputs = ({ id, index }: PriceInputsProps) => {
+  const { register, control } = useFormContext<ReceiptFormData>();
+  const item = useWatch({ control, name: `items.${index}` });
+
   return (
-    <div className={clsx("p-2 pt-1 flex gap-2 rounded-b-md", className)}>
+    <div className="p-2 pt-1 flex gap-2 rounded-b-md bg-accent">
       <div>
         <Label htmlFor={`${id}-quantity`} className="text-xs">
           Quantity
         </Label>
         <Input
           type="number"
-          defaultValue={item.quantity}
-          onChange={handleQuantityChange}
+          {...register(`items.${index}.quantity`, { valueAsNumber: true })}
           className="no-input-arrows"
-          disabled={isLoading}
         />
       </div>
       <div>
-        <Label htmlFor={`${id}-quantity`} className="text-xs">
+        <Label htmlFor={`${id}-unitPrice`} className="text-xs">
           Unit price
         </Label>
         <Input
           type="number"
-          defaultValue={item.unitPrice}
-          onChange={handleUnitPriceChange}
-          className=" no-input-arrows"
-          disabled={isLoading}
+          {...register(`items.${index}.unitPrice`, { valueAsNumber: true })}
+          className="no-input-arrows"
         />
       </div>
       <div>
-        <Label htmlFor={`${id}-quantity`} className="text-xs">
+        <Label htmlFor={`${id}-discount`} className="text-xs">
           Discount
         </Label>
         <Input
           type="number"
-          defaultValue={item.discount}
-          onChange={handleDiscountChange}
+          {...register(`items.${index}.discount`, { valueAsNumber: true })}
           className="no-input-arrows"
-          disabled={isLoading}
         />
       </div>
       <div className="hidden sm:block">
@@ -63,13 +51,7 @@ export const PriceInputs = ({
   );
 };
 
-export type PriceInputsProps = {
+type PriceInputsProps = {
   id: string;
-  isLoading: boolean;
-  item: Pick<EnrichedItem, "quantity" | "unitPrice" | "discount">;
-  handleQuantityChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleUnitPriceChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  handleDiscountChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-  className?: string;
-  showTotal?: boolean;
+  index: number;
 };

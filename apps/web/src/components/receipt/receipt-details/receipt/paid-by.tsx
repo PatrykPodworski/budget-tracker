@@ -1,29 +1,26 @@
 "use client";
+import { useFormContext, useWatch } from "react-hook-form";
 import { Label } from "@/components/ui/shadcn/label";
 import {
   ToggleGroup,
   ToggleGroupItem,
 } from "@/components/ui/shadcn/toggle-group";
 import { Person } from "@/data/people";
-import { useDebounce } from "@/lib/utils/use-debounce";
-import { PaymentParticipant } from "@budget-tracker/shared/enriched-receipt-data-schema";
+import type { QuickExpenseAmountFormData } from "@/lib/quick-expense/quick-expense-amount-form-schema";
+import { convertToBaseCurrency } from "@budget-tracker/shared/currency";
 import { formatCurrency } from "@/lib/utils";
 import { splitAmount } from "@/lib/utils/split-amount";
 
 type PaidByProps = {
-  paidBy: PaymentParticipant[];
-  total: number;
   people: readonly Person[];
-  onChange: (paidBy: PaymentParticipant[]) => Promise<void>;
 };
 
-export const PaidBy = ({
-  paidBy,
-  total,
-  people,
-  onChange,
-}: PaidByProps) => {
-  const { isLoading, debounced } = useDebounce(onChange);
+export const PaidBy = ({ people }: PaidByProps) => {
+  const { control, setValue } = useFormContext<QuickExpenseAmountFormData>();
+
+  const paidBy = useWatch({ control, name: "paidBy" });
+  const total = useWatch({ control, name: "total" });
+  const currency = useWatch({ control, name: "currency" });
 
   const selectedPersonIds = paidBy.map((p) => p.personId);
 
@@ -38,10 +35,12 @@ export const PaidBy = ({
       sharePercentage,
     }));
 
-    debounced(newPaidBy);
+    setValue("paidBy", newPaidBy, { shouldDirty: true });
   };
 
-  const amounts = splitAmount(total, selectedPersonIds.length);
+  // TODO: P1 Remove default currency after currency is added to receipt form
+  const totalInBaseCurrency = convertToBaseCurrency(total, currency ?? 'PLN')
+  const amounts = splitAmount(totalInBaseCurrency, selectedPersonIds.length);
   const amountByPersonId = new Map(
     selectedPersonIds.map((id, index) => [id, amounts[index]])
   );
@@ -59,7 +58,6 @@ export const PaidBy = ({
         type="multiple"
         value={selectedPersonIds}
         onValueChange={handleValueChange}
-        disabled={isLoading}
         className="justify-start"
       >
         {peopleWithAmount.map((person) => (

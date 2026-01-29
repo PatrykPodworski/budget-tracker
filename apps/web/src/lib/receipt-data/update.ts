@@ -1,57 +1,37 @@
 "use server";
 import { PatchOperation } from "@azure/cosmos";
-import { EnrichedItem } from "@budget-tracker/shared/enriched-item-schema";
-import {
-  enrichedReceiptDataSchema,
-  PaymentParticipant,
-} from "@budget-tracker/shared/enriched-receipt-data-schema";
+import { enrichedReceiptDataSchema } from "@budget-tracker/shared/enriched-receipt-data-schema";
 import { getReceiptContainer } from "@/lib/receipt-data/common/get-receipt-container";
+import { ReceiptFormData } from "@/lib/receipt-data/receipt-form-schema";
 
-export const updateReceiptItem = async (
+export const saveReceipt = async (
   id: string,
   partitionKey: string,
-  newItem: EnrichedItem,
-  order: number
-) => updateReceiptField(id, partitionKey, `items/${order}`, newItem);
-
-export const updateReceiptMerchantName = async (
-  id: string,
-  partitionKey: string,
-  newMerchantName: string
-) => updateReceiptField(id, partitionKey, "merchantName", newMerchantName);
-
-export const updateReceiptTransactionDate = async (
-  id: string,
-  partitionKey: string,
-  newTransactionDate: Date | undefined
-) =>
-  updateReceiptField(id, partitionKey, "transactionDate", newTransactionDate);
-
-export const updateReceiptTotal = async (
-  id: string,
-  partitionKey: string,
-  newTotal: number
-) => updateReceiptField(id, partitionKey, "total", newTotal);
-
-export const updateReceiptPaidBy = async (
-  id: string,
-  partitionKey: string,
-  paidBy: PaymentParticipant[]
-) => updateReceiptField(id, partitionKey, "paidBy", paidBy);
-
-export const markReceiptAsSent = async (id: string, partitionKey: string) =>
-  updateReceiptField(id, partitionKey, "isSentToBudget", true);
-
-const updateReceiptField = async (
-  id: string,
-  partitionKey: string,
-  field: string,
-  value: unknown
+  data: ReceiptFormData
 ) => {
   const container = getReceiptContainer();
 
   const operations: PatchOperation[] = [
-    { op: "replace", path: `/${field}`, value },
+    { op: "replace", path: "/merchantName", value: data.merchantName },
+    { op: "replace", path: "/transactionDate", value: data.transactionDate },
+    { op: "replace", path: "/total", value: data.total },
+    { op: "replace", path: "/items", value: data.items },
+    { op: "replace", path: "/paidBy", value: data.paidBy },
+  ];
+
+  const { resource } = await container
+    .item(id, partitionKey)
+    .patch({ operations });
+
+  const parsed = enrichedReceiptDataSchema.parse(resource);
+  return parsed;
+};
+
+export const markReceiptAsSent = async (id: string, partitionKey: string) => {
+  const container = getReceiptContainer();
+
+  const operations: PatchOperation[] = [
+    { op: "replace", path: "/isSentToBudget", value: true },
   ];
 
   const { resource } = await container
